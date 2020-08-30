@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta property="og:image" content="/assets/images/geometry.jpg"/><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Normalized Cross-Entropy | Deylemma</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Normalized Cross-Entropy" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="An Engineering Blog" />
+<meta property="og:description" content="An Engineering Blog" />
+<link rel="canonical" href="http://localhost:4000/2020/05/29/normalized-cross-entropy.html" />
+<meta property="og:url" content="http://localhost:4000/2020/05/29/normalized-cross-entropy.html" />
+<meta property="og:site_name" content="Deylemma" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-05-29T00:00:00-04:00" />
+<script type="application/ld+json">
+{"mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/2020/05/29/normalized-cross-entropy.html"},"headline":"Normalized Cross-Entropy","dateModified":"2020-05-29T00:00:00-04:00","datePublished":"2020-05-29T00:00:00-04:00","description":"An Engineering Blog","@type":"BlogPosting","url":"http://localhost:4000/2020/05/29/normalized-cross-entropy.html","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Deylemma" />
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Deylemma</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Normalized Cross-Entropy</h1>
+    <p class="post-meta"><time class="dt-published" datetime="2020-05-29T00:00:00-04:00" itemprop="datePublished">
+        May 29, 2020
+      </time>• 
+          <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+            <span class="p-author h-card" itemprop="name">Daniel Deychakiwsky</span></span></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <ul id="markdown-toc">
+  <li><a href="#context" id="markdown-toc-context">Context</a></li>
+  <li><a href="#definition" id="markdown-toc-definition">Definition</a>    <ul>
+      <li><a href="#facebook-research" id="markdown-toc-facebook-research">Facebook research</a></li>
+      <li><a href="#variables" id="markdown-toc-variables">Variables</a></li>
+      <li><a href="#equation" id="markdown-toc-equation">Equation</a></li>
+    </ul>
+  </li>
+  <li><a href="#what-is-log-loss" id="markdown-toc-what-is-log-loss">What is log-Loss?</a>    <ul>
+      <li><a href="#probability-theory-derivation" id="markdown-toc-probability-theory-derivation">Probability Theory derivation</a>        <ul>
+          <li><a href="#bernoulli" id="markdown-toc-bernoulli">Bernoulli</a></li>
+          <li><a href="#binomial" id="markdown-toc-binomial">Binomial</a></li>
+        </ul>
+      </li>
+      <li><a href="#information-theory-derivation" id="markdown-toc-information-theory-derivation">Information Theory derivation</a>        <ul>
+          <li><a href="#information-content" id="markdown-toc-information-content">Information content</a>            <ul>
+              <li><a href="#why-the-inverse-probability" id="markdown-toc-why-the-inverse-probability">Why the inverse probability?</a></li>
+              <li><a href="#why-the-logarithmic-transform" id="markdown-toc-why-the-logarithmic-transform">Why the logarithmic transform?</a></li>
+            </ul>
+          </li>
+          <li><a href="#entropy" id="markdown-toc-entropy">Entropy</a></li>
+          <li><a href="#cross-entropy" id="markdown-toc-cross-entropy">Cross-entropy</a></li>
+          <li><a href="#kullbackleibler-divergence" id="markdown-toc-kullbackleibler-divergence">Kullback–Leibler divergence</a></li>
+          <li><a href="#minimizing-cross-entropy--kullbackleibler-divergence" id="markdown-toc-minimizing-cross-entropy--kullbackleibler-divergence">Minimizing cross-entropy / Kullback–Leibler divergence</a></li>
+          <li><a href="#cross-entropy-loss" id="markdown-toc-cross-entropy-loss">Cross-entropy loss</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><a href="#visualizing" id="markdown-toc-visualizing">Visualizing…</a>    <ul>
+      <li><a href="#log-loss--cross-entropy" id="markdown-toc-log-loss--cross-entropy">Log-loss / cross-entropy</a>        <ul>
+          <li><a href="#fig-1" id="markdown-toc-fig-1">Fig. 1</a></li>
+        </ul>
+      </li>
+      <li><a href="#normalized-log-loss--cross-entropy" id="markdown-toc-normalized-log-loss--cross-entropy">Normalized log-loss / cross-entropy</a>        <ul>
+          <li><a href="#click-through-rate-entropy" id="markdown-toc-click-through-rate-entropy">Click-through rate entropy</a>            <ul>
+              <li><a href="#fig-2" id="markdown-toc-fig-2">Fig. 2</a></li>
+              <li><a href="#fig-3" id="markdown-toc-fig-3">Fig. 3</a></li>
+              <li><a href="#fig-4" id="markdown-toc-fig-4">Fig. 4</a></li>
+            </ul>
+          </li>
+          <li><a href="#baseline-model" id="markdown-toc-baseline-model">Baseline model</a>            <ul>
+              <li><a href="#fig-5" id="markdown-toc-fig-5">Fig. 5</a></li>
+              <li><a href="#fig-6" id="markdown-toc-fig-6">Fig. 6</a></li>
+              <li><a href="#fig-7" id="markdown-toc-fig-7">Fig. 7</a></li>
+              <li><a href="#fig-8" id="markdown-toc-fig-8">Fig. 8</a></li>
+              <li><a href="#fig-9" id="markdown-toc-fig-9">Fig. 9</a></li>
+              <li><a href="#fig-10" id="markdown-toc-fig-10">Fig. 10</a></li>
+              <li><a href="#fig-11" id="markdown-toc-fig-11">Fig. 11</a></li>
+              <li><a href="#fig-12" id="markdown-toc-fig-12">Fig. 12</a></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><a href="#special-thanks" id="markdown-toc-special-thanks">Special Thanks</a></li>
+  <li><a href="#references" id="markdown-toc-references">References</a></li>
+</ul>
+
+<h2 id="context">Context</h2>
+
+<p>Let’s assume we are machine-learning engineers at a technology company
+that monetizes its flagship product with advertisements.</p>
+
+<p>The business has invoked our expertise to model click conversions;
+we need to provide a score for how likely a given user is to click on
+a given ad. The business can then use the scores to optimize various objectives,
+i.e., choose which ads to show. We collect data by logging user-ad interactions
+to keep track of what users saw what ad and if those ad-impressions resulted in a click.
+We can join the logs with preexisting user and ad-specific data. In the simplest case,
+our task it to train a model to output the probability that a user will click based on the
+data we’ve collected.</p>
+
+\[P(click \space | \space user,ad)
+\tag 1 \label 1\]
+
+<p>The <a href="https://en.wikipedia.org/wiki/Occam%27s_razor">Occam’s Razor</a> problem solving approach tells us that starting out with a simple model
+is usually a good first start. We begin by applying a well-studied <a href="https://en.wikipedia.org/wiki/Generalized_linear_model">generalized linear model</a> (GLM),
+<a href="https://en.wikipedia.org/wiki/Logistic_regression">logistic regression</a> (LR), which models a binary response random variable.
+It outputs a probability, $\hat p$, for predicted membership to the positive class
+as a deterministic function, $h$, of some feature embedding, $\textbf x$,
+parameterized by, $\boldsymbol{\hat \theta}$, our current hypothesis.</p>
+
+\[\hat p=\\
+P(\hat y=1 \space | \space \textbf x;\boldsymbol{\hat \theta})=\\
+h_\boldsymbol{\hat \theta}(\textbf{x})
+\tag 2 \label 2\]
+
+<p>The goal of learning is to approximate nature’s hypothetical target function which maps a
+full-relationship for some inputs to a true target value. Whatever your view on reality or spin on
+probability, lets assume a true probabilistic binary generative process so that we can draw an
+analog to the LR model. We express nature by recycling notation from \ref{2}.</p>
+
+\[p=\\
+P(y=1 \space | \space \textbf x;\boldsymbol{\theta})=\\
+h_\boldsymbol{\theta}(\textbf{x})
+\tag 3 \label 3\]
+
+<p>Fueled by data, LR learns by iteratively adjusting its model parameters, $\boldsymbol{\hat \theta}$,
+so that its predictions are better aligned to nature (what’s been observed).
+Specialized algorithms can be applied to guide an informative search through an
+infinite-sized hypothesis (parameter) space to find a hypothesis (or the parameters) that best
+reflects reality.</p>
+
+<p>Challenges may arise from model complexity, measurement noise, and insufficient data.
+If our model is unable to capture the complexity of the target function it will fail
+to generalize. If our model is overly complex, it may mistakenly learn the noise in our training 
+data and fail to generalize. Moreover, if the data is not predictive, of low-quality,
+or is missing, there wouldn’t be much to learn; garbage in, garbage out.</p>
+
+<h2 id="definition">Definition</h2>
+
+<p>We must carefully select an evaluation metric which enables us to measure
+and compare model performance. We evaluate our model’s generalization capabilities on a
+test or holdout-set of data for which the model has not been 
+exposed to during training. Since we know if the user has clicked or not, we can
+assess the model’s predictions against reality. A good model will be better aligned to reality.</p>
+
+<p>After researching many metrics,
+we consider Normalized Cross-Entropy (NCE).</p>
+
+<h3 id="facebook-research">Facebook research</h3>
+
+<blockquote>
+  <p>Normalized Cross-Entropy is equivalent to the
+  average log-loss per impression divided by what the
+  average log-loss per impression would be if a model predicted the
+  background click through rate
+  (CTR) for every impression. [1]</p>
+</blockquote>
+
+<h3 id="variables">Variables</h3>
+
+<ul>
+  <li>$N$ is the size of the test-set (total number of ad-impressions).</li>
+  <li>$CTR$ is the observed click-through rate (proportion of clicks to ad-impressions) in the test-set.</li>
+  <li>$\hat p$, where $\{ \hat p \in \mathbb{R} \space | \space 0 \le \hat p \le 1\}$, is
+our model’s predicted probability score (that the user will click).</li>
+  <li>$p$, where $p \in \{0, 1\}$, is the observed probability score (often referred to as the label).
+    <ul>
+      <li>1 indicates that the user did click
+  (the probability of click is 1 since we’re certain they clicked);
+  $P(click \space | \space user,ad)=1$.</li>
+      <li>0 indicates that the user didn’t click
+  (the probability of click is 0 since we’re certain they didn’t click);
+  $P(click \space | \space user,ad)=0$.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="equation">Equation</h3>
+
+\[NCE=\\
+\frac
+{
+-\frac{1}{N}\sum_{i=1}^N (p_i ln(\hat p_i) + (1-p_i) ln(1-\hat p_i))
+}
+{
+-\frac{1}{N}\sum_{i=1}^N (p_i ln(CTR) + (1-p_i) ln(1-CTR))
+}
+\tag 4 \label 4\]
+
+<h2 id="what-is-log-loss">What is log-Loss?</h2>
+
+<blockquote>
+  <p>In mathematical optimization and decision theory,
+  a loss function or cost function is a function that
+  maps an event or values of one or more variables onto
+  a real number intuitively representing some “cost”
+  associated with the event.
+  An optimization problem seeks to minimize a loss function. [7]</p>
+</blockquote>
+
+<p>Log-loss can be derived from several schools of thought. In the case of binary classification,
+derivations yield equivalence.</p>
+
+<h3 id="probability-theory-derivation">Probability Theory derivation</h3>
+
+<h4 id="bernoulli">Bernoulli</h4>
+
+<p>A user’s true click propensity for a single ad-impression, $Y$, follows a <a href="https://en.wikipedia.org/wiki/Bernoulli_distribution">Bernoulli distribution</a>.
+Since, the user will click with some probability, $p$, and 
+not-click with the complement probability, $1-p$, the <a href="https://en.wikipedia.org/wiki/Probability_mass_function">probability mass function</a> (PMF)
+can be expressed in-line.</p>
+
+\[Y \sim Bernoulli(p)=\\
+p^k(1-p)^{1-k} \space\space\space for \space k \in \{0, 1\}
+\tag 5 \label 5\]
+
+<p>GLMs relate a linear predictor to the conditional expected value of the estimated response variable
+by applying a <a href="https://en.wikipedia.org/wiki/Generalized_linear_model#Link_function">link function</a>. LR estimates the expected value of a Bernoulli-distributed response
+variable by piping a linear predictor through an inverse <a href="https://en.wikipedia.org/wiki/Logit">logit</a> link function.</p>
+
+\[\mathbb{E}[\hat Y|X]=\\
+\hat p=\\
+g^{-1}(X \theta)=\\
+h_{\theta}(X)
+\tag 6 \label 6\]
+
+<p>The linear predictor is a function of some feature embedding, $\textbf x$, parameterized by a
+model hypothesis, $\boldsymbol{\hat \theta}$. Per equation \ref{2}, $h$ represents the final output,
+that is, after the linear transform’s output passes through the link function.</p>
+
+\[\hat Y \sim Bernoulli(\hat p)=\\
+Bernoulli(h_\boldsymbol{\hat \theta}(\textbf x))
+\tag 7 \label 7\]
+
+<p>In order to estimate $p$ we invoke <a href="https://en.wikipedia.org/wiki/Maximum_likelihood_estimation">maximum likelihood estimation</a> over our training set.</p>
+
+<blockquote>
+  <p>In statistics, maximum likelihood estimation (MLE) is a method of estimating
+  the parameters of a probability distribution by maximizing a likelihood function,
+  so that under the assumed statistical model the observed data is most probable. [8]</p>
+</blockquote>
+
+<p>In order to find the maximum likelihood estimate, we must define the <a href="https://en.wikipedia.org/wiki/Likelihood_function">likelihood function</a> 
+for our data and then maximize it. The value $\hat p$ takes
+at the maximum is our maximum likelihood estimate for the true parameter $p$.</p>
+
+<blockquote>
+  <p>In statistics, the likelihood function (often simply called the likelihood)
+  measures the goodness of fit of a statistical model to a sample of data for
+  given values of the unknown parameters. [9]</p>
+</blockquote>
+
+<p>Generally, for a design-matrix (rows are training examples and columns are features),
+$\textbf X$, and true observation matrix (associated labels), $\textbf Y$, we define the likelihood
+function as the probability of the joint distribution of the training data as a function
+of the parameter(s) being estimated, in our case, $\hat{\boldsymbol{\theta}}$.</p>
+
+\[\mathcal{L}(\hat{\boldsymbol{\theta}}|
+\textbf X_{m \space \times \space f},\textbf Y_{m \space \times \space 1})=\\
+P(\textbf X_{m \space \times \space f},\textbf Y_{m \space \times \space 1};
+\hat{\boldsymbol{\theta}}) 
+\tag 8 \label 8\]
+
+<p>Assuming a training set of size $M$ ad-impressions that are <a href="https://en.wikipedia.org/wiki/Conditional_independence">conditionally independent</a>
+(but not identically distributed, i.e., different expected values) Bernoulli trials,
+we can calculate the joint probability mass function for a given parameter,
+$\hat{\boldsymbol{\theta}}$.</p>
+
+\[P(\textbf X_{m \space \times \space f},\textbf Y_{m \space \times \space 1};
+\hat{\boldsymbol{\theta}})=\\
+\prod_{i = 1}^{M} h_\boldsymbol{\hat \theta}(\textbf{x}_i)^{y_i}
+(1-h_\boldsymbol{\hat \theta}(\textbf{x}_i))^{1-y_i}
+\tag 9 \label 9\]
+
+<p>The value of the joint probability mass function may get very small as multiplying
+small numbers by small numbers result in even smaller numbers. At some point, we may
+hit computational floating-point arithmetic underflow errors. We can instead maximize the
+log of the likelihood. One benefit of the log function is that it is a monotonically
+increasing function, i.e., the log-transformation preserves ordering and doesn’t
+change where the maximum is. Computationally, another benefit of the log function
+is that it turns repeated multiplication into a summation. The <a href="https://en.wikipedia.org/wiki/List_of_logarithmic_identities">list of logarithmic identities</a>
+is a good refresher.</p>
+
+\[ln(P(\textbf X_{m \space \times \space f},\textbf Y_{m \space \times \space 1};
+\hat{\boldsymbol{\theta}}))=\\
+\sum_{i = 1}^{M} {y_i} ln(h_\boldsymbol{\hat \theta}(\textbf{x}_i))
++ (1-y_i)ln(h_\boldsymbol{\hat \theta}(\textbf{x}_i))
+\tag {10} \label {10}\]
+
+<p>Most mathematical optimization algorithms implemented in software
+are minimizers. <a href="https://en.wikipedia.org/wiki/Gradient_descent">Gradient descent</a>, a well-suited minimization algorithm,
+applies an iterative first-order hill-descent routine which converges
+at a local minimum. In order to find the maximum of the log-likelihood function, we
+instead find the minimum of the negative log-likelihood. Finally, we normalize by the
+number of examples in the summation yielding the average log-loss. An added benefit
+to the normalization is that the number of examples fed in is not a factor, i.e.,
+if we wanted to compare the average log-loss over some batch size.</p>
+
+\[-\frac{1}{M}ln(P(\textbf X_{m \space \times \space f},\textbf Y_{m \space \times \space 1};
+\hat{\boldsymbol{\theta}}))=\\
+-\frac{1}{M}\sum_{i = 1}^{M} {y_i} ln(h_\boldsymbol{\hat \theta}(\textbf{x}_i))
++ (1-y_i)ln(h_\boldsymbol{\hat \theta}(\textbf{x}_i))
+\tag {11} \label {11}\]
+
+<h4 id="binomial">Binomial</h4>
+
+<p>Through a similar but slightly different point of view, the <strong>overall</strong> or prior click propensity
+follows a <a href="https://en.wikipedia.org/wiki/Binomial_distribution">Binomial distribution</a>. Its PMF yields the probability of getting
+exactly $k$ clicks in a series of $n$ <a href="https://en.wikipedia.org/wiki/Independent_and_identically_distributed_random_variables">independently and identically distributed</a> (i.i.d)
+ad-impressions (Bernoulli trials) under one common click propensity, $p$.</p>
+
+\[P(k;n,p) \sim\\
+Binomial(n, k, p)=\\
+\binom{n}{k} p^k(1-p)^{n-k}
+\tag {12} \label {12}\]
+
+<p>The <a href="https://en.wikipedia.org/wiki/Binomial_coefficient">binomial coefficient</a> scales the value of the PMF by the number of combinations that $k$
+clicks could have occurred within a series of $n$ ad-impressions.
+Since it is a constant, it won’t have any effect on the maximum and can be safely ignored.
+We’re then left with a series of i.i.d Bernoulli trials to which we can apply very similar
+mathematics from the Bernoulli derivation above. Naturally, the Binomial MLE resolves to the
+prior CTR, $\frac{k}{n}$. In other words, the Binomial likelihood is maximal under a fixed number of
+trials at the observed success rate.</p>
+
+<h3 id="information-theory-derivation">Information Theory derivation</h3>
+
+<blockquote>
+  <p>Information theory studies the quantification, storage, and communication of information.
+  It was originally proposed by Claude Shannon in 1948 to find fundamental limits on signal
+  processing and communication operations such as data compression, in a landmark paper titled
+  “A Mathematical Theory of Communication”. [10]</p>
+</blockquote>
+
+<h4 id="information-content">Information content</h4>
+
+<p>Given random variable $X$ with PMF $P_{X}(x)$, we can measure the <a href="https://en.wikipedia.org/wiki/Information_content#Definition">information</a>, $I_X$, of
+outcome, $x$, as the log (usually base $e$, $2$, or $10$) inverse probability of that outcome.</p>
+
+\[I_X(x)=\\
+ln(\frac{1}{P_X(x)})
+\tag {13} \label {13}\]
+
+<h5 id="why-the-inverse-probability">Why the inverse probability?</h5>
+
+<p>The inverse probability or “surprisal” for a given outcome is larger when the outcome is less likely
+and smaller when the outcome is more likely. In other words, events that occur very frequently
+don’t carry as much information as events that occur rarely. Intuitively, less-likely events
+carry more information because they inform us that not only they’ve occurred but that their more
+likely counterparts didn’t occur. For example, when drawing a letter randomly from the 5 character
+string <code class="language-plaintext highlighter-rouge">ABBBB</code>, the probability of drawing an <code class="language-plaintext highlighter-rouge">A</code> is $0.2$ while the probability of drawing a <code class="language-plaintext highlighter-rouge">B</code> is
+$0.8$. If we draw <code class="language-plaintext highlighter-rouge">A</code>, we can eliminate $\frac{1}{.2}=5$ characters, that is, the <code class="language-plaintext highlighter-rouge">A</code> because it
+occurred and all of the <code class="language-plaintext highlighter-rouge">B</code>s because we know they didn’t occur. If we draw <code class="language-plaintext highlighter-rouge">B</code>, we can eliminate
+$\frac{1}{.8}=1.25$ characters, that is, the one and only <code class="language-plaintext highlighter-rouge">A</code> because we know it didn’t occur and
+a quarter of the <code class="language-plaintext highlighter-rouge">B</code>s because we know one of them occurred. Since, drawing an <code class="language-plaintext highlighter-rouge">A</code> allows us to
+eliminate more characters from the string, it carries more information.</p>
+
+<h5 id="why-the-logarithmic-transform">Why the logarithmic transform?</h5>
+
+<p>Directly from <a href="https://en.wikipedia.org/wiki/Claude_Shannon">Claude Shannon</a>’s white-paper.</p>
+
+<blockquote>
+  <p>The logarithmic measure is more convenient for various reasons:</p>
+  <ol>
+    <li>It is practically more useful. Parameters of engineering importance such as time, bandwidth,
+  number of relays, etc., tend to vary linearly with the logarithm of the number of possibilities.
+  For example, adding one relay to a group doubles the number of possible states of the relays.
+  It adds 1 to the base 2 logarithm of this number. Doubling the time roughly squares the number of
+  possible messages, or doubles the logarithm, etc.</li>
+    <li>It is nearer to our intuitive feeling as to the proper measure. This is closely related to (1)
+  since we intuitively measures entities by linear comparison with common standards. One feels,
+  for example, that two punched cards should have twice the capacity of one for information storage,
+  and two identical channels twice the capacity of one for transmitting information.</li>
+    <li>It is mathematically more suitable. Many of the limiting operations are simple in terms of the
+  logarithm but would require clumsy restatement in terms of the number of possibilities. [11]</li>
+  </ol>
+</blockquote>
+
+<h4 id="entropy">Entropy</h4>
+
+<p>Entropy, $H$, is the expected value of information. For a discrete random variable, $X$, it is the
+weighted average of the information of each of its outcomes.</p>
+
+\[H(X)=\\
+\mathbb{E}_{x \sim P}[I_X]=\\
+\sum_{i}^{N}P(x_i)ln(\frac{1}{P(x_i)})=\\
+-\sum_{i}^{N}P(x_i)ln(P(x_i))
+\tag {14} \label {14}\]
+
+<p>Entropy can be interpreted as a measure of chaos and/or uncertainty in that it is maximized
+when outcomes are equiprobable, i.e., carry the same amount of information (uniform PMF),
+and minimized or $0$ when outcomes are certain. In the case of a binary random variable, it is
+maximal when each outcome has a $0.5$ probability mass. It is minimized or $0$ when one of the
+outcomes have a $1.0$ probability (the other having a $0.0$ probability). We can measure entropy as
+the average number of bits required to encode the information content of a random variable by
+substituting $log_2$ for $ln$ into \ref{14}.</p>
+
+\[-0.5log_2(0.5)-0.5log_2(0.5)=1
+\tag {15} \label {15}\]
+
+\[-1.0log_2(1.0)-0.0log_2(0.0)=\\
+-0.0log_2(0.0)-1.0log_2(1.0)=0
+\tag {16} \label {16}\]
+
+<p>On average, we need one bit to represent a fair coin and no bits to represent a double-headed or
+double-tailed coin because no matter what, we know the outcome. The lack of stochasticity implies
+that we don’t need to flip the coin as we know the outcome a priori.</p>
+
+<h4 id="cross-entropy">Cross-entropy</h4>
+
+<p>Cross-entropy (CE) measures the expected value of information for random variable, $X$, with PMF,
+$P$, using a coding scheme optimized for another, $Y$, with PMF, $Q$, over the same <a href="https://en.wikipedia.org/wiki/Support_(mathematics)">support</a>, i.e.,
+set of outcomes/events.</p>
+
+\[H(X,Y)=\\
+\mathbb{E}_{x \sim P}[I_Y]=\\
+\sum_{i}^{N}P(x_i)ln(\frac{1}{Q(x_i)})=\\
+-\sum_{i}^{N}P(x_i)ln(Q(x_i))
+\tag {17} \label {17}\]
+
+<p>If $X = Y$, then CE resolves to entropy. If $X \neq Y$, CE can be expressed
+in terms of entropy and Kullback–Leibler divergence.</p>
+
+\[H(X,Y)=\\
+H(X) + D_{KL}(X||Y)
+\tag {18} \label {18}\]
+
+<h4 id="kullbackleibler-divergence">Kullback–Leibler divergence</h4>
+
+<p>Assuming random variables $X$ and $Y$ with respective PMFs $P$ and $Q$ over common support,
+<a href="https://en.wikipedia.org/wiki/Kullback%E2%80%93Leibler_divergence">Kullback–Leibler divergence</a> (KLD) is the expected logarithmic difference between the two or
+equivalently, the expected logarithm over likelihood ratios.</p>
+
+\[D_{KL}(X||Y) =\\
+\mathbb{E}_{x \sim P}[ln(\frac{P(x)}{Q(x)})]=\\
+\sum_{i}^{N}P(x_i)ln(\frac{P(x_i)}{Q(x_i)})
+\tag {19} \label {19}\]
+
+<p>It’s an asymmetric measure with a minimal value at 0, meaning the distributions are identical.
+The inequality implies that KLD is not a distance metric, hence the word “divergence” in its name.</p>
+
+\[D_{KL}(X||Y) \neq D_{KL}(Y||X)
+\tag {20} \label {20}\]
+
+<p>Based on the definition of CE in \ref{18}, KLD can be understood as the average
+<em>extra</em> information required to be encoded since we’ve calculated the entropy of $X$ using a
+potentially suboptimal encoding scheme (from $Y$). Notice, again, if the KLD is $0$, then the
+CE of $X$ is just the entropy of $X$ and that if it is $&gt; 0$ then the CE of
+$X$ is the entropy of $X$ plus some additional divergence, which yields a suboptimal encoding for
+$X$.</p>
+
+<h4 id="minimizing-cross-entropy--kullbackleibler-divergence">Minimizing cross-entropy / Kullback–Leibler divergence</h4>
+
+<p>LR is a <a href="https://en.wikipedia.org/wiki/Supervised_learning">supervised learning</a> algorithm because it learns to map inputs
+to outputs based on training example input-output pairs. For each training example,
+the outcome has already been observed, i.e., the probability that the user clicked is either
+$1.0$ or $0.0$. LR learns by comparing its prediction to the respective outcome and correcting
+itself. Since both prediction and outcome binary probability distributions cover the same support,
+CE applies as a measure of how close the prediction distribution is to the outcome distribution.</p>
+
+<p>The entropy of an observed outcome is $0$ because the act of observation collapses the probabilistic
+nature of what could have happened, e.g., if a user clicked, the entropy is $0$ because there is
+complete certainty the event has occurred. The same applies if the user decided not to click. See
+\ref{16}. Since the entropy of the reference distribution, $X$, is $0$, we can eliminate $H(X)$ from
+\ref{18} when calculating the CE. Thus, in this case, minimizing CE is equivalent to minimizing KLD.</p>
+
+\[H(X,Y)=\\
+0 + D_{KL}(X||Y)=\\
+D_{KL}(X||Y)
+\tag {21} \label {21}\]
+
+<h4 id="cross-entropy-loss">Cross-entropy loss</h4>
+
+<p>There’s no need to write out the mathematics for calculating CE loss over $M$ training examples
+because we’ve already derived it via probability theory. Minimizing the average CE of $M$ training
+examples is equivalent to minimizing the negative log-likelihood of those $M$
+training examples under the <a href="#bernoulli">Bernoulli</a> model. That’s two schools of thought arriving
+at the same conclusion with the same equation :P!</p>
+
+<p>If the connection between the two isn’t obvious, compare and contrast \ref{11} and \ref{17}. What
+happens if we calculate the CE between the model’s prediction and the observed outcome
+(\ref{22}/\ref{23})? What happens if we do that for all $M$ training examples and then take the
+average?</p>
+
+<h2 id="visualizing">Visualizing…</h2>
+
+<h3 id="log-loss--cross-entropy">Log-loss / cross-entropy</h3>
+
+<p>CE is applied during model training/evaluation as an objective function which measures model
+performance. The model learns to estimate Bernoulli distributed random
+variables by iteratively comparing its estimates to natures’ and penalizing itself for more costly
+mistakes, i.e., the further its prediction is from what has been observed, the higher the
+cost that is realized. For simplicity, let’s assume observed and estimated binary response
+random variables, $Y$ and $\hat Y$ with respective PMFs $P$ and $Q$, that represent the modeled
+propensity and outcome for some user clicking on some ad.</p>
+
+\[H(Y, \hat Y)=\\
+-\sum_{i}^{N}P(x_i)ln(Q(x_i))
+\tag {22} \label {22}\]
+
+<p>Since $P(x_i)$ is always either $1.0$ or $0.0$, as it is the observed outcome, CE can be expanded
+as the sum of two mutually exclusive negated log functions of which only one
+gets activated according to the observed outcome. Since our model outputs the probability of a
+click as $Q(x)$, the complement probability of not clicking is $1-Q(x)$.</p>
+
+\[-((P(x) \cdot ln(Q(x))) +\\
+((1-P(x)) \cdot ln(1-Q(x))))=\\
+\left \{
+  \begin{aligned}
+    &amp;-ln(Q(x)), &amp;&amp; P(x)=1.0 \\
+    &amp;-ln(1-Q(x)), &amp;&amp; P(x)=0.0
+  \end{aligned} \right.
+\tag {23} \label {23}\]
+
+<p>Perhaps a bit cleaner, the PMFs can be replaced with $p$ and $\hat p$ from \ref{3} and \ref{2}.</p>
+
+\[-((p \cdot ln(\hat p)) +\\
+((1-p) \cdot ln(1-\hat p)))=\\
+\left \{
+  \begin{aligned}
+    &amp;-ln(\hat p), &amp;&amp; p=1.0 \\
+    &amp;-ln(1-\hat p), &amp;&amp; p=0.0
+  \end{aligned} \right.
+\tag {24} \label {24}\]
+
+<h4 id="fig-1">Fig. 1</h4>
+
+<p><img src="https://raw.githubusercontent.com/deychak/notebooks/master/experiments/images/neg_log_neg_log_reflect.png" alt="neg_log_neg_log_reflect" /></p>
+
+<p><a href="#fig-1">Fig 1.</a> [13] shows the cost our model realizes when the outcome is a click (in blue) and
+not a click (in orange).</p>
+
+<p>If the outcome is a click (outcome probability of a click is $1.0$),
+and the model predicts a probability of $1.0$, the model realizes a cost
+of $0.0$, i.e., the model isn’t penalized as the prediction is perfectly reflective of the outcome.
+In the case that the model predicts anything less than $1.0$, it will realize a cost that grows
+exponentially as the prediction moves further away from $1.0$.</p>
+
+<p>If the outcome is not a click (outcome probability of a click is $0.0$), the reflection
+of the same logic applies, i.e., the model must predict $0.0$ to realize a cost of $0.0$
+and that cost grows exponentially as the model’s prediction moves further away from $0.0$.</p>
+
+<h3 id="normalized-log-loss--cross-entropy">Normalized log-loss / cross-entropy</h3>
+
+<h4 id="click-through-rate-entropy">Click-through rate entropy</h4>
+
+<p>The NCE (\ref{4}) denominator can be expressed as the entropy (\ref{14}) of the prior CTR which
+is equivalent to the average log-loss if the model always predicted the CTR.</p>
+
+\[-\frac{1}{N}\sum_{i=1}^N (p_i ln(CTR) + (1-p_i) ln(1-CTR))=\\
+-\frac{1}{N}\sum_{i=1}^N p_i ln(CTR)-\frac{1}{N}\sum_{i=1}^N(1-p_i) ln(1-CTR)=\\
+-\sum_{i=1}^N\frac{p_iln(CTR)}{N}-\sum_{i=1}^N\frac{(1-p_i) ln(1-CTR)}{N}=\\
+-(CTR \cdot ln(CTR) + (1-CTR) \cdot ln(1-CTR))
+\tag {25} \label {25}\]
+
+<h5 id="fig-2">Fig. 2</h5>
+
+<p><img src="https://raw.githubusercontent.com/deychak/notebooks/master/experiments/images/ctr_ent.png" alt="ctr_ent" /></p>
+
+<p><a href="#fig-2">Fig. 2</a> [13] shows entropy as a function of CTR. It is maximized at a CTR of
+$0.5$ when clicking is just as likely as not clicking. The more the CTR drifts from $0.5$,
+in either direction, the resulting entropy symmetrically decreases. At a CTR of $0.0$ or $1.0$,
+the entropy would be $0.0$ as there would be complete certainty of the outcome from the data, e.g.,
+only clicks or no clicks at all.</p>
+
+<h5 id="fig-3">Fig. 3</h5>
+
+<p><img src="https://raw.githubusercontent.com/deychak/notebooks/master/simulations/images/prior_log_loss_sim.png" alt="prior_log_loss_sim" /></p>
+
+<p><a href="#fig-3">Fig. 3</a> [14] shows the result of a simulating \ref{25} while varying training set
+size. The CE of each training example outcome, $\sim Bernoulli(0.3)$, and prediction, $0.3$ (prior),
+is averaged over the $N$ prediction-outcome pairs.
+As the size of the training set increases, the empirical cross-entropy converges to the expected
+prior entropy of $-.3log(.3)-(1-.3)log(1-.3)=.610$.</p>
+
+<h5 id="fig-4">Fig. 4</h5>
+
+<p><img src="https://raw.githubusercontent.com/deychak/notebooks/master/simulations/images/prior_sim.png" alt="prior_sim" /></p>
+
+<p><a href="#fig-4">Fig. 4</a> [14] shows the result of a simulating the proportion of observations that
+resulted in a positive label while varying training set size. The proportion converges to the
+expected value as the number of trials or size of the training set increases. Since each outcome
+for in a given training set size follows $Bernoulli(0.3)$, we’d expect the sampled proportion to
+converge to $0.3$ as we simulate larger training set sizes.</p>
+
+<p>Both simulations are manifestations of the <a href="https://en.wikipedia.org/wiki/Law_of_large_numbers">law of large numbers</a>. As the prior converges, so does
+the entropy of the prior since mathematically (\ref{25}), it is dependent on it.</p>
+
+<h4 id="baseline-model">Baseline model</h4>
+
+<blockquote>
+  <p>When doing supervised learning, a simple sanity check consists of comparing one’s estimator
+  against simple rules of thumb.</p>
+  <ul>
+    <li>stratified: generates random predictions by respecting the training set class distribution.</li>
+    <li>most_frequent: always predicts the most frequent label in the training set.</li>
+    <li>prior: always predicts the class that maximizes the class prior (like most_frequent) and
+predict_proba returns the class prior.</li>
+    <li>uniform: generates predictions uniformly at random.</li>
+    <li>constant: always predicts a constant label that is provided by the user. [12]</li>
+  </ul>
+</blockquote>
+
+<p>NCE is defined (see \ref{4}) as the predictive log-loss normalized by the log-loss of a baseline
+prior model, i.e., a model which always outputs the probability of a click as the observed CTR.
+One way to visualize the behavior of the normalization is to restrict the model’s predictions
+to various hypothetical CTRs.</p>
+
+\[\hat p = \hat{CTR}
+\tag {26} \label {26}\]
+
+<p>That constraint means our model’s predictions are a constant and NCE can be broken into two
+mutually exclusive terms and visualized separately.</p>
+
+\[NCE=\\
+\frac
+{
+-\frac{1}{N}\sum_{i=1}^N (p_i ln(\hat p_i) + (1-p_i) ln(1-\hat p_i))
+}
+{
+-\frac{1}{N}\sum_{i=1}^N (p_i ln(CTR) + (1-p_i) ln(1-CTR))
+}=\\
+\frac
+{
+-\frac{1}{N}\sum_{i=1}^N (p_i ln(\hat{CTR}) + (1-p_i) ln(1-\hat{CTR}))
+}
+{
+-\frac{1}{N}\sum_{i=1}^N (p_i ln(CTR) + (1-p_i) ln(1-CTR))
+}=\\
+\frac
+{
+-\frac{1}{N}\sum_{i=1}^N p_i ln(\hat{CTR}) - \frac{1}{N}\sum_{i=1}^N (1-p_i) ln(1-\hat{CTR})
+}
+{
+-\frac{1}{N}\sum_{i=1}^N p_i ln(CTR) - \frac{1}{N}\sum_{i=1}^N (1-p_i) ln(1-CTR)
+}=\\
+\frac
+{
+-\sum_{i=1}^N \frac{p_i ln(\hat{CTR})}{N} - \sum_{i=1}^N \frac{(1-p_i) ln(1-\hat{CTR})}{N}
+}
+{
+-\sum_{i=1}^N \frac{p_i ln(CTR)}{N} - \sum_{i=1}^N \frac{(1-p_i) ln(1-CTR)}{N}
+}=\\
+\frac
+{
+-(CTR \cdot ln(\hat{CTR}) + (1-CTR) \cdot ln(1-\hat{CTR}))
+}
+{
+-(CTR \cdot ln(CTR) + (1-CTR) \cdot ln(1-CTR))
+}=\\
+\frac
+{
+CTR \cdot ln(\hat{CTR})
+}
+{
+CTR \cdot ln(CTR) + (1-CTR) \cdot ln(1-CTR)
+}\\ + 
+\frac
+{
+(1-CTR) \cdot ln(1-\hat{CTR})
+}
+{
+CTR \cdot ln(CTR) + (1-CTR) \cdot ln(1-CTR)
+}
+\tag {27} \label {27}\]
+
+<h5 id="fig-5">Fig. 5</h5>
+
+<p><img src="https://raw.githubusercontent.com/deychak/notebooks/master/experiments/images/ctr_neg_log.png" alt="ctr_neg_log" /></p>
+
+<h5 id="fig-6">Fig. 6</h5>
+
+<p><img src="https://raw.githubusercontent.com/deychak/notebooks/master/experiments/images/ctr_neg_log_reflect.png" alt="ctr_neg_log_reflect" /></p>
+
+<h5 id="fig-7">Fig. 7</h5>
+
+<p><img src="https://raw.githubusercontent.com/deychak/notebooks/master/experiments/images/ctr_cross_ent.png" alt="ctr_cross_ent" /></p>
+
+<p><a href="#fig-7">Fig. 7</a> shows the CE of various baseline prior models that always predict $\hat{CTR}$ for
+various observed prior $CTR$s; <a href="#fig-5">Fig. 5</a> and <a href="#fig-6">Fig. 6</a> show its decomposed summands.
+The effect of the observed prior $CTR$ manifests as a scaling factor applied to each of the
+logarithms which is exacerbated for very high and very low $CTR$s. <strong>Notice that the minima for each
+$CTR$ curve exists at $\hat{CTR}=CTR$ while the actual minimum value changes over various</strong> $CTR$s.</p>
+
+<p>Note that <a href="#fig-7">Fig. 7</a> only captures the performance of baseline prior
+models which are relatively weak in terms of model performance. In practice, a good model will
+outperform baseline measures as it isn’t constrained to only predicting some fixed $\hat{CTR}$.</p>
+
+<h5 id="fig-8">Fig. 8</h5>
+
+<p><img src="../../../assets/images/CE-3D.gif" alt="CE_3D" /></p>
+
+<p><a href="#fig-8">Fig. 8</a> is a GIF of a 3D rendering of the binary CE function. Notice the two minimum
+values of $0.0$ when $x$ and $y$ are both either $0.0$ or $1.0$. The animated yellow line is a
+3D variation of <a href="#fig-7">Fig. 7</a>. Click <a href="https://www.math3d.org/VQVniBJh">here</a> to reproduce and
+interact within your web browser.</p>
+
+<h5 id="fig-9">Fig. 9</h5>
+
+<p><img src="https://raw.githubusercontent.com/deychak/notebooks/master/experiments/images/ctr_neg_log_norm.png" alt="ctr_neg_log_norm" /></p>
+
+<h5 id="fig-10">Fig. 10</h5>
+
+<p><img src="https://raw.githubusercontent.com/deychak/notebooks/master/experiments/images/ctr_neg_log_norm_reflect.png" alt="ctr_neg_log_norm_reflect" /></p>
+
+<h5 id="fig-11">Fig. 11</h5>
+
+<p><img src="https://raw.githubusercontent.com/deychak/notebooks/master/experiments/images/ctr_norm_cross_ent.png" alt="ctr_norm_cross_ent" /></p>
+
+<p><a href="#fig-11">Fig. 11</a> shows the NCE of various baseline prior models that always predict $\hat{CTR}$ for
+various observed prior $CTR$s; <a href="#fig-9">Fig. 9</a> and <a href="#fig-10">Fig. 10</a> show its decomposed summands.
+Notice that the effect of the $CTR$ is removed. <strong>For each $CTR$ curve, while the minima still exists
+at $\hat{CTR}=CTR$, the minimum value is $1.0$ and this is the case for all</strong> $CTR$s.</p>
+
+<p>Note that <a href="#fig-11">Fig. 11</a> only captures the performance of baseline prior
+models which are relatively weak in terms of model performance, i.e., the best model will produce a
+score of $1.0$. In practice, a good model will outperform baseline measures as it isn’t
+constrained to only predicting some fixed $\hat{CTR}$. This pushes the NCE theoretical lower bound
+down to $0.0$ from $1.0$.</p>
+
+<h5 id="fig-12">Fig. 12</h5>
+
+<p><img src="../../../assets/images/NCE-3D.gif" alt="NCE_3D" /></p>
+
+<p><a href="#fig-12">Fig. 12</a> is a GIF of a 3D rendering of the binary NCE (rainbow) and CE (blue) functions.
+Notice the same two minimum values of $0.0$ when $x$ and $y$ are both either $0.0$ or $1.0$.
+The animated yellow line is a 3D variation of <a href="#fig-7">Fig. 7</a>. The animated orange line is a 3D
+variation of <a href="#fig-11">Fig. 11</a>. Click <a href="https://www.math3d.org/iysEN9vk">here</a> to reproduce and
+interact within your web browser.</p>
+
+<h2 id="special-thanks">Special Thanks</h2>
+
+<p>A special thanks to <a href="https://www.linkedin.com/in/cchudzicki/">Chris Chudzicki</a> for
+his mathematics visualization tool, <a href="https://www.math3d.org/">Math3D</a>.
+It’s an excellent alternative to <a href="https://www.desmos.com/">Desmos</a> that 
+offers support for three-dimensional rendering.</p>
+
+<h2 id="references">References</h2>
+
+<p>[1] X. He, J. Pan, O. Jin, T. Xu, B. Liu, T. Xu, Y. Shi, A. Atallah,
+    R. Herbrich, S. Bowers, and J. Q. n. Candela. Practical
+    lessons from predicting clicks on ads at facebook.
+    https://research.fb.com/wp-content/uploads/2016/11/
+    practical-lessons-from-predicting-clicks-on-ads-at-facebook.pdf?</p>
+
+<p>[2] J. Yi, Y. Chen, J. Li, S. Sett, and T. W. Yan.
+    Predictive model performance: Offline and online
+    evaluations.
+    https://chbrown.github.io/kdd-2013-usb/kdd/p1294.pdf</p>
+
+<p>[3] Kamelia Aryafar, Devin Guillory, and Liangjie Hong. 2017.
+    An Ensemble-based Approach to Click-Through Rate Prediction
+    for Promoted Listings at Etsy.
+    https://arxiv.org/pdf/1711.01377.pdf</p>
+
+<p>[4] V. Sreenivasan, F. Hartl. Neural Review Ranking Models for Ads at Yelp.
+    https://web.stanford.edu/class/archive/cs/cs224n/
+    cs224n.1174/reports/2761953.pdf</p>
+
+<p>[5] C. Li, Y. Lu, Q. Mei, D. Wang, S. Pandey. Click-through Prediction for
+    Advertising in Twitter Timeline.
+    http://www-personal.umich.edu/~qmei/pub/kdd2015-click.pdf</p>
+
+<p>[6] X. Ling, W. Deng, C. Gu, H. Zhou, C. Li, F. Sun. Model Ensemble for
+    Click Prediction in Bing Search Ads.
+    https://www.microsoft.com/en-us/research/wp-content/uploads/2017/04/main-1.pdf</p>
+
+<p>[7] https://en.wikipedia.org/wiki/Loss_function</p>
+
+<p>[8] https://en.wikipedia.org/wiki/Maximum_likelihood_estimation</p>
+
+<p>[9] https://en.wikipedia.org/wiki/Likelihood_function</p>
+
+<p>[10] https://en.wikipedia.org/wiki/Information_theory</p>
+
+<p>[11] C. E. Shannon. A Mathematical Theory of Communication.
+     https://web.archive.org/web/19980715013250/http://cm.bell-labs.com/cm/ms/what/
+     shannonday/shannon1948.pdf</p>
+
+<p>[12] https://scikit-learn.org/stable/modules/model_evaluation.html#dummy-estimators</p>
+
+<p>[13] https://github.com/deychak/notebooks/blob/master/experiments/cross_entropy_log_likelihood.ipynb</p>
+
+<p>[14] https://github.com/deychak/notebooks/blob/master/simulations/prior_cross_entropy_convergence_sim.ipynb</p>
+
+
+  </div><a class="u-url" href="/2020/05/29/normalized-cross-entropy.html" hidden></a>
+</article><script>
+  (function () {
+    let script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML";
+
+    const config =  'MathJax.Hub.Config({' +
+                    'tex2jax: {' +
+                      'inlineMath: [ [\'$\',\'$\'] ],' +
+                      'processEscapes: true' +
+                    '}' +
+                  '});'
+
+    if (window.opera) {
+      script.innerHTML = config
+    } else {
+      script.text = config
+    }
+
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+<!--        <p class="feed-subscribe">-->
+<!--          <a href="/feed.xml">-->
+<!--            <svg class="svg-icon orange">-->
+<!--              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>-->
+<!--            </svg><span>Subscribe</span>-->
+<!--          </a>-->
+<!--        </p>-->
+        <ul class="contact-list">
+          <li class="p-name">Daniel Deychakiwsky</li>
+          <li><a class="u-email" href="mailto:riffsforbliss@gmail.com">riffsforbliss@gmail.com</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <p>An Engineering Blog
+</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/deychak" title="deychak"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://www.instagram.com/danieldeychak" title="danieldeychak"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#instagram"></use></svg></a></li><li><a rel="me" href="https://www.linkedin.com/in/danieldeychak" title="danieldeychak"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
