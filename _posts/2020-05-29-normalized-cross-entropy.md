@@ -8,8 +8,8 @@ mathjax: true
 permalink: /:title
 ---
 
-This post covers the effect of class imbalance on a popular evaluation and/or objective
-metric/function which compares two probability distributions upon training/evaluating binary
+This post covers the effect of class imbalance on a popular evaluation and/or objective/loss
+metric/function which compares two probability distributions upon training and/or evaluating binary
 classifiers.
 
 * TOC
