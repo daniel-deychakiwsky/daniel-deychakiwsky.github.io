@@ -9,7 +9,7 @@ permalink: /:title
 ---
 
 This post explores a normalized version of binary cross-entropy which removes the effect
-of the prior (class imbalance) within the data.
+of the prior (class imbalance) within the dataset on the resulting value.
 
 * TOC
 {:toc}
