@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-08-30T16:59:36-04:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Deylemma</title><subtitle>An Engineering Blog
-</subtitle><author><name>Daniel Deychakiwsky</name><email>riffsforbliss@gmail.com</email></author><entry><title type="html">Normalized Cross-Entropy</title><link href="http://localhost:4000/2020/05/29/normalized-cross-entropy.html" rel="alternate" type="text/html" title="Normalized Cross-Entropy" /><published>2020-05-29T00:00:00-04:00</published><updated>2020-05-29T00:00:00-04:00</updated><id>http://localhost:4000/2020/05/29/normalized-cross-entropy</id><content type="html" xml:base="http://localhost:4000/2020/05/29/normalized-cross-entropy.html">&lt;ul id=&quot;markdown-toc&quot;&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-08-30T20:48:59-04:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Deylemma</title><subtitle>An Engineering Blog
+</subtitle><author><name>Daniel Deychakiwsky</name><email>d.deychak@gmail.com</email></author><entry><title type="html">Normalized Cross-Entropy</title><link href="http://localhost:4000/normalized-cross-entropy" rel="alternate" type="text/html" title="Normalized Cross-Entropy" /><published>2020-05-29T00:00:00-04:00</published><updated>2020-05-29T00:00:00-04:00</updated><id>http://localhost:4000/normalized-cross-entropy</id><content type="html" xml:base="http://localhost:4000/normalized-cross-entropy">&lt;ul id=&quot;markdown-toc&quot;&gt;
   &lt;li&gt;&lt;a href=&quot;#context&quot; id=&quot;markdown-toc-context&quot;&gt;Context&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;#definition&quot; id=&quot;markdown-toc-definition&quot;&gt;Definition&lt;/a&gt;    &lt;ul&gt;
       &lt;li&gt;&lt;a href=&quot;#facebook-research&quot; id=&quot;markdown-toc-facebook-research&quot;&gt;Facebook research&lt;/a&gt;&lt;/li&gt;
@@ -662,7 +662,7 @@ outperform baseline measures as it isn’t constrained to only predicting some f
 
 &lt;h5 id=&quot;fig-8&quot;&gt;Fig. 8&lt;/h5&gt;
 
-&lt;p&gt;&lt;img src=&quot;../../../assets/images/CE-3D.gif&quot; alt=&quot;CE_3D&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/CE-3D.gif&quot; alt=&quot;CE_3D&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&quot;#fig-8&quot;&gt;Fig. 8&lt;/a&gt; is a GIF of a 3D rendering of the binary CE function. Notice the two minimum
 values of $0.0$ when $x$ and $y$ are both either $0.0$ or $1.0$. The animated yellow line is a
@@ -694,7 +694,7 @@ down to $0.0$ from $1.0$.&lt;/p&gt;
 
 &lt;h5 id=&quot;fig-12&quot;&gt;Fig. 12&lt;/h5&gt;
 
-&lt;p&gt;&lt;img src=&quot;../../../assets/images/NCE-3D.gif&quot; alt=&quot;NCE_3D&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/NCE-3D.gif&quot; alt=&quot;NCE_3D&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&quot;#fig-12&quot;&gt;Fig. 12&lt;/a&gt; is a GIF of a 3D rendering of the binary NCE (rainbow) and CE (blue) functions.
 Notice the same two minimum values of $0.0$ when $x$ and $y$ are both either $0.0$ or $1.0$.
@@ -755,4 +755,4 @@ offers support for three-dimensional rendering.&lt;/p&gt;
 
 &lt;p&gt;[13] https://github.com/deychak/notebooks/blob/master/experiments/cross_entropy_log_likelihood.ipynb&lt;/p&gt;
 
-&lt;p&gt;[14] https://github.com/deychak/notebooks/blob/master/simulations/prior_cross_entropy_convergence_sim.ipynb&lt;/p&gt;</content><author><name>[&quot;Daniel Deychakiwsky&quot;]</name></author></entry></feed>
+&lt;p&gt;[14] https://github.com/deychak/notebooks/blob/master/simulations/prior_cross_entropy_convergence_sim.ipynb&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="machine-learning" /><category term="artificial-intelligence" /></entry></feed>

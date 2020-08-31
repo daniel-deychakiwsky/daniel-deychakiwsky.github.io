@@ -1,10 +1,11 @@
 ---
 layout: post
 title: Normalized Cross-Entropy
-author:
-- Daniel Deychakiwsky
+categories: machine-learning artificial-intelligence
+author: Daniel Deychakiwsky
 meta: Normalized Cross-Entropy
 mathjax: true
+permalink: /:title
 ---
 
 * TOC
@@ -773,5 +774,5 @@ offers support for three-dimensional rendering.
 [neg_log_neg_log_reflect]: https://raw.githubusercontent.com/deychak/notebooks/master/experiments/images/neg_log_neg_log_reflect.png
 [prior_sim]: https://raw.githubusercontent.com/deychak/notebooks/master/simulations/images/prior_sim.png
 [prior_log_loss_sim]: https://raw.githubusercontent.com/deychak/notebooks/master/simulations/images/prior_log_loss_sim.png
-[CE_3D]: ../../../assets/images/CE-3D.gif
-[NCE_3D]: ../../../assets/images/NCE-3D.gif
+[CE_3D]: /assets/images/CE-3D.gif
+[NCE_3D]: /assets/images/NCE-3D.gif
