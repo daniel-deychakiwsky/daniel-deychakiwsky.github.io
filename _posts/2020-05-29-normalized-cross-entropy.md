@@ -8,9 +8,8 @@ mathjax: true
 permalink: /:title
 ---
 
-This post covers the effect of class imbalance on a popular evaluation and/or objective/loss
-metric/function which compares two probability distributions upon training and/or evaluating binary
-classifiers.
+This post explores the effect of class imbalance on evaluating a binary classification problem
+with binary cross-entropy and explores a normalization term that removes the effect.
 
 * TOC
 {:toc}
