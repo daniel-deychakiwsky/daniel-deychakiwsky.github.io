@@ -8,8 +8,8 @@ mathjax: true
 permalink: /:title
 ---
 
-This post explores the effect of class imbalance on evaluating a binary classification problem
-with binary cross-entropy and explores a normalization term that removes the effect.
+This post explores a normalized version of binary cross-entropy which removes the effect
+of the prior (class imbalance) within the data.
 
 * TOC
 {:toc}
