@@ -1,7 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-08-31T10:53:20-04:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Deylemma</title><subtitle>An Engineering Blog
-</subtitle><author><name>Daniel Deychakiwsky</name><email>d.deychak@gmail.com</email></author><entry><title type="html">Normalized Cross-Entropy</title><link href="http://localhost:4000/normalized-cross-entropy" rel="alternate" type="text/html" title="Normalized Cross-Entropy" /><published>2020-05-29T00:00:00-04:00</published><updated>2020-05-29T00:00:00-04:00</updated><id>http://localhost:4000/normalized-cross-entropy</id><content type="html" xml:base="http://localhost:4000/normalized-cross-entropy">&lt;p&gt;This post covers the effect of class imbalance on a popular evaluation and/or objective
-metric/function which compares two probability distributions upon training/evaluating binary
-classifiers.&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-09-13T15:16:30-04:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Deylemma</title><subtitle>An Engineering Blog
+</subtitle><author><name>Daniel Deychakiwsky</name><email>d.deychak@gmail.com</email></author><entry><title type="html">Normalized Cross-Entropy</title><link href="http://localhost:4000/normalized-cross-entropy" rel="alternate" type="text/html" title="Normalized Cross-Entropy" /><published>2020-05-29T00:00:00-04:00</published><updated>2020-05-29T00:00:00-04:00</updated><id>http://localhost:4000/normalized-cross-entropy</id><content type="html" xml:base="http://localhost:4000/normalized-cross-entropy">&lt;p&gt;This post explores a normalized version of binary cross-entropy loss which removes the effect
+of the prior (class imbalance within the dataset) on the resulting value.&lt;/p&gt;
 
 &lt;ul id=&quot;markdown-toc&quot;&gt;
   &lt;li&gt;&lt;a href=&quot;#context&quot; id=&quot;markdown-toc-context&quot;&gt;Context&lt;/a&gt;&lt;/li&gt;
@@ -759,4 +758,36 @@ offers support for three-dimensional rendering.&lt;/p&gt;
 
 &lt;p&gt;[13] https://github.com/deychak/notebooks/blob/master/experiments/cross_entropy_log_likelihood.ipynb&lt;/p&gt;
 
-&lt;p&gt;[14] https://github.com/deychak/notebooks/blob/master/simulations/prior_cross_entropy_convergence_sim.ipynb&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="machine-learning" /><category term="artificial-intelligence" /><summary type="html">This post covers the effect of class imbalance on a popular evaluation and/or objective metric/function which compares two probability distributions upon training/evaluating binary classifiers.</summary></entry></feed>
+&lt;p&gt;[14] https://github.com/deychak/notebooks/blob/master/simulations/prior_cross_entropy_convergence_sim.ipynb&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="machine-learning" /><category term="artificial-intelligence" /><summary type="html">This post explores a normalized version of binary cross-entropy loss which removes the effect of the prior (class imbalance within the dataset) on the resulting value.</summary></entry><entry><title type="html">About Me</title><link href="http://localhost:4000/about-me" rel="alternate" type="text/html" title="About Me" /><published>2020-05-28T00:00:00-04:00</published><updated>2020-05-28T00:00:00-04:00</updated><id>http://localhost:4000/about-me</id><content type="html" xml:base="http://localhost:4000/about-me">&lt;p&gt;This is my first post. A bit about who I am and why I started this blog :).&lt;/p&gt;
+
+&lt;h2 id=&quot;who-am-i&quot;&gt;Who am I?&lt;/h2&gt;
+
+&lt;p&gt;Hello! Привіт!&lt;/p&gt;
+
+&lt;p&gt;My name is Daniel Deychakiwsky (pronounced “day-check-eve-ski”). The long last name is Ukrainian.
+We like to shorten it to “Deychak” to save people from tumbling down
+all &lt;strong&gt;12&lt;/strong&gt; letters :).&lt;/p&gt;
+
+&lt;p&gt;By day, I’m a machine-learning / artificial-intelligence engineer.
+I have about 10 years of software-engineering experience,
+two bachelor degrees, and one masters degree. I live in Brooklyn,
+NY with my girlfriend and our dog Bondi (named after our favorite Australian beach).&lt;/p&gt;
+
+&lt;h2 id=&quot;why-am-i-doing-this&quot;&gt;Why am I doing this?&lt;/h2&gt;
+
+&lt;p&gt;As a proponent of continuous-learning,
+online-education, and decentralization of knowledge,
+the purpose of this blog is to share concepts that I’ve found to be interesting,
+practical, and application-effective. Additionally, accurately reproducing
+information aids in retention of that information; in other words, I’m learning too.&lt;/p&gt;
+
+&lt;h2 id=&quot;whats-a-deylemma&quot;&gt;What’s a Deylemma?&lt;/h2&gt;
+
+&lt;p&gt;I named this blog by concatenating the first three letters of my last name with
+the first mathematical term that came to mind that together was easy to remember.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;In mathematics, informal logic and argument mapping,
+a lemma is a generally minor, proven proposition which is used as a
+stepping stone to a larger result.&lt;/p&gt;
+&lt;/blockquote&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="about" /><summary type="html">This is my first post. A bit about who I am and why I started this blog :).</summary></entry></feed>

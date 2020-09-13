@@ -1,14 +1,13 @@
 title: Deylemma
 author:
   name: Daniel Deychakiwsky
-  email: riffsforbliss@gmail.com
+  email: d.deychak@gmail.com
 description: > # this means to ignore newlines until "show_excerpts:"
   An Engineering Blog
 
 show_excerpts: true # set to true to show excerpts on the homepage
 google_analytics: UA-167979011-1
 header_pages:
-  - about.md
 
 # Minima date format
 # refer to https://shopify.github.io/liquid/filters/date/ if you want to customize this
