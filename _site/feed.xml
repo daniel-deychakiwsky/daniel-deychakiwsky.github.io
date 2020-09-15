@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-09-13T15:16:30-04:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Deylemma</title><subtitle>An Engineering Blog
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-09-15T09:44:11-04:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Deylemma</title><subtitle>An Engineering Blog
 </subtitle><author><name>Daniel Deychakiwsky</name><email>d.deychak@gmail.com</email></author><entry><title type="html">Normalized Cross-Entropy</title><link href="http://localhost:4000/normalized-cross-entropy" rel="alternate" type="text/html" title="Normalized Cross-Entropy" /><published>2020-05-29T00:00:00-04:00</published><updated>2020-05-29T00:00:00-04:00</updated><id>http://localhost:4000/normalized-cross-entropy</id><content type="html" xml:base="http://localhost:4000/normalized-cross-entropy">&lt;p&gt;This post explores a normalized version of binary cross-entropy loss which removes the effect
 of the prior (class imbalance within the dataset) on the resulting value.&lt;/p&gt;
 
@@ -758,9 +758,11 @@ offers support for three-dimensional rendering.&lt;/p&gt;
 
 &lt;p&gt;[13] https://github.com/deychak/notebooks/blob/master/experiments/cross_entropy_log_likelihood.ipynb&lt;/p&gt;
 
-&lt;p&gt;[14] https://github.com/deychak/notebooks/blob/master/simulations/prior_cross_entropy_convergence_sim.ipynb&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="machine-learning" /><category term="artificial-intelligence" /><summary type="html">This post explores a normalized version of binary cross-entropy loss which removes the effect of the prior (class imbalance within the dataset) on the resulting value.</summary></entry><entry><title type="html">About Me</title><link href="http://localhost:4000/about-me" rel="alternate" type="text/html" title="About Me" /><published>2020-05-28T00:00:00-04:00</published><updated>2020-05-28T00:00:00-04:00</updated><id>http://localhost:4000/about-me</id><content type="html" xml:base="http://localhost:4000/about-me">&lt;p&gt;This is my first post. A bit about who I am and why I started this blog :).&lt;/p&gt;
+&lt;p&gt;[14] https://github.com/deychak/notebooks/blob/master/simulations/prior_cross_entropy_convergence_sim.ipynb&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="machine-learning" /><category term="artificial-intelligence" /><summary type="html">This post explores a normalized version of binary cross-entropy loss which removes the effect of the prior (class imbalance within the dataset) on the resulting value.</summary></entry><entry><title type="html">About Me</title><link href="http://localhost:4000/about-me" rel="alternate" type="text/html" title="About Me" /><published>2020-05-28T00:00:00-04:00</published><updated>2020-05-28T00:00:00-04:00</updated><id>http://localhost:4000/about-me</id><content type="html" xml:base="http://localhost:4000/about-me">&lt;p&gt;This is my first post. Here’s a bit about who I am and why I started this blog :).&lt;/p&gt;
 
 &lt;h2 id=&quot;who-am-i&quot;&gt;Who am I?&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/acadia.jpg&quot; alt=&quot;acadia-portrait&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Hello! Привіт!&lt;/p&gt;
 
@@ -790,4 +792,4 @@ the first mathematical term that came to mind that together was easy to remember
   &lt;p&gt;In mathematics, informal logic and argument mapping,
 a lemma is a generally minor, proven proposition which is used as a
 stepping stone to a larger result.&lt;/p&gt;
-&lt;/blockquote&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="about" /><summary type="html">This is my first post. A bit about who I am and why I started this blog :).</summary></entry></feed>
+&lt;/blockquote&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="about" /><summary type="html">This is my first post. Here’s a bit about who I am and why I started this blog :).</summary></entry></feed>
