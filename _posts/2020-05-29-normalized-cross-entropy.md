@@ -110,10 +110,10 @@ $$
 NCE=\\
 \frac
 {
--\frac{1}{N}\sum_{i=1}^N (p_i ln(\hat p_i) + (1-p_i) ln(1-\hat p_i))
+-\frac{1}{N}\sum_{i=1}^N (p_i \cdot ln(\hat p_i) + (1-p_i) \cdot ln(1-\hat p_i))
 }
 {
--\frac{1}{N}\sum_{i=1}^N (p_i ln(CTR) + (1-p_i) ln(1-CTR))
+-\frac{1}{N}\sum_{i=1}^N (p_i \cdot ln(CTR) + (1-p_i) \cdot ln(1-CTR))
 }
 \tag 4 \label 4
 $$
@@ -319,8 +319,8 @@ weighted average of the information of each of its outcomes.
 $$
 H(X)=\\
 \mathbb{E}_{x \sim P}[I_X]=\\
-\sum_{i}^{N}P(x_i)ln(\frac{1}{P(x_i)})=\\
--\sum_{i}^{N}P(x_i)ln(P(x_i))
+\sum_{i}^{N}P(x_i) \cdot ln(\frac{1}{P(x_i)})=\\
+-\sum_{i}^{N}P(x_i) \cdot ln(P(x_i))
 \tag {14} \label {14}
 $$
 
@@ -333,13 +333,13 @@ the average number of bits required to encode the information content of a rando
 substituting $log_2$ for $ln$ into \ref{14}.
 
 $$
--0.5log_2(0.5)-0.5log_2(0.5)=1
+-0.5 \cdot log_2(0.5)-0.5 \cdot log_2(0.5)=1
 \tag {15} \label {15}
 $$
 
 $$
--1.0log_2(1.0)-0.0log_2(0.0)=\\
--0.0log_2(0.0)-1.0log_2(1.0)=0
+-1.0 \cdot log_2(1.0)-0.0 \cdot log_2(0.0)=\\
+-0.0 \cdot log_2(0.0)-1.0 \cdot log_2(1.0)=0
 \tag {16} \label {16}
 $$
 
@@ -356,8 +356,8 @@ set of outcomes/events.
 $$
 H(X,Y)=\\
 \mathbb{E}_{x \sim P}[I_Y]=\\
-\sum_{i}^{N}P(x_i)ln(\frac{1}{Q(x_i)})=\\
--\sum_{i}^{N}P(x_i)ln(Q(x_i))
+\sum_{i}^{N}P(x_i) \cdot ln(\frac{1}{Q(x_i)})=\\
+-\sum_{i}^{N}P(x_i) \cdot ln(Q(x_i))
 \tag {17} \label {17}
 $$
 
@@ -379,7 +379,7 @@ equivalently, the expected logarithm over likelihood ratios.
 $$
 D_{KL}(X||Y) =\\
 \mathbb{E}_{x \sim P}[ln(\frac{P(x)}{Q(x)})]=\\
-\sum_{i}^{N}P(x_i)ln(\frac{P(x_i)}{Q(x_i)})
+\sum_{i}^{N}P(x_i) \cdot ln(\frac{P(x_i)}{Q(x_i)})
 \tag {19} \label {19}
 $$
 
@@ -447,7 +447,7 @@ propensity and outcome for some user clicking on some ad.
 
 $$
 H(Y, \hat Y)=\\
--\sum_{i}^{N}P(x_i)ln(Q(x_i))
+-\sum_{i}^{N}P(x_i) \cdot ln(Q(x_i))
 \tag {22} \label {22}
 $$
 
@@ -505,9 +505,9 @@ The NCE (\ref{4}) denominator can be expressed as the entropy (\ref{14}) of the 
 is equivalent to the average log-loss if the model always predicted the CTR.
 
 $$
--\frac{1}{N}\sum_{i=1}^N (p_i ln(CTR) + (1-p_i) ln(1-CTR))=\\
--\frac{1}{N}\sum_{i=1}^N p_i ln(CTR)-\frac{1}{N}\sum_{i=1}^N(1-p_i) ln(1-CTR)=\\
--\sum_{i=1}^N\frac{p_iln(CTR)}{N}-\sum_{i=1}^N\frac{(1-p_i) ln(1-CTR)}{N}=\\
+-\frac{1}{N}\sum_{i=1}^N (p_i \cdot ln(CTR) + (1-p_i) \cdot ln(1-CTR))=\\
+-\frac{1}{N}\sum_{i=1}^N p_i \cdot ln(CTR)-\frac{1}{N}\sum_{i=1}^N(1-p_i) \cdot ln(1-CTR)=\\
+-\sum_{i=1}^N\frac{p_i \cdot ln(CTR)}{N}-\sum_{i=1}^N\frac{(1-p_i) \cdot ln(1-CTR)}{N}=\\
 -(CTR \cdot ln(CTR) + (1-CTR) \cdot ln(1-CTR))
 \tag {25} \label {25}
 $$ 
@@ -530,7 +530,7 @@ only clicks or no clicks at all.
 size. The CE of each training example outcome, $\sim Bernoulli(0.3)$, and prediction, $0.3$ (prior),
 is averaged over the $N$ prediction-outcome pairs.
 As the size of the training set increases, the empirical cross-entropy converges to the expected
-prior entropy of $-.3log(.3)-(1-.3)log(1-.3)=.610$.
+prior entropy of $-.3 \cdot log(.3)-(1-.3) \cdot log(1-.3)=.610$.
 
 ##### Fig. 4
 
@@ -573,31 +573,31 @@ $$
 NCE=\\
 \frac
 {
--\frac{1}{N}\sum_{i=1}^N (p_i ln(\hat p_i) + (1-p_i) ln(1-\hat p_i))
+-\frac{1}{N}\sum_{i=1}^N (p_i \cdot ln(\hat p_i) + (1-p_i) \cdot ln(1-\hat p_i))
 }
 {
--\frac{1}{N}\sum_{i=1}^N (p_i ln(CTR) + (1-p_i) ln(1-CTR))
+-\frac{1}{N}\sum_{i=1}^N (p_i \cdot ln(CTR) + (1-p_i) \cdot ln(1-CTR))
 }=\\
 \frac
 {
--\frac{1}{N}\sum_{i=1}^N (p_i ln(\hat{CTR}) + (1-p_i) ln(1-\hat{CTR}))
+-\frac{1}{N}\sum_{i=1}^N (p_i \cdot ln(\hat{CTR}) + (1-p_i) \cdot ln(1-\hat{CTR}))
 }
 {
--\frac{1}{N}\sum_{i=1}^N (p_i ln(CTR) + (1-p_i) ln(1-CTR))
+-\frac{1}{N}\sum_{i=1}^N (p_i \cdot ln(CTR) + (1-p_i) \cdot ln(1-CTR))
 }=\\
 \frac
 {
--\frac{1}{N}\sum_{i=1}^N p_i ln(\hat{CTR}) - \frac{1}{N}\sum_{i=1}^N (1-p_i) ln(1-\hat{CTR})
+-\frac{1}{N}\sum_{i=1}^N p_i \cdot ln(\hat{CTR}) - \frac{1}{N}\sum_{i=1}^N (1-p_i) \cdot ln(1-\hat{CTR})
 }
 {
--\frac{1}{N}\sum_{i=1}^N p_i ln(CTR) - \frac{1}{N}\sum_{i=1}^N (1-p_i) ln(1-CTR)
+-\frac{1}{N}\sum_{i=1}^N p_i \cdot ln(CTR) - \frac{1}{N}\sum_{i=1}^N (1-p_i) \cdot ln(1-CTR)
 }=\\
 \frac
 {
--\sum_{i=1}^N \frac{p_i ln(\hat{CTR})}{N} - \sum_{i=1}^N \frac{(1-p_i) ln(1-\hat{CTR})}{N}
+-\sum_{i=1}^N \frac{p_i \cdot ln(\hat{CTR})}{N} - \sum_{i=1}^N \frac{(1-p_i) \cdot ln(1-\hat{CTR})}{N}
 }
 {
--\sum_{i=1}^N \frac{p_i ln(CTR)}{N} - \sum_{i=1}^N \frac{(1-p_i) ln(1-CTR)}{N}
+-\sum_{i=1}^N \frac{p_i \cdot ln(CTR)}{N} - \sum_{i=1}^N \frac{(1-p_i) \cdot ln(1-CTR)}{N}
 }=\\
 \frac
 {
