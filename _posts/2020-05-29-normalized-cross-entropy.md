@@ -218,8 +218,8 @@ is a good refresher.
 $$
 ln(P(\textbf X_{m \space \times \space f},\textbf Y_{m \space \times \space 1};
 \hat{\boldsymbol{\theta}}))=\\
-\sum_{i = 1}^{M} {y_i} ln(h_\boldsymbol{\hat \theta}(\textbf{x}_i))
-+ (1-y_i)ln(h_\boldsymbol{\hat \theta}(\textbf{x}_i))
+\sum_{i = 1}^{M} {y_i} \cdot ln(h_\boldsymbol{\hat \theta}(\textbf{x}_i))
++ (1-y_i) \cdot ln(h_\boldsymbol{\hat \theta}(\textbf{x}_i))
 \tag {10} \label {10}
 $$
 
@@ -235,8 +235,8 @@ if we wanted to compare the average log-loss over some batch size.
 $$
 -\frac{1}{M}ln(P(\textbf X_{m \space \times \space f},\textbf Y_{m \space \times \space 1};
 \hat{\boldsymbol{\theta}}))=\\
--\frac{1}{M}\sum_{i = 1}^{M} {y_i} ln(h_\boldsymbol{\hat \theta}(\textbf{x}_i))
-+ (1-y_i)ln(h_\boldsymbol{\hat \theta}(\textbf{x}_i))
+-\frac{1}{M}\sum_{i = 1}^{M} {y_i} \cdot ln(h_\boldsymbol{\hat \theta}(\textbf{x}_i))
++ (1-y_i) \cdot ln(h_\boldsymbol{\hat \theta}(\textbf{x}_i))
 \tag {11} \label {11}
 $$
 
