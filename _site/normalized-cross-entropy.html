@@ -17,7 +17,7 @@
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2020-05-29T00:00:00-04:00" />
 <script type="application/ld+json">
-{"url":"http://localhost:4000/normalized-cross-entropy","author":{"@type":"Person","name":"Daniel Deychakiwsky"},"headline":"Normalized Cross-Entropy","dateModified":"2020-05-29T00:00:00-04:00","datePublished":"2020-05-29T00:00:00-04:00","description":"This post explores a normalized version of binary cross-entropy loss which removes the effect of the prior (class imbalance within the dataset) on the resulting value.","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/normalized-cross-entropy"},"@type":"BlogPosting","@context":"https://schema.org"}</script>
+{"url":"http://localhost:4000/normalized-cross-entropy","headline":"Normalized Cross-Entropy","dateModified":"2020-05-29T00:00:00-04:00","datePublished":"2020-05-29T00:00:00-04:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/normalized-cross-entropy"},"author":{"@type":"Person","name":"Daniel Deychakiwsky"},"description":"This post explores a normalized version of binary cross-entropy loss which removes the effect of the prior (class imbalance within the dataset) on the resulting value.","@type":"BlogPosting","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Deylemma" />
 </head>
@@ -542,7 +542,7 @@ click as $Q(x)$, the complement probability of not clicking is $1-Q(x)$.</p>
 
 <h4 id="fig-1">Fig. 1</h4>
 
-<p><img src="/assets/images/normalized-cross-entropy/neg_log_neg_log_reflect.png" alt="neg_log_neg_log_reflect" /></p>
+<p><img src="/assets/images/normalized_cross_entropy/neg_log_neg_log_reflect.png" alt="neg_log_neg_log_reflect" /></p>
 
 <p><a href="#fig-1">Fig 1.</a> [13] shows the cost our model realizes when the outcome is a click (in blue) and
 not a click (in orange).</p>
@@ -572,7 +572,7 @@ is equivalent to the average log-loss if the model always predicted the CTR.</p>
 
 <h5 id="fig-2">Fig. 2</h5>
 
-<p><img src="/assets/images/normalized-cross-entropy/ctr_ent.png" alt="ctr_ent" /></p>
+<p><img src="/assets/images/normalized_cross_entropy/ctr_ent.png" alt="ctr_ent" /></p>
 
 <p><a href="#fig-2">Fig. 2</a> [13] shows entropy as a function of CTR. It is maximized at a CTR of
 $0.5$ when clicking is just as likely as not clicking. The more the CTR drifts from $0.5$,
@@ -582,7 +582,7 @@ only clicks or no clicks at all.</p>
 
 <h5 id="fig-3">Fig. 3</h5>
 
-<p><img src="/assets/images/normalized-cross-entropy/prior_log_loss_sim.png" alt="prior_log_loss_sim" /></p>
+<p><img src="/assets/images/normalized_cross_entropy/prior_log_loss_sim.png" alt="prior_log_loss_sim" /></p>
 
 <p><a href="#fig-3">Fig. 3</a> [14] shows the result of a simulating \ref{25} while varying training set
 size. The CE of each training example outcome, $\sim Bernoulli(0.3)$, and prediction, $0.3$ (prior),
@@ -592,7 +592,7 @@ prior entropy of $-.3 \cdot log(.3)-(1-.3) \cdot log(1-.3)=.610$.</p>
 
 <h5 id="fig-4">Fig. 4</h5>
 
-<p><img src="/assets/images/normalized-cross-entropy/prior_sim.png" alt="prior_sim" /></p>
+<p><img src="/assets/images/normalized_cross_entropy/prior_sim.png" alt="prior_sim" /></p>
 
 <p><a href="#fig-4">Fig. 4</a> [14] shows the result of a simulating the proportion of observations that
 resulted in a positive label while varying training set size. The proportion converges to the
@@ -683,15 +683,15 @@ CTR \cdot ln(CTR) + (1-CTR) \cdot ln(1-CTR)
 
 <h5 id="fig-5">Fig. 5</h5>
 
-<p><img src="/assets/images/normalized-cross-entropy/ctr_neg_log.png" alt="ctr_neg_log" /></p>
+<p><img src="/assets/images/normalized_cross_entropy/ctr_neg_log.png" alt="ctr_neg_log" /></p>
 
 <h5 id="fig-6">Fig. 6</h5>
 
-<p><img src="/assets/images/normalized-cross-entropy/ctr_neg_log_reflect.png" alt="ctr_neg_log_reflect" /></p>
+<p><img src="/assets/images/normalized_cross_entropy/ctr_neg_log_reflect.png" alt="ctr_neg_log_reflect" /></p>
 
 <h5 id="fig-7">Fig. 7</h5>
 
-<p><img src="/assets/images/normalized-cross-entropy/ctr_cross_ent.png" alt="ctr_cross_ent" /></p>
+<p><img src="/assets/images/normalized_cross_entropy/ctr_cross_ent.png" alt="ctr_cross_ent" /></p>
 
 <p><a href="#fig-7">Fig. 7</a> shows the CE of various baseline prior models that always predict $\hat{CTR}$ for
 various observed prior $CTR$s; <a href="#fig-5">Fig. 5</a> and <a href="#fig-6">Fig. 6</a> show its decomposed summands.
@@ -705,7 +705,7 @@ outperform baseline measures as it isn’t constrained to only predicting some f
 
 <h5 id="fig-8">Fig. 8</h5>
 
-<p><img src="/assets/images/normalized-cross-entropy/CE_3D.gif" alt="CE_3D" /></p>
+<p><img src="/assets/images/normalized_cross_entropy/CE_3D.gif" alt="CE_3D" /></p>
 
 <p><a href="#fig-8">Fig. 8</a> is a GIF of a 3D rendering of the binary CE function. Notice the two minimum
 values of $0.0$ when $x$ and $y$ are both either $0.0$ or $1.0$. The animated yellow line is a
@@ -714,15 +714,15 @@ interact within your web browser.</p>
 
 <h5 id="fig-9">Fig. 9</h5>
 
-<p><img src="/assets/images/normalized-cross-entropy/ctr_neg_log_norm.png" alt="ctr_neg_log_norm" /></p>
+<p><img src="/assets/images/normalized_cross_entropy/ctr_neg_log_norm.png" alt="ctr_neg_log_norm" /></p>
 
 <h5 id="fig-10">Fig. 10</h5>
 
-<p><img src="/assets/images/normalized-cross-entropy/ctr_neg_log_norm_reflect.png" alt="ctr_neg_log_norm_reflect" /></p>
+<p><img src="/assets/images/normalized_cross_entropy/ctr_neg_log_norm_reflect.png" alt="ctr_neg_log_norm_reflect" /></p>
 
 <h5 id="fig-11">Fig. 11</h5>
 
-<p><img src="/assets/images/normalized-cross-entropy/ctr_norm_cross_ent.png" alt="ctr_norm_cross_ent" /></p>
+<p><img src="/assets/images/normalized_cross_entropy/ctr_norm_cross_ent.png" alt="ctr_norm_cross_ent" /></p>
 
 <p><a href="#fig-11">Fig. 11</a> shows the NCE of various baseline prior models that always predict $\hat{CTR}$ for
 various observed prior $CTR$s; <a href="#fig-9">Fig. 9</a> and <a href="#fig-10">Fig. 10</a> show its decomposed summands.
@@ -737,7 +737,7 @@ down to $0.0$ from $1.0$.</p>
 
 <h5 id="fig-12">Fig. 12</h5>
 
-<p><img src="/assets/images/normalized-cross-entropy/NCE_3D.gif" alt="NCE_3D" /></p>
+<p><img src="/assets/images/normalized_cross_entropy/NCE_3D.gif" alt="NCE_3D" /></p>
 
 <p><a href="#fig-12">Fig. 12</a> is a GIF of a 3D rendering of the binary NCE (rainbow) and CE (blue) functions.
 Notice the same two minimum values of $0.0$ when $x$ and $y$ are both either $0.0$ or $1.0$.

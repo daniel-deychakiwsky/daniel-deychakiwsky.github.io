@@ -767,15 +767,15 @@ offers support for three-dimensional rendering.
 [supervised learning]: https://en.wikipedia.org/wiki/Supervised_learning
 [law of large numbers]: https://en.wikipedia.org/wiki/Law_of_large_numbers
 
-[ctr_cross_ent]: /assets/images/normalized-cross-entropy/ctr_cross_ent.png
-[ctr_ent]: /assets/images/normalized-cross-entropy/ctr_ent.png
-[ctr_neg_log]: /assets/images/normalized-cross-entropy/ctr_neg_log.png
-[ctr_neg_log_norm]: /assets/images/normalized-cross-entropy/ctr_neg_log_norm.png
-[ctr_neg_log_norm_reflect]: /assets/images/normalized-cross-entropy/ctr_neg_log_norm_reflect.png
-[ctr_neg_log_reflect]: /assets/images/normalized-cross-entropy/ctr_neg_log_reflect.png
-[ctr_norm_cross_ent]: /assets/images/normalized-cross-entropy/ctr_norm_cross_ent.png
-[neg_log_neg_log_reflect]: /assets/images/normalized-cross-entropy/neg_log_neg_log_reflect.png
-[prior_sim]: /assets/images/normalized-cross-entropy/prior_sim.png
-[prior_log_loss_sim]: /assets/images/normalized-cross-entropy/prior_log_loss_sim.png
-[CE_3D]: /assets/images/normalized-cross-entropy/CE_3D.gif
-[NCE_3D]: /assets/images/normalized-cross-entropy/NCE_3D.gif
+[ctr_cross_ent]: /assets/images/normalized_cross_entropy/ctr_cross_ent.png
+[ctr_ent]: /assets/images/normalized_cross_entropy/ctr_ent.png
+[ctr_neg_log]: /assets/images/normalized_cross_entropy/ctr_neg_log.png
+[ctr_neg_log_norm]: /assets/images/normalized_cross_entropy/ctr_neg_log_norm.png
+[ctr_neg_log_norm_reflect]: /assets/images/normalized_cross_entropy/ctr_neg_log_norm_reflect.png
+[ctr_neg_log_reflect]: /assets/images/normalized_cross_entropy/ctr_neg_log_reflect.png
+[ctr_norm_cross_ent]: /assets/images/normalized_cross_entropy/ctr_norm_cross_ent.png
+[neg_log_neg_log_reflect]: /assets/images/normalized_cross_entropy/neg_log_neg_log_reflect.png
+[prior_sim]: /assets/images/normalized_cross_entropy/prior_sim.png
+[prior_log_loss_sim]: /assets/images/normalized_cross_entropy/prior_log_loss_sim.png
+[CE_3D]: /assets/images/normalized_cross_entropy/CE_3D.gif
+[NCE_3D]: /assets/images/normalized_cross_entropy/NCE_3D.gif
