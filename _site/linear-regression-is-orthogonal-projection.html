@@ -9,15 +9,15 @@
 <meta property="og:title" content="Ordinary Least Squares is Orthogonal Projection" />
 <meta name="author" content="Daniel Deychakiwsky" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="This post visualizes the connection between orthogonal projection (OP) and ordinary least squares (OLS)." />
-<meta property="og:description" content="This post visualizes the connection between orthogonal projection (OP) and ordinary least squares (OLS)." />
+<meta name="description" content="This post visualizes the equivalence of two perspectives on estimating the unknown parameters in simple linear regression, ordinary least squares (OLS) and orthogonal projection (OP)." />
+<meta property="og:description" content="This post visualizes the equivalence of two perspectives on estimating the unknown parameters in simple linear regression, ordinary least squares (OLS) and orthogonal projection (OP)." />
 <link rel="canonical" href="http://localhost:4000/linear-regression-is-orthogonal-projection" />
 <meta property="og:url" content="http://localhost:4000/linear-regression-is-orthogonal-projection" />
 <meta property="og:site_name" content="Deylemma" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2020-12-06T00:00:00-05:00" />
 <script type="application/ld+json">
-{"url":"http://localhost:4000/linear-regression-is-orthogonal-projection","author":{"@type":"Person","name":"Daniel Deychakiwsky"},"headline":"Ordinary Least Squares is Orthogonal Projection","dateModified":"2020-12-06T00:00:00-05:00","datePublished":"2020-12-06T00:00:00-05:00","description":"This post visualizes the connection between orthogonal projection (OP) and ordinary least squares (OLS).","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/linear-regression-is-orthogonal-projection"},"@type":"BlogPosting","@context":"https://schema.org"}</script>
+{"url":"http://localhost:4000/linear-regression-is-orthogonal-projection","author":{"@type":"Person","name":"Daniel Deychakiwsky"},"headline":"Ordinary Least Squares is Orthogonal Projection","dateModified":"2020-12-06T00:00:00-05:00","datePublished":"2020-12-06T00:00:00-05:00","description":"This post visualizes the equivalence of two perspectives on estimating the unknown parameters in simple linear regression, ordinary least squares (OLS) and orthogonal projection (OP).","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/linear-regression-is-orthogonal-projection"},"@type":"BlogPosting","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Deylemma" />
 </head>
@@ -39,8 +39,9 @@
   </header>
 
   <div class="post-content e-content" itemprop="articleBody">
-    <p>This post visualizes the connection between
-orthogonal projection (OP) and ordinary least squares (OLS).</p>
+    <p>This post visualizes the equivalence of two perspectives
+on estimating the unknown parameters in simple linear regression,
+ordinary least squares (OLS) and orthogonal projection (OP).</p>
 
 <ul id="markdown-toc">
   <li><a href="#context" id="markdown-toc-context">Context</a></li>
@@ -56,10 +57,10 @@ orthogonal projection (OP) and ordinary least squares (OLS).</p>
       <li><a href="#ols-perspective" id="markdown-toc-ols-perspective">OLS Perspective</a>        <ul>
           <li><a href="#fig-3" id="markdown-toc-fig-3">Fig. 3</a></li>
           <li><a href="#fig-4" id="markdown-toc-fig-4">Fig. 4</a></li>
-          <li><a href="#fig-5" id="markdown-toc-fig-5">Fig. 5</a></li>
         </ul>
       </li>
       <li><a href="#op-perspective" id="markdown-toc-op-perspective">OP Perspective</a>        <ul>
+          <li><a href="#fig-5" id="markdown-toc-fig-5">Fig. 5</a></li>
           <li><a href="#fig-6" id="markdown-toc-fig-6">Fig. 6</a></li>
           <li><a href="#fig-7" id="markdown-toc-fig-7">Fig. 7</a></li>
         </ul>
@@ -88,13 +89,13 @@ is a projection”.</li>
 <h3 id="the-big-picture">The Big Picture</h3>
 
 <p><a href="#fig-1">Fig 1.</a> is a compact and interactive
-<a href="https://www.desmos.com/calculator/gpkgalfzho">visualization</a> that superimposes the two perspectives on a
-<a href="#toy-dataset">toy dataset</a>. A single parameter (no bias term)
-linear regression model (OLS) is seen in blue.
-The corresponding orthogonal projection is seen in green and orange.
+<a href="https://www.desmos.com/calculator/gpkgalfzho">visualization</a> that superimposes the two perspectives on the same
+<a href="#toy-dataset">toy dataset</a>. A single parameter (no bias/intercept term)
+OLS linear regression model is seen in blue.
+The corresponding OP is seen in green and orange.
 The red parabola (quadratic function) is the distance function of
-the difference vector (dotted orange line) that is minimized when
-the difference vector is orthogonal to $y_1$’s subspace.
+the difference-vector (dotted orange line) that is minimized when
+the difference-vector is orthogonal to $\vec{Y_1}$’s subspace.
 Let’s dive in to all of this for a better understanding.</p>
 
 <h4 id="fig-1">Fig. 1</h4>
@@ -104,11 +105,10 @@ Let’s dive in to all of this for a better understanding.</p>
 
 <h3 id="toy-dataset">Toy Dataset</h3>
 
-<p>In order to be able to visualize everything in two dimensions
-the data was kept as simple as can be, just two data points
-$\in \mathbb{R}^2$.</p>
+<p>For ease of intuition, our toy dataset is kept simple and
+low-dimensional, just two data points $\in \mathbb{R}^2$.</p>
 
-<p>As vectors:</p>
+<p>As column vectors:</p>
 
 \[\vec{X_1} = \begin{bmatrix}2 \\ 1\end{bmatrix}
 \quad \textrm{and} \quad
@@ -126,59 +126,44 @@ $\in \mathbb{R}^2$.</p>
 
 <p><a href="#fig-2">Fig 2.</a> shows how the vector representations
 (\ref{1}) translate to the cartesian plane as the
-first dimension represents the canonical $x$
-axis while the second dimension represents the
-canonical $y$ axis.</p>
+first dimension represents the canonical $x$-axis
+while the second dimension represents the
+canonical $y$-axis.</p>
 
 <h3 id="ols-perspective">OLS Perspective</h3>
 
-<p>The OLS Perspective treats the learning
-process as a <a href="https://en.wikipedia.org/wiki/Supervised_learning">supervised learning</a> problem. Here’s a
-<em>really</em> hand-wavy overview:</p>
+<p>In the context of machine learning,
+it is common to view OLS linear regression
+as a <a href="https://en.wikipedia.org/wiki/Supervised_learning">supervised learning</a> problem.
+Here’s a hand-wavy :) overview.</p>
 
 <p>The model is presented inputs for which
-it makes corresponding predictions (outputs). Hence the term “supervised”,
-an error signal is calculated by aggregating the squared difference
+it makes corresponding predictions (outputs).
+An error signal is calculated by aggregating the squared difference
 of the model’s outputs against corresponding “true” values that have been
 observed or are known a priori (a.k.a. labels).
-The error signal is used to update the model parameters.
-This (training) routine loops until the model parameters converge.
-By minimizing the error signal, the model learns optimal parameters.</p>
+Hence the term “supervised”, the error signal is used to correct
+(as a teacher often corrects a student) the model parameters.
+This training routine loops until the
+model parameters converge. By minimizing the error signal,
+the model learns optimal parameters.</p>
+
+\[x=2.0
+\\
+\hat{y} = f(x;\beta) = 1.2
+\\
+y=1.0
+\\
+err = (y - \hat{y})^2 = (1.0 - 1.2)^2
+\tag{3} \label{3}\]
+
+<p>\ref{3} shows an example of a single instance
+error calculation, $err$, for some model input, $x$,
+some model prediction (output),
+$\hat{y}$, which is a linear function of $x$ parameterized by $\beta$,
+and some label, $y$.</p>
 
 <h4 id="fig-3">Fig. 3</h4>
-
-<table>
-  <thead>
-    <tr>
-      <th style="text-align: center">input</th>
-      <th style="text-align: center">output</th>
-      <th style="text-align: center">label</th>
-      <th style="text-align: center">error</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td style="text-align: center">$2.0$</td>
-      <td style="text-align: center">$1.2$</td>
-      <td style="text-align: center">$1.0$</td>
-      <td style="text-align: center">$(1.0 - 1.2)^2$</td>
-    </tr>
-    <tr>
-      <td style="text-align: center">$3.0$</td>
-      <td style="text-align: center">$2.1$</td>
-      <td style="text-align: center">$3.0$</td>
-      <td style="text-align: center">$(3.0 - 2.1)^2$</td>
-    </tr>
-  </tbody>
-</table>
-
-<p><a href="#fig-3">Fig 3.</a> shows a table of
-hypothetical model outputs and corresponding
-error calculations at some hypothetical
-point in time in the training loop when learning
-the <a href="#toy-dataset">toy dataset</a>.</p>
-
-<h4 id="fig-4">Fig. 4</h4>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
 <span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LinearRegression</span>
@@ -191,56 +176,60 @@ the <a href="#toy-dataset">toy dataset</a>.</p>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>weights/parameters array([[0.84615385]])
 </code></pre></div></div>
 
-<p><a href="#fig-4">Fig 4.</a> prints the resulting parameters (in our case, just one)
+<p><a href="#fig-3">Fig 3.</a> prints the resulting parameters (just one in our case)
 of an OLS <a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html">LinearRegression</a> implementation written in Python using
 a popular machine-learning Python package (<a href="https://scikit-learn.org/stable/">scikit-learn</a>) after being
-fit to our <a href="#toy-dataset">toy dataset</a> (omitting the intercept term).</p>
+fit to our <a href="#toy-dataset">toy dataset</a>.</p>
 
-<h4 id="fig-5">Fig. 5</h4>
+<h4 id="fig-4">Fig. 4</h4>
 
 <p><img src="assets/images/linear_regression_is_orthogonal_projection/ols_regression_fit.png" alt="ols_regression_fit" /></p>
 
-<p><a href="#fig-5">Fig 5.</a> shows the OLS model fit to our
+<p><a href="#fig-4">Fig 4.</a> shows the OLS linear regression model fit to our
 <a href="#toy-dataset">toy dataset</a>. The hyperplane (line of best fit)
-has a slope of $0.84615385$ which is what we would expect per the
-output of <a href="#fig-4">Fig 4.</a> If we didn’t omit the bias term and we
+has a slope of $0.84615385$ as expected per the
+output of <a href="#fig-3">Fig 3.</a> If we didn’t omit the bias term and we
 let the model learn another degree of freedom (another parameter),
 the solution would yield a hyperplane that fits the data perfectly,
-both data points would lie on that hyperplane.</p>
+i.e., the hyperplane would be free to adjust itself to interpolate
+(intersect) exactly both data points. See <a href="https://en.wikipedia.org/wiki/Polynomial_interpolation">polynomial interpolation</a>
+for proof of uniqueness.</p>
 
 <h3 id="op-perspective">OP Perspective</h3>
 
 <p>Here’s another hand-wavy :) overview.</p>
 
-<p>The OP Perspective treats the learning process
-as solving a system of linear equations so we’ll need to frame
-our <a href="#toy-dataset">toy dataset</a> as such.
-We can formulate a vectorized linear equation.
-The model’s outputs will be a linear function of the inputs
-and the learned parameter(s). We can represent our model inputs and
+<p>The learning process under the lens of OP
+reduces to solving a system of linear equations;
+so we’ll need to frame
+our <a href="#toy-dataset">toy dataset</a> as such by vectorizing the linear model, e.g.,
+the model’s outputs will be a linear function of the inputs
+and the learned parameters. We can represent our model inputs and
 labels as vectors $\in \mathbb{R}^2$.</p>
 
 \[\vec{Y_1} = \begin{bmatrix}2 \\ 3\end{bmatrix}
 \quad \textrm{and} \quad
 \vec{Y_2} = \begin{bmatrix}1 \\ 3\end{bmatrix}
-\tag{3} \label{3}\]
+\tag{4} \label{4}\]
 
-<p>To disambiguate \ref{3} from \ref{1},
+<p>To disambiguate \ref{1} from \ref{4}, note that
 $\vec{Y_1}$ consists of the first dimensions of $\vec{X_1}$
 and $\vec{X_2}$ while $\vec{Y_2}$ consists of the second
-dimensions of $\vec{X_1}$ and $\vec{X_2}$.</p>
+dimensions of $\vec{X_1}$ and $\vec{X_2}$. In other words,
+$\vec{Y_1}$ is a vector of our model inputs and $\vec{Y_2}$
+is a vector of our model labels.</p>
 
-<h4 id="fig-6">Fig. 6</h4>
+<h4 id="fig-5">Fig. 5</h4>
 
 <p><img src="assets/images/linear_regression_is_orthogonal_projection/toy_data_x_y.png" alt="toy_data_x_y" /></p>
 
-<p><a href="#fig-6">Fig 6.</a> shows how \ref{1} and \ref{3},
+<p><a href="#fig-5">Fig 5.</a> shows how \ref{1} and \ref{4},
 together, translate to the cartesian plane.</p>
 
 <p>The equation we need to solve is:</p>
 
 \[\vec{Y_1}\vec{\beta} \approx \vec{Y_2}
-\tag{4} \label{4}\]
+\tag{5} \label{5}\]
 
 <p>It’s best practice to validate the shapes of the
 matrices/vectors when operating on them.
@@ -248,28 +237,71 @@ $\vec{Y_1}$ is $2 \times 1$, $\vec{\beta}$ is $1 \times 1$,
 (recall that we’re omitting the bias/intercept term),
 and so $\vec{Y_2}$ checks out to be $2 \times 1$.</p>
 
-<p>Intuitively, \ref{4} tells us that $\vec{Y_2}$ is
-approximately equal to a scaled version
+<p>Intuitively, \ref{5} tells us that $\vec{Y_2}$ is
+<strong>approximately</strong> equal to a scaled version
 of $\vec{Y_1}$ and that scaling factor is our
 learned parameter in $\vec{\beta}$.
-The approximation is there because
+The approximation is important because
 $\vec{Y_1}\vec{\beta} = \vec{Y_2}$
-will only be true if $\vec{Y_2}$ can be expressed as a
-scaled version of $\vec{Y_1}$. In our example, it can’t
-(see <a href="#fig-7">Fig 7.</a>).</p>
+will only be true if $\vec{Y_2}$ can be exactly
+expressed as a scaled version of $\vec{Y_1}$.
+In practice this is seldom true. In our example,
+it certainly isn’t true (see <a href="#fig-6">Fig 6.</a>).</p>
 
-<h4 id="fig-7">Fig. 7</h4>
+<h4 id="fig-6">Fig. 6</h4>
 
 <p><img src="assets/images/linear_regression_is_orthogonal_projection/scaled_vector.png" alt="scaled_vector" /></p>
 
-<p><a href="#fig-7">Fig 7.</a> shows a subset of scaled versions
+<p><a href="#fig-6">Fig 6.</a> shows a subset of scaled versions
 of $\vec{Y_1}$ with the dashed green line and one randomly
 chosen realization with the orange mark. That line
 actually extends to infinity in both directions making up
 a <a href="https://en.wikipedia.org/wiki/Linear_subspace">vector subspace</a>. Notice how $\vec{Y_2}$ does not lie
 anywhere on that subspace? This is why we need to approximate
 a solution to the system and why we used the $\approx$
-symbol in \ref{4}.</p>
+symbol in \ref{5}.</p>
+
+<p>It turns out that the best approximation we can get
+is the OP of $\vec{Y_2}$ onto $\vec{Y_1}$’s subspace.
+Omitting mathematical proofs, this can be visualized.</p>
+
+<p>We can define the distance from $\vec{Y_2}$ to $\vec{Y_1}$’s
+subspace as a function of some scalar, $\beta$, which computes
+the distance from $\vec{Y_2}$ to a scaled version of $\vec{Y_1}$.</p>
+
+\[\delta(\beta) = euclidean\_distance(\vec{Y_2}, \beta \cdot \vec{Y_1})
+\tag{6} \label{6}\]
+
+<h4 id="fig-7">Fig. 7</h4>
+
+<iframe src="https://www.desmos.com/calculator/00manfmzno?embed" width="500px" height="500px" style="border: 1px solid #ccc" frameborder="0">
+</iframe>
+
+<p><a href="#fig-7">Fig 7.</a> shows the distance function, $\delta(\beta)$,
+in red, of some difference-vector, in dotted orange, printing
+the input-output tuple, e.g., ($\beta, \delta(\beta)$), also in red.
+The difference-vector is the vector between $\vec{Y_2}$ and a some vector
+(varied, indicated by the orange dotted line and mark)
+within $\vec{Y_1}$’s subspace. Notice that
+the distance function is minimized when the difference-vector
+is orthogonal to $\vec{Y_1}$’s subspace. <strong>The
+value of $\beta$, at the minimum is $0.84615385$, exactly the
+same solution observed in <a href="#fig-3">Fig 3.</a> and <a href="#fig-4">Fig 4.</a></strong>
+with OLS.</p>
+
+<p>In hindsight, this duality may not come as such a surprise after all.
+If we consider the objective function from each perspective, they
+both seek to minimize a similar, if not the same, thing. The only
+difference is how the problem is framed. I’ll leave it up to you
+as the reader to make the comparison between <a href="https://en.wikipedia.org/wiki/Mean_squared_error">mean squared error</a>
+and the $L^2$ <a href="https://en.wikipedia.org/wiki/Norm_(mathematics)">norm</a> of the difference-vector, i.e.,
+$||\vec{Y_1} - \beta \cdot \vec{Y_2}||_2$. They’re differences
+come from applying normalizing constants and/or monotonic transformations,
+both of which have no effect on minimization.</p>
+
+<p>Stitching all of that together, we can circle back to
+<a href="#fig-1">Fig 1.</a> Hopefully it is easier to interpret
+and makes for an elegant visualization.</p>
 
 <h2 id="desmos">Desmos</h2>
 
