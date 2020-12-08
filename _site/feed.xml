@@ -1,5 +1,243 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-12-01T15:38:51-05:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Deylemma</title><subtitle>An Engineering Blog
-</subtitle><author><name>Daniel Deychakiwsky</name><email>d.deychak@gmail.com</email></author><entry><title type="html">Normalized Cross-Entropy</title><link href="http://localhost:4000/normalized-cross-entropy" rel="alternate" type="text/html" title="Normalized Cross-Entropy" /><published>2020-05-29T00:00:00-04:00</published><updated>2020-05-29T00:00:00-04:00</updated><id>http://localhost:4000/normalized-cross-entropy</id><content type="html" xml:base="http://localhost:4000/normalized-cross-entropy">&lt;p&gt;This post explores a normalized version of binary cross-entropy loss which removes the effect
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-12-08T01:20:05-05:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Deylemma</title><subtitle>An Engineering Blog
+</subtitle><author><name>Daniel Deychakiwsky</name><email>d.deychak@gmail.com</email></author><entry><title type="html">Ordinary Least Squares is Orthogonal Projection</title><link href="http://localhost:4000/linear-regression-is-orthogonal-projection" rel="alternate" type="text/html" title="Ordinary Least Squares is Orthogonal Projection" /><published>2020-12-06T00:00:00-05:00</published><updated>2020-12-06T00:00:00-05:00</updated><id>http://localhost:4000/linear-regression-is-orthogonal-projection</id><content type="html" xml:base="http://localhost:4000/linear-regression-is-orthogonal-projection">&lt;p&gt;This post visualizes the connection between
+orthogonal projection (OP) and ordinary least squares (OLS).&lt;/p&gt;
+
+&lt;ul id=&quot;markdown-toc&quot;&gt;
+  &lt;li&gt;&lt;a href=&quot;#context&quot; id=&quot;markdown-toc-context&quot;&gt;Context&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#ols--op&quot; id=&quot;markdown-toc-ols--op&quot;&gt;OLS &amp;amp; OP&lt;/a&gt;    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#the-big-picture&quot; id=&quot;markdown-toc-the-big-picture&quot;&gt;The Big Picture&lt;/a&gt;        &lt;ul&gt;
+          &lt;li&gt;&lt;a href=&quot;#fig-1&quot; id=&quot;markdown-toc-fig-1&quot;&gt;Fig. 1&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#toy-dataset&quot; id=&quot;markdown-toc-toy-dataset&quot;&gt;Toy Dataset&lt;/a&gt;        &lt;ul&gt;
+          &lt;li&gt;&lt;a href=&quot;#fig-2&quot; id=&quot;markdown-toc-fig-2&quot;&gt;Fig. 2&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#ols-perspective&quot; id=&quot;markdown-toc-ols-perspective&quot;&gt;OLS Perspective&lt;/a&gt;        &lt;ul&gt;
+          &lt;li&gt;&lt;a href=&quot;#fig-3&quot; id=&quot;markdown-toc-fig-3&quot;&gt;Fig. 3&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#fig-4&quot; id=&quot;markdown-toc-fig-4&quot;&gt;Fig. 4&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#fig-5&quot; id=&quot;markdown-toc-fig-5&quot;&gt;Fig. 5&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#op-perspective&quot; id=&quot;markdown-toc-op-perspective&quot;&gt;OP Perspective&lt;/a&gt;        &lt;ul&gt;
+          &lt;li&gt;&lt;a href=&quot;#fig-6&quot; id=&quot;markdown-toc-fig-6&quot;&gt;Fig. 6&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#fig-7&quot; id=&quot;markdown-toc-fig-7&quot;&gt;Fig. 7&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#desmos&quot; id=&quot;markdown-toc-desmos&quot;&gt;Desmos&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#references&quot; id=&quot;markdown-toc-references&quot;&gt;References&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;context&quot;&gt;Context&lt;/h2&gt;
+
+&lt;p&gt;In order to get more out of this post, you may want to brush up on:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Wikipedias on &lt;a href=&quot;https://en.wikipedia.org/wiki/Ordinary_least_squares&quot;&gt;ordinary least squares&lt;/a&gt;, &lt;a href=&quot;https://en.wikipedia.org/wiki/Vector_projection&quot;&gt;vector projection&lt;/a&gt;,
+$L^2$ &lt;a href=&quot;https://en.wikipedia.org/wiki/Norm_(mathematics)&quot;&gt;norm&lt;/a&gt;, and &lt;a href=&quot;https://en.wikipedia.org/wiki/Mean_squared_error&quot;&gt;mean squared error&lt;/a&gt;.&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://medium.com/@vladimirmikulik/why-linear-regression-is-a-projection-407d89fd9e3a&quot;&gt;Vladimir Mikulik’s post&lt;/a&gt; on “Why Linear Regression
+is a projection”.&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://medium.com/@andrew.chamberlain/the-linear-algebra-view-of-least-squares-regression-f67044b7f39b&quot;&gt;Andrew Chamberlain’s post&lt;/a&gt; on
+“The Linear Algebra View of Least-Squares Regression”.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;ols--op&quot;&gt;OLS &amp;amp; OP&lt;/h2&gt;
+
+&lt;h3 id=&quot;the-big-picture&quot;&gt;The Big Picture&lt;/h3&gt;
+
+&lt;p&gt;&lt;a href=&quot;#fig-1&quot;&gt;Fig 1.&lt;/a&gt; is a compact and interactive
+&lt;a href=&quot;https://www.desmos.com/calculator/gpkgalfzho&quot;&gt;visualization&lt;/a&gt; that superimposes the two perspectives on a
+&lt;a href=&quot;#toy-dataset&quot;&gt;toy dataset&lt;/a&gt;. A single parameter (no bias term)
+linear regression model (OLS) is seen in blue.
+The corresponding orthogonal projection is seen in green and orange.
+The red parabola (quadratic function) is the distance function of
+the difference vector (dotted orange line) that is minimized when
+the difference vector is orthogonal to $y_1$’s subspace.
+Let’s dive in to all of this for a better understanding.&lt;/p&gt;
+
+&lt;h4 id=&quot;fig-1&quot;&gt;Fig. 1&lt;/h4&gt;
+
+&lt;iframe src=&quot;https://www.desmos.com/calculator/eowrcpdore?embed&quot; width=&quot;500px&quot; height=&quot;500px&quot; style=&quot;border: 1px solid #ccc&quot; frameborder=&quot;0&quot;&gt;
+&lt;/iframe&gt;
+
+&lt;h3 id=&quot;toy-dataset&quot;&gt;Toy Dataset&lt;/h3&gt;
+
+&lt;p&gt;In order to be able to visualize everything in two dimensions
+the data was kept as simple as can be, just two data points
+$\in \mathbb{R}^2$.&lt;/p&gt;
+
+&lt;p&gt;As vectors:&lt;/p&gt;
+
+\[\vec{X_1} = \begin{bmatrix}2 \\ 1\end{bmatrix}
+\quad \textrm{and} \quad
+\vec{X_2} = \begin{bmatrix}3 \\ 3\end{bmatrix}
+\tag{1} \label{1}\]
+
+&lt;p&gt;As a matrix:&lt;/p&gt;
+
+\[\mathbf{X} = \begin{bmatrix}2 &amp;amp; 3 \\ 1 &amp;amp; 3\end{bmatrix}
+\tag{2} \label{2}\]
+
+&lt;h4 id=&quot;fig-2&quot;&gt;Fig. 2&lt;/h4&gt;
+
+&lt;p&gt;&lt;img src=&quot;assets/images/linear_regression_is_orthogonal_projection/toy_data_x.png&quot; alt=&quot;toy_data_x&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;#fig-2&quot;&gt;Fig 2.&lt;/a&gt; shows how the vector representations
+(\ref{1}) translate to the cartesian plane as the
+first dimension represents the canonical $x$
+axis while the second dimension represents the
+canonical $y$ axis.&lt;/p&gt;
+
+&lt;h3 id=&quot;ols-perspective&quot;&gt;OLS Perspective&lt;/h3&gt;
+
+&lt;p&gt;The OLS Perspective treats the learning
+process as a &lt;a href=&quot;https://en.wikipedia.org/wiki/Supervised_learning&quot;&gt;supervised learning&lt;/a&gt; problem. Here’s a
+&lt;em&gt;really&lt;/em&gt; hand-wavy overview:&lt;/p&gt;
+
+&lt;p&gt;The model is presented inputs for which
+it makes corresponding predictions (outputs). Hence the term “supervised”,
+an error signal is calculated by aggregating the squared difference
+of the model’s outputs against corresponding “true” values that have been
+observed or are known a priori (a.k.a. labels).
+The error signal is used to update the model parameters.
+This (training) routine loops until the model parameters converge.
+By minimizing the error signal, the model learns optimal parameters.&lt;/p&gt;
+
+&lt;h4 id=&quot;fig-3&quot;&gt;Fig. 3&lt;/h4&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th style=&quot;text-align: center&quot;&gt;input&lt;/th&gt;
+      &lt;th style=&quot;text-align: center&quot;&gt;output&lt;/th&gt;
+      &lt;th style=&quot;text-align: center&quot;&gt;label&lt;/th&gt;
+      &lt;th style=&quot;text-align: center&quot;&gt;error&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;$2.0$&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;$1.2$&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;$1.0$&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;$(1.0 - 1.2)^2$&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;$3.0$&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;$2.1$&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;$3.0$&lt;/td&gt;
+      &lt;td style=&quot;text-align: center&quot;&gt;$(3.0 - 2.1)^2$&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;&lt;a href=&quot;#fig-3&quot;&gt;Fig 3.&lt;/a&gt; shows a table of
+hypothetical model outputs and corresponding
+error calculations at some hypothetical
+point in time in the training loop when learning
+the &lt;a href=&quot;#toy-dataset&quot;&gt;toy dataset&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h4 id=&quot;fig-4&quot;&gt;Fig. 4&lt;/h4&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;numpy&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;sklearn.linear_model&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LinearRegression&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]])&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]])&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;reg&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LinearRegression&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fit_intercept&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;False&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'weights/parameters'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;reg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;coef_&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;weights/parameters array([[0.84615385]])
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;a href=&quot;#fig-4&quot;&gt;Fig 4.&lt;/a&gt; prints the resulting parameters (in our case, just one)
+of an OLS &lt;a href=&quot;https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html&quot;&gt;LinearRegression&lt;/a&gt; implementation written in Python using
+a popular machine-learning Python package (&lt;a href=&quot;https://scikit-learn.org/stable/&quot;&gt;scikit-learn&lt;/a&gt;) after being
+fit to our &lt;a href=&quot;#toy-dataset&quot;&gt;toy dataset&lt;/a&gt; (omitting the intercept term).&lt;/p&gt;
+
+&lt;h4 id=&quot;fig-5&quot;&gt;Fig. 5&lt;/h4&gt;
+
+&lt;p&gt;&lt;img src=&quot;assets/images/linear_regression_is_orthogonal_projection/ols_regression_fit.png&quot; alt=&quot;ols_regression_fit&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;#fig-5&quot;&gt;Fig 5.&lt;/a&gt; shows the OLS model fit to our
+&lt;a href=&quot;#toy-dataset&quot;&gt;toy dataset&lt;/a&gt;. The hyperplane (line of best fit)
+has a slope of $0.84615385$ which is what we would expect per the
+output of &lt;a href=&quot;#fig-4&quot;&gt;Fig 4.&lt;/a&gt; If we didn’t omit the bias term and we
+let the model learn another degree of freedom (another parameter),
+the solution would yield a hyperplane that fits the data perfectly,
+both data points would lie on that hyperplane.&lt;/p&gt;
+
+&lt;h3 id=&quot;op-perspective&quot;&gt;OP Perspective&lt;/h3&gt;
+
+&lt;p&gt;Here’s another hand-wavy :) overview.&lt;/p&gt;
+
+&lt;p&gt;The OP Perspective treats the learning process
+as solving a system of linear equations so we’ll need to frame
+our &lt;a href=&quot;#toy-dataset&quot;&gt;toy dataset&lt;/a&gt; as such.
+We can formulate a vectorized linear equation.
+The model’s outputs will be a linear function of the inputs
+and the learned parameter(s). We can represent our model inputs and
+labels as vectors $\in \mathbb{R}^2$.&lt;/p&gt;
+
+\[\vec{Y_1} = \begin{bmatrix}2 \\ 3\end{bmatrix}
+\quad \textrm{and} \quad
+\vec{Y_2} = \begin{bmatrix}1 \\ 3\end{bmatrix}
+\tag{3} \label{3}\]
+
+&lt;p&gt;To disambiguate \ref{3} from \ref{1},
+$\vec{Y_1}$ consists of the first dimensions of $\vec{X_1}$
+and $\vec{X_2}$ while $\vec{Y_2}$ consists of the second
+dimensions of $\vec{X_1}$ and $\vec{X_2}$.&lt;/p&gt;
+
+&lt;h4 id=&quot;fig-6&quot;&gt;Fig. 6&lt;/h4&gt;
+
+&lt;p&gt;&lt;img src=&quot;assets/images/linear_regression_is_orthogonal_projection/toy_data_x_y.png&quot; alt=&quot;toy_data_x_y&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;#fig-6&quot;&gt;Fig 6.&lt;/a&gt; shows how \ref{1} and \ref{3},
+together, translate to the cartesian plane.&lt;/p&gt;
+
+&lt;p&gt;The equation we need to solve is:&lt;/p&gt;
+
+\[\vec{Y_1}\vec{\beta} \approx \vec{Y_2}
+\tag{4} \label{4}\]
+
+&lt;p&gt;It’s best practice to validate the shapes of the
+matrices/vectors when operating on them.
+$\vec{Y_1}$ is $2 \times 1$, $\vec{\beta}$ is $1 \times 1$,
+(recall that we’re omitting the bias/intercept term),
+and so $\vec{Y_2}$ checks out to be $2 \times 1$.&lt;/p&gt;
+
+&lt;p&gt;Intuitively, \ref{4} tells us that $\vec{Y_2}$ is
+approximately equal to a scaled version
+of $\vec{Y_1}$ and that scaling factor is our
+learned parameter in $\vec{\beta}$.
+The approximation is there because
+$\vec{Y_1}\vec{\beta} = \vec{Y_2}$
+will only be true if $\vec{Y_2}$ can be expressed as a
+scaled version of $\vec{Y_1}$. In our example, it can’t
+(see &lt;a href=&quot;#fig-7&quot;&gt;Fig 7.&lt;/a&gt;).&lt;/p&gt;
+
+&lt;h4 id=&quot;fig-7&quot;&gt;Fig. 7&lt;/h4&gt;
+
+&lt;p&gt;&lt;img src=&quot;assets/images/linear_regression_is_orthogonal_projection/scaled_vector.png&quot; alt=&quot;scaled_vector&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;#fig-7&quot;&gt;Fig 7.&lt;/a&gt; shows a subset of scaled versions
+of $\vec{Y_1}$ with the dashed green line and one randomly
+chosen realization with the orange mark. That line
+actually extends to infinity in both directions making up
+a &lt;a href=&quot;https://en.wikipedia.org/wiki/Linear_subspace&quot;&gt;vector subspace&lt;/a&gt;. Notice how $\vec{Y_2}$ does not lie
+anywhere on that subspace? This is why we need to approximate
+a solution to the system and why we used the $\approx$
+symbol in \ref{4}.&lt;/p&gt;
+
+&lt;h2 id=&quot;desmos&quot;&gt;Desmos&lt;/h2&gt;
+
+&lt;p&gt;I built the visualizations for this post with &lt;a href=&quot;https://www.desmos.com/&quot;&gt;Desmos&lt;/a&gt;,
+an incredible graphing web application that enables
+users to visualize, study, and learn mathematics.&lt;/p&gt;
+
+&lt;h2 id=&quot;references&quot;&gt;References&lt;/h2&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="machine-learning" /><category term="artificial-intelligence" /><summary type="html">This post visualizes the connection between orthogonal projection (OP) and ordinary least squares (OLS).</summary></entry><entry><title type="html">Normalized Cross-Entropy</title><link href="http://localhost:4000/normalized-cross-entropy" rel="alternate" type="text/html" title="Normalized Cross-Entropy" /><published>2020-05-29T00:00:00-04:00</published><updated>2020-05-29T00:00:00-04:00</updated><id>http://localhost:4000/normalized-cross-entropy</id><content type="html" xml:base="http://localhost:4000/normalized-cross-entropy">&lt;p&gt;This post explores a normalized version of binary cross-entropy loss which removes the effect
 of the prior (class imbalance within the dataset) on the resulting value.&lt;/p&gt;
 
 &lt;ul id=&quot;markdown-toc&quot;&gt;

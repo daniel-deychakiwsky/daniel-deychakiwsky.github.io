@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta property="og:image" content="/assets/images/geometry.jpg"/><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Ordinary Least Squares is Orthogonal Projection | Deylemma</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Ordinary Least Squares is Orthogonal Projection" />
+<meta name="author" content="Daniel Deychakiwsky" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="This post visualizes the connection between orthogonal projection (OP) and ordinary least squares (OLS)." />
+<meta property="og:description" content="This post visualizes the connection between orthogonal projection (OP) and ordinary least squares (OLS)." />
+<link rel="canonical" href="http://localhost:4000/linear-regression-is-orthogonal-projection" />
+<meta property="og:url" content="http://localhost:4000/linear-regression-is-orthogonal-projection" />
+<meta property="og:site_name" content="Deylemma" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-12-06T00:00:00-05:00" />
+<script type="application/ld+json">
+{"url":"http://localhost:4000/linear-regression-is-orthogonal-projection","author":{"@type":"Person","name":"Daniel Deychakiwsky"},"headline":"Ordinary Least Squares is Orthogonal Projection","dateModified":"2020-12-06T00:00:00-05:00","datePublished":"2020-12-06T00:00:00-05:00","description":"This post visualizes the connection between orthogonal projection (OP) and ordinary least squares (OLS).","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/linear-regression-is-orthogonal-projection"},"@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Deylemma" />
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Deylemma</a></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Ordinary Least Squares is Orthogonal Projection</h1>
+    <p class="post-meta"><time class="dt-published" datetime="2020-12-06T00:00:00-05:00" itemprop="datePublished">
+        Dec 6, 2020
+      </time>• 
+          <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+            <span class="p-author h-card" itemprop="name">Daniel Deychakiwsky</span></span></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>This post visualizes the connection between
+orthogonal projection (OP) and ordinary least squares (OLS).</p>
+
+<ul id="markdown-toc">
+  <li><a href="#context" id="markdown-toc-context">Context</a></li>
+  <li><a href="#ols--op" id="markdown-toc-ols--op">OLS &amp; OP</a>    <ul>
+      <li><a href="#the-big-picture" id="markdown-toc-the-big-picture">The Big Picture</a>        <ul>
+          <li><a href="#fig-1" id="markdown-toc-fig-1">Fig. 1</a></li>
+        </ul>
+      </li>
+      <li><a href="#toy-dataset" id="markdown-toc-toy-dataset">Toy Dataset</a>        <ul>
+          <li><a href="#fig-2" id="markdown-toc-fig-2">Fig. 2</a></li>
+        </ul>
+      </li>
+      <li><a href="#ols-perspective" id="markdown-toc-ols-perspective">OLS Perspective</a>        <ul>
+          <li><a href="#fig-3" id="markdown-toc-fig-3">Fig. 3</a></li>
+          <li><a href="#fig-4" id="markdown-toc-fig-4">Fig. 4</a></li>
+          <li><a href="#fig-5" id="markdown-toc-fig-5">Fig. 5</a></li>
+        </ul>
+      </li>
+      <li><a href="#op-perspective" id="markdown-toc-op-perspective">OP Perspective</a>        <ul>
+          <li><a href="#fig-6" id="markdown-toc-fig-6">Fig. 6</a></li>
+          <li><a href="#fig-7" id="markdown-toc-fig-7">Fig. 7</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><a href="#desmos" id="markdown-toc-desmos">Desmos</a></li>
+  <li><a href="#references" id="markdown-toc-references">References</a></li>
+</ul>
+
+<h2 id="context">Context</h2>
+
+<p>In order to get more out of this post, you may want to brush up on:</p>
+
+<ol>
+  <li>Wikipedias on <a href="https://en.wikipedia.org/wiki/Ordinary_least_squares">ordinary least squares</a>, <a href="https://en.wikipedia.org/wiki/Vector_projection">vector projection</a>,
+$L^2$ <a href="https://en.wikipedia.org/wiki/Norm_(mathematics)">norm</a>, and <a href="https://en.wikipedia.org/wiki/Mean_squared_error">mean squared error</a>.</li>
+  <li><a href="https://medium.com/@vladimirmikulik/why-linear-regression-is-a-projection-407d89fd9e3a">Vladimir Mikulik’s post</a> on “Why Linear Regression
+is a projection”.</li>
+  <li><a href="https://medium.com/@andrew.chamberlain/the-linear-algebra-view-of-least-squares-regression-f67044b7f39b">Andrew Chamberlain’s post</a> on
+“The Linear Algebra View of Least-Squares Regression”.</li>
+</ol>
+
+<h2 id="ols--op">OLS &amp; OP</h2>
+
+<h3 id="the-big-picture">The Big Picture</h3>
+
+<p><a href="#fig-1">Fig 1.</a> is a compact and interactive
+<a href="https://www.desmos.com/calculator/gpkgalfzho">visualization</a> that superimposes the two perspectives on a
+<a href="#toy-dataset">toy dataset</a>. A single parameter (no bias term)
+linear regression model (OLS) is seen in blue.
+The corresponding orthogonal projection is seen in green and orange.
+The red parabola (quadratic function) is the distance function of
+the difference vector (dotted orange line) that is minimized when
+the difference vector is orthogonal to $y_1$’s subspace.
+Let’s dive in to all of this for a better understanding.</p>
+
+<h4 id="fig-1">Fig. 1</h4>
+
+<iframe src="https://www.desmos.com/calculator/eowrcpdore?embed" width="500px" height="500px" style="border: 1px solid #ccc" frameborder="0">
+</iframe>
+
+<h3 id="toy-dataset">Toy Dataset</h3>
+
+<p>In order to be able to visualize everything in two dimensions
+the data was kept as simple as can be, just two data points
+$\in \mathbb{R}^2$.</p>
+
+<p>As vectors:</p>
+
+\[\vec{X_1} = \begin{bmatrix}2 \\ 1\end{bmatrix}
+\quad \textrm{and} \quad
+\vec{X_2} = \begin{bmatrix}3 \\ 3\end{bmatrix}
+\tag{1} \label{1}\]
+
+<p>As a matrix:</p>
+
+\[\mathbf{X} = \begin{bmatrix}2 &amp; 3 \\ 1 &amp; 3\end{bmatrix}
+\tag{2} \label{2}\]
+
+<h4 id="fig-2">Fig. 2</h4>
+
+<p><img src="assets/images/linear_regression_is_orthogonal_projection/toy_data_x.png" alt="toy_data_x" /></p>
+
+<p><a href="#fig-2">Fig 2.</a> shows how the vector representations
+(\ref{1}) translate to the cartesian plane as the
+first dimension represents the canonical $x$
+axis while the second dimension represents the
+canonical $y$ axis.</p>
+
+<h3 id="ols-perspective">OLS Perspective</h3>
+
+<p>The OLS Perspective treats the learning
+process as a <a href="https://en.wikipedia.org/wiki/Supervised_learning">supervised learning</a> problem. Here’s a
+<em>really</em> hand-wavy overview:</p>
+
+<p>The model is presented inputs for which
+it makes corresponding predictions (outputs). Hence the term “supervised”,
+an error signal is calculated by aggregating the squared difference
+of the model’s outputs against corresponding “true” values that have been
+observed or are known a priori (a.k.a. labels).
+The error signal is used to update the model parameters.
+This (training) routine loops until the model parameters converge.
+By minimizing the error signal, the model learns optimal parameters.</p>
+
+<h4 id="fig-3">Fig. 3</h4>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">input</th>
+      <th style="text-align: center">output</th>
+      <th style="text-align: center">label</th>
+      <th style="text-align: center">error</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">$2.0$</td>
+      <td style="text-align: center">$1.2$</td>
+      <td style="text-align: center">$1.0$</td>
+      <td style="text-align: center">$(1.0 - 1.2)^2$</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">$3.0$</td>
+      <td style="text-align: center">$2.1$</td>
+      <td style="text-align: center">$3.0$</td>
+      <td style="text-align: center">$(3.0 - 2.1)^2$</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><a href="#fig-3">Fig 3.</a> shows a table of
+hypothetical model outputs and corresponding
+error calculations at some hypothetical
+point in time in the training loop when learning
+the <a href="#toy-dataset">toy dataset</a>.</p>
+
+<h4 id="fig-4">Fig. 4</h4>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">from</span> <span class="nn">sklearn.linear_model</span> <span class="kn">import</span> <span class="n">LinearRegression</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">]])</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">]])</span>
+<span class="n">reg</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">(</span><span class="n">fit_intercept</span><span class="o">=</span><span class="bp">False</span><span class="p">).</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">'weights/parameters'</span><span class="p">,</span> <span class="n">reg</span><span class="p">.</span><span class="n">coef_</span><span class="p">)</span>
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>weights/parameters array([[0.84615385]])
+</code></pre></div></div>
+
+<p><a href="#fig-4">Fig 4.</a> prints the resulting parameters (in our case, just one)
+of an OLS <a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html">LinearRegression</a> implementation written in Python using
+a popular machine-learning Python package (<a href="https://scikit-learn.org/stable/">scikit-learn</a>) after being
+fit to our <a href="#toy-dataset">toy dataset</a> (omitting the intercept term).</p>
+
+<h4 id="fig-5">Fig. 5</h4>
+
+<p><img src="assets/images/linear_regression_is_orthogonal_projection/ols_regression_fit.png" alt="ols_regression_fit" /></p>
+
+<p><a href="#fig-5">Fig 5.</a> shows the OLS model fit to our
+<a href="#toy-dataset">toy dataset</a>. The hyperplane (line of best fit)
+has a slope of $0.84615385$ which is what we would expect per the
+output of <a href="#fig-4">Fig 4.</a> If we didn’t omit the bias term and we
+let the model learn another degree of freedom (another parameter),
+the solution would yield a hyperplane that fits the data perfectly,
+both data points would lie on that hyperplane.</p>
+
+<h3 id="op-perspective">OP Perspective</h3>
+
+<p>Here’s another hand-wavy :) overview.</p>
+
+<p>The OP Perspective treats the learning process
+as solving a system of linear equations so we’ll need to frame
+our <a href="#toy-dataset">toy dataset</a> as such.
+We can formulate a vectorized linear equation.
+The model’s outputs will be a linear function of the inputs
+and the learned parameter(s). We can represent our model inputs and
+labels as vectors $\in \mathbb{R}^2$.</p>
+
+\[\vec{Y_1} = \begin{bmatrix}2 \\ 3\end{bmatrix}
+\quad \textrm{and} \quad
+\vec{Y_2} = \begin{bmatrix}1 \\ 3\end{bmatrix}
+\tag{3} \label{3}\]
+
+<p>To disambiguate \ref{3} from \ref{1},
+$\vec{Y_1}$ consists of the first dimensions of $\vec{X_1}$
+and $\vec{X_2}$ while $\vec{Y_2}$ consists of the second
+dimensions of $\vec{X_1}$ and $\vec{X_2}$.</p>
+
+<h4 id="fig-6">Fig. 6</h4>
+
+<p><img src="assets/images/linear_regression_is_orthogonal_projection/toy_data_x_y.png" alt="toy_data_x_y" /></p>
+
+<p><a href="#fig-6">Fig 6.</a> shows how \ref{1} and \ref{3},
+together, translate to the cartesian plane.</p>
+
+<p>The equation we need to solve is:</p>
+
+\[\vec{Y_1}\vec{\beta} \approx \vec{Y_2}
+\tag{4} \label{4}\]
+
+<p>It’s best practice to validate the shapes of the
+matrices/vectors when operating on them.
+$\vec{Y_1}$ is $2 \times 1$, $\vec{\beta}$ is $1 \times 1$,
+(recall that we’re omitting the bias/intercept term),
+and so $\vec{Y_2}$ checks out to be $2 \times 1$.</p>
+
+<p>Intuitively, \ref{4} tells us that $\vec{Y_2}$ is
+approximately equal to a scaled version
+of $\vec{Y_1}$ and that scaling factor is our
+learned parameter in $\vec{\beta}$.
+The approximation is there because
+$\vec{Y_1}\vec{\beta} = \vec{Y_2}$
+will only be true if $\vec{Y_2}$ can be expressed as a
+scaled version of $\vec{Y_1}$. In our example, it can’t
+(see <a href="#fig-7">Fig 7.</a>).</p>
+
+<h4 id="fig-7">Fig. 7</h4>
+
+<p><img src="assets/images/linear_regression_is_orthogonal_projection/scaled_vector.png" alt="scaled_vector" /></p>
+
+<p><a href="#fig-7">Fig 7.</a> shows a subset of scaled versions
+of $\vec{Y_1}$ with the dashed green line and one randomly
+chosen realization with the orange mark. That line
+actually extends to infinity in both directions making up
+a <a href="https://en.wikipedia.org/wiki/Linear_subspace">vector subspace</a>. Notice how $\vec{Y_2}$ does not lie
+anywhere on that subspace? This is why we need to approximate
+a solution to the system and why we used the $\approx$
+symbol in \ref{4}.</p>
+
+<h2 id="desmos">Desmos</h2>
+
+<p>I built the visualizations for this post with <a href="https://www.desmos.com/">Desmos</a>,
+an incredible graphing web application that enables
+users to visualize, study, and learn mathematics.</p>
+
+<h2 id="references">References</h2>
+
+
+  </div><a class="u-url" href="/linear-regression-is-orthogonal-projection" hidden></a>
+</article><script>
+  (function () {
+    let script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML";
+
+    const config =  'MathJax.Hub.Config({' +
+                    'tex2jax: {' +
+                      'inlineMath: [ [\'$\',\'$\'] ],' +
+                      'processEscapes: true' +
+                    '}' +
+                  '});'
+
+    if (window.opera) {
+      script.innerHTML = config
+    } else {
+      script.text = config
+    }
+
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+<!--        <p class="feed-subscribe">-->
+<!--          <a href="/feed.xml">-->
+<!--            <svg class="svg-icon orange">-->
+<!--              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>-->
+<!--            </svg><span>Subscribe</span>-->
+<!--          </a>-->
+<!--        </p>-->
+        <ul class="contact-list">
+          <li class="p-name">Daniel Deychakiwsky</li>
+          <li><a class="u-email" href="mailto:d.deychak@gmail.com">d.deychak@gmail.com</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <p>An Engineering Blog
+</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/deychak" title="deychak"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://www.instagram.com/danieldeychak" title="danieldeychak"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#instagram"></use></svg></a></li><li><a rel="me" href="https://www.linkedin.com/in/danieldeychak" title="danieldeychak"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
