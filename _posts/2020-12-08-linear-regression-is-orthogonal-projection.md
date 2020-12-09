@@ -265,7 +265,7 @@ both seek to minimize a similar, if not the same, _thing_. The only
 difference is how the problem is framed. I'll leave it up to you
 as the reader to make the comparison between [mean squared error]
 and the $L^2$ [norm] of the difference-vector, i.e.,
-$||\vec{Y_1} - \beta \cdot \vec{Y_2}||_2$. The differences
+$||\vec{Y_2} - \beta \cdot \vec{Y_1}||_2$. The differences
 come from applying normalizing constants and/or monotonic transformations,
 both of which have no effect on minimization.
 
