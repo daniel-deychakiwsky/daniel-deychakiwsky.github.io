@@ -32,7 +32,7 @@ is a projection".
 ### The Big Picture
 
 [Fig 1.](#fig-1) is a compact and interactive
-[visualization] that superimposes the two perspectives modeling the same
+[visualization] that superimposes the two perspectives modeling a
 [toy dataset](#toy-dataset). The remainder of this post examines it
 for a better understanding.
 
