@@ -253,6 +253,12 @@ value of $\beta$, at the minimum is $0.84615385$, exactly the
 same solution observed in [Fig 3.](#fig-3) and [Fig 4.](#fig-4)**
 with OLS.
 
+The term "regression" has a concrete definition in the field of
+statistics but what does it mean to "regress" one variable onto
+another? My answer is OP. In this example we "regressed" our
+dependent variable, encoded as \vec{Y_2}, onto/against our 
+explanatory variable, encoded as \vec{Y_1}.
+
 In hindsight, this duality may not come as such a surprise after all.
 If we consider the objective function from each perspective, they
 both seek to minimize a similar, if not the same, _thing_. The only
