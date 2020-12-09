@@ -110,7 +110,7 @@ some model prediction (output),
 $\hat{y}$; a linear function of $x$ parameterized by $\beta$,
 and some label, $y$.
 
-On top of our already simplified dataset, we'll also simplify the model
+On top of our already simplified dataset, we'll also simplify model
 complexity by omitting the bias/intercept term, i.e., restricting our model
 to only one learnable parameter. Let's train the model.
 
