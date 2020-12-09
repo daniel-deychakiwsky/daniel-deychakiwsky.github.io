@@ -132,7 +132,7 @@ weights/parameters array([[0.84615385]])
 [Fig 3.](#fig-3) prints the resulting parameters (just one in our case)
 of an OLS [LinearRegression] implementation written in Python using
 a popular machine-learning Python package ([scikit-learn]) after being
-fit to our [toy dataset](#toy-dataset).
+fit to (learning) our [toy dataset](#toy-dataset).
 
 #### Fig. 4
 
