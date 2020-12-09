@@ -107,7 +107,7 @@ $$
 \ref{3} shows a hypothetical example of a single instance
 error calculation, $err$, for some model input, $x$,
 some model prediction (output),
-$\hat{y}$, which is a linear function of $x$ parameterized by $\beta$,
+$\hat{y}$; a linear function of $x$ parameterized by $\beta$,
 and some label, $y$.
 
 On top of our already simplified dataset, we'll also simplify the model
