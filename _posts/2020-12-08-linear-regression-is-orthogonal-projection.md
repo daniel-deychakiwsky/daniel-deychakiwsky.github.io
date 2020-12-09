@@ -112,7 +112,7 @@ and some label, $y$.
 
 On top of our already simplified dataset, we'll also simplify model
 complexity by omitting the bias/intercept term, i.e., restricting our model
-to only one learnable parameter. Let's train the model.
+to only *one learnable parameter*. Let's train the model.
 
 #### Fig. 3
 
