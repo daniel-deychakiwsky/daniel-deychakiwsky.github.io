@@ -216,7 +216,7 @@ of $\vec{Y_1}$ with the dashed green line and one randomly
 chosen realization with the orange mark. That line
 actually extends to infinity in both directions making up
 a [vector subspace]. Notice how $\vec{Y_2}$ does not fall
-anywhere on that subspace? This is why we need to **approximate**
+within that subspace? This is why we need to **approximate**
 a solution to the system and why we used the $\approx$
 symbol in \ref{5}.
 
