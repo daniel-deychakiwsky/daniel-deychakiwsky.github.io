@@ -47,7 +47,7 @@ each perspective in separation.
 ### Toy Dataset
 
 For ease of intuition, our toy dataset is kept simple and
-low-dimensional, just two data points $\in \mathbb{R}^2$.
+low-dimensional; just two data points $\in \mathbb{R}^2$.
 
 As column vectors:
 
