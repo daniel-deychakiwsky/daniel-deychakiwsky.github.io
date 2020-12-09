@@ -256,7 +256,7 @@ with OLS.
 The term "regression" has a concrete definition in the field of
 statistics but what does it mean to "regress" one variable onto
 another? My answer is OP. In this example we "regressed" our
-dependent variable, encoded as \vec{Y_2}, onto/against our 
+dependent variable, encoded as \vec{Y_2}, "onto/against" our 
 explanatory variable, encoded as \vec{Y_1}.
 
 In hindsight, this duality may not come as such a surprise after all.
