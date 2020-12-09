@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-12-08T18:38:31-05:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Deylemma</title><subtitle>An Engineering Blog
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2020-12-08T21:05:51-05:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Deylemma</title><subtitle>An Engineering Blog
 </subtitle><author><name>Daniel Deychakiwsky</name><email>d.deychak@gmail.com</email></author><entry><title type="html">Ordinary Least Squares is Orthogonal Projection</title><link href="http://localhost:4000/linear-regression-is-orthogonal-projection" rel="alternate" type="text/html" title="Ordinary Least Squares is Orthogonal Projection" /><published>2020-12-08T00:00:00-05:00</published><updated>2020-12-08T00:00:00-05:00</updated><id>http://localhost:4000/linear-regression-is-orthogonal-projection</id><content type="html" xml:base="http://localhost:4000/linear-regression-is-orthogonal-projection">&lt;p&gt;This post visualizes the equivalence of two perspectives
 on estimating the unknown parameters in a simple linear
 regression model, ordinary least squares (OLS) and
@@ -49,9 +49,9 @@ is a projection”.&lt;/li&gt;
 &lt;h3 id=&quot;the-big-picture&quot;&gt;The Big Picture&lt;/h3&gt;
 
 &lt;p&gt;&lt;a href=&quot;#fig-1&quot;&gt;Fig 1.&lt;/a&gt; is a compact and interactive
-&lt;a href=&quot;https://www.desmos.com/calculator/eowrcpdore&quot;&gt;visualization&lt;/a&gt; that superimposes the two perspectives modeling the same
-&lt;a href=&quot;#toy-dataset&quot;&gt;toy dataset&lt;/a&gt;. The remainder of this post examines it
-for a better understanding.&lt;/p&gt;
+&lt;a href=&quot;https://www.desmos.com/calculator/eowrcpdore&quot;&gt;visualization&lt;/a&gt; that superimposes the two perspectives modeling a
+&lt;a href=&quot;#toy-dataset&quot;&gt;toy dataset&lt;/a&gt;. The remainder of this post examines
+each perspective in greater detail.&lt;/p&gt;
 
 &lt;h4 id=&quot;fig-1&quot;&gt;Fig. 1&lt;/h4&gt;
 
@@ -61,7 +61,7 @@ for a better understanding.&lt;/p&gt;
 &lt;h3 id=&quot;toy-dataset&quot;&gt;Toy Dataset&lt;/h3&gt;
 
 &lt;p&gt;For ease of intuition, our toy dataset is kept simple and
-low-dimensional, just two data points $\in \mathbb{R}^2$.&lt;/p&gt;
+low-dimensional; just two data points $\in \mathbb{R}^2$.&lt;/p&gt;
 
 &lt;p&gt;As column vectors:&lt;/p&gt;
 
@@ -115,12 +115,12 @@ err(y, \hat{y}) = (1.0 - 1.2)^2
 &lt;p&gt;\ref{3} shows a hypothetical example of a single instance
 error calculation, $err$, for some model input, $x$,
 some model prediction (output),
-$\hat{y}$, which is a linear function of $x$ parameterized by $\beta$,
+$\hat{y}$; a linear function of $x$ parameterized by $\beta$,
 and some label, $y$.&lt;/p&gt;
 
-&lt;p&gt;On top of our already simplified dataset, we’ll also simplify the model
+&lt;p&gt;On top of our already simplified dataset, we’ll also simplify model
 complexity by omitting the bias/intercept term, i.e., restricting our model
-to only one learnable parameter. Let’s train the model.&lt;/p&gt;
+to only &lt;em&gt;one learnable parameter&lt;/em&gt;. Let’s train the model.&lt;/p&gt;
 
 &lt;h4 id=&quot;fig-3&quot;&gt;Fig. 3&lt;/h4&gt;
 
@@ -138,7 +138,7 @@ to only one learnable parameter. Let’s train the model.&lt;/p&gt;
 &lt;p&gt;&lt;a href=&quot;#fig-3&quot;&gt;Fig 3.&lt;/a&gt; prints the resulting parameters (just one in our case)
 of an OLS &lt;a href=&quot;https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html&quot;&gt;LinearRegression&lt;/a&gt; implementation written in Python using
 a popular machine-learning Python package (&lt;a href=&quot;https://scikit-learn.org/stable/&quot;&gt;scikit-learn&lt;/a&gt;) after being
-fit to our &lt;a href=&quot;#toy-dataset&quot;&gt;toy dataset&lt;/a&gt;.&lt;/p&gt;
+fit to (learning) our &lt;a href=&quot;#toy-dataset&quot;&gt;toy dataset&lt;/a&gt;.&lt;/p&gt;
 
 &lt;h4 id=&quot;fig-4&quot;&gt;Fig. 4&lt;/h4&gt;
 
@@ -207,7 +207,7 @@ $\vec{Y_1}\vec{\beta} = \vec{Y_2}$
 &lt;strong&gt;will only be true if&lt;/strong&gt; $\vec{Y_2}$ can be exactly
 expressed as a scaled version of $\vec{Y_1}$.
 In practice this is seldom true. In our example,
-it certainly isn’t true (see &lt;a href=&quot;#fig-6&quot;&gt;Fig 6.&lt;/a&gt;).&lt;/p&gt;
+it certainly isn’t (see &lt;a href=&quot;#fig-6&quot;&gt;Fig 6.&lt;/a&gt;).&lt;/p&gt;
 
 &lt;h4 id=&quot;fig-6&quot;&gt;Fig. 6&lt;/h4&gt;
 
@@ -218,7 +218,7 @@ of $\vec{Y_1}$ with the dashed green line and one randomly
 chosen realization with the orange mark. That line
 actually extends to infinity in both directions making up
 a &lt;a href=&quot;https://en.wikipedia.org/wiki/Linear_subspace&quot;&gt;vector subspace&lt;/a&gt;. Notice how $\vec{Y_2}$ does not fall
-anywhere on that subspace? This is why we need to &lt;strong&gt;approximate&lt;/strong&gt;
+within that subspace? This is why we need to &lt;strong&gt;approximate&lt;/strong&gt;
 a solution to the system and why we used the $\approx$
 symbol in \ref{5}.&lt;/p&gt;
 
@@ -240,7 +240,7 @@ the distance from $\vec{Y_2}$ to a scaled version of $\vec{Y_1}$.&lt;/p&gt;
 &lt;p&gt;&lt;a href=&quot;#fig-7&quot;&gt;Fig 7.&lt;/a&gt; shows the distance function, $\delta(\beta)$,
 and corresponding input-output tuple, ($\beta, \delta(\beta)$),
 in red; of some difference-vector, in dotted orange.
-The difference-vector is the vector between $\vec{Y_2}$ and a some vector
+The difference-vector is the vector between $\vec{Y_2}$ and some vector
 (varied, indicated by the orange dotted line and mark)
 falling within $\vec{Y_1}$’s subspace. Notice that
 the distance function is minimized when the difference-vector
@@ -248,6 +248,12 @@ is orthogonal to $\vec{Y_1}$’s subspace. &lt;strong&gt;The
 value of $\beta$, at the minimum is $0.84615385$, exactly the
 same solution observed in &lt;a href=&quot;#fig-3&quot;&gt;Fig 3.&lt;/a&gt; and &lt;a href=&quot;#fig-4&quot;&gt;Fig 4.&lt;/a&gt;&lt;/strong&gt;
 with OLS.&lt;/p&gt;
+
+&lt;p&gt;The term “regression” has a concrete definition in the field of
+statistics but what does it mean to “regress” one variable “onto/against”
+another? My answer is OP. In this example we “regressed” our
+dependent variable, encoded as $\vec{Y_2}$, “onto/against” our 
+explanatory variable, encoded as $\vec{Y_1}$.&lt;/p&gt;
 
 &lt;p&gt;In hindsight, this duality may not come as such a surprise after all.
 If we consider the objective function from each perspective, they

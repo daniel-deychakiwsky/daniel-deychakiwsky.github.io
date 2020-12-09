@@ -34,7 +34,7 @@ is a projection".
 [Fig 1.](#fig-1) is a compact and interactive
 [visualization] that superimposes the two perspectives modeling a
 [toy dataset](#toy-dataset). The remainder of this post examines
-each perspective in separation.  
+each perspective in greater detail.  
 
 #### Fig. 1
 
@@ -254,10 +254,10 @@ same solution observed in [Fig 3.](#fig-3) and [Fig 4.](#fig-4)**
 with OLS.
 
 The term "regression" has a concrete definition in the field of
-statistics but what does it mean to "regress" one variable onto
+statistics but what does it mean to "regress" one variable "onto/against"
 another? My answer is OP. In this example we "regressed" our
-dependent variable, encoded as \vec{Y_2}, "onto/against" our 
-explanatory variable, encoded as \vec{Y_1}.
+dependent variable, encoded as $\vec{Y_2}$, "onto/against" our 
+explanatory variable, encoded as $\vec{Y_1}$.
 
 In hindsight, this duality may not come as such a surprise after all.
 If we consider the objective function from each perspective, they
