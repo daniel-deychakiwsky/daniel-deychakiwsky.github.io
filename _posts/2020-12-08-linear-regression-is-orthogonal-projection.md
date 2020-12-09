@@ -244,7 +244,7 @@ $$
 [Fig 7.](#fig-7) shows the distance function, $\delta(\beta)$,
 and corresponding input-output tuple, ($\beta, \delta(\beta)$),
 in red; of some difference-vector, in dotted orange.
-The difference-vector is the vector between $\vec{Y_2}$ and a some vector
+The difference-vector is the vector between $\vec{Y_2}$ and some vector
 (varied, indicated by the orange dotted line and mark)
 falling within $\vec{Y_1}$'s subspace. Notice that
 the distance function is minimized when the difference-vector
