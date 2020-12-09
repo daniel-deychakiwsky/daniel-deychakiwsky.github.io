@@ -205,7 +205,7 @@ $\vec{Y_1}\vec{\beta} = \vec{Y_2}$
 **will only be true if** $\vec{Y_2}$ can be exactly
 expressed as a scaled version of $\vec{Y_1}$.
 In practice this is seldom true. In our example,
-it certainly isn't true (see [Fig 6.](#fig-6)).
+it certainly isn't (see [Fig 6.](#fig-6)).
 
 #### Fig. 6
 
