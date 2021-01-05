@@ -38,7 +38,7 @@ each perspective in greater detail.
 
 #### Fig. 1
 
-<iframe src="https://www.desmos.com/calculator/eowrcpdore?embed"
+<iframe src="https://www.desmos.com/calculator/4fy0c4u3qt?embed"
         width="500px"
         height="500px"
         style="border: 1px solid #ccc" frameborder=0>
@@ -52,9 +52,9 @@ low-dimensional; just two data points $\in \mathbb{R}^2$.
 As column vectors:
 
 $$
-\vec{X_1} = \begin{bmatrix}2 \\ 1\end{bmatrix}
+\mathbf{x}_1 = \begin{bmatrix}2 \\ 1\end{bmatrix}
 \quad \textrm{and} \quad
-\vec{X_2} = \begin{bmatrix}3 \\ 3\end{bmatrix}
+\mathbf{x}_2 = \begin{bmatrix}3 \\ 3\end{bmatrix}
 \tag{1} \label{1}
 $$
 
@@ -163,17 +163,17 @@ and the learned parameters. We can represent our model inputs and
 labels as vectors $\in \mathbb{R}^2$.
 
 $$
-\vec{Y_1} = \begin{bmatrix}2 \\ 3\end{bmatrix}
+\mathbf{y}_1 = \begin{bmatrix}2 \\ 3\end{bmatrix}
 \quad \textrm{and} \quad
-\vec{Y_2} = \begin{bmatrix}1 \\ 3\end{bmatrix}
+\mathbf{y}_2 = \begin{bmatrix}1 \\ 3\end{bmatrix}
 \tag{4} \label{4}
 $$
 
 To disambiguate \ref{1} from \ref{4}, note that
-$\vec{Y_1}$ consists of the first dimensions of $\vec{X_1}$
-and $\vec{X_2}$ while $\vec{Y_2}$ consists of the second
-dimensions of $\vec{X_1}$ and $\vec{X_2}$. In other words,
-$\vec{Y_1}$ is a vector of our model inputs and $\vec{Y_2}$
+$\mathbf{y}_1$ consists of the first dimensions of $\mathbf{x}_1$
+and $\mathbf{x}_2$ while $\mathbf{y}_2$ consists of the second
+dimensions of $\mathbf{x}_1$ and $\mathbf{x}_2$. In other words,
+$\mathbf{y}_1$ is a vector of our model inputs and $\mathbf{y}_2$
 is a vector of our model labels.
 
 #### Fig. 5
@@ -186,24 +186,24 @@ together, translate to the cartesian plane.
 The equation we need to solve to model our data is:
 
 $$
-\vec{Y_1}\vec{\beta} \approx \vec{Y_2}
+\mathbf{y}_1\boldsymbol{\beta} \approx \mathbf{y}_2
 \tag{5} \label{5}
 $$
 
 It's best practice to validate the shapes of the
 matrices/vectors when operating on them.
-$\vec{Y_1}$ is $2 \times 1$, $\vec{\beta}$ is $1 \times 1$,
+$\mathbf{y}_1$ is $2 \times 1$, $\boldsymbol{\beta}$ is $1 \times 1$,
 (recall that we're omitting the bias/intercept term),
-and so $\vec{Y_2}$ checks out to be $2 \times 1$.
+and so $\mathbf{y}_2$ checks out to be $2 \times 1$.
 
-Intuitively, \ref{5} tells us that $\vec{Y_2}$ is
+Intuitively, \ref{5} tells us that $\mathbf{y}_2$ is
 **approximately** equal to a scaled version
-of $\vec{Y_1}$ and that scaling factor is our
-learned parameter in $\vec{\beta}$.
+of $\mathbf{y}_1$ and that scaling factor is our
+learned parameter in $\boldsymbol{\beta}$.
 The approximation is important because
-$\vec{Y_1}\vec{\beta} = \vec{Y_2}$
-**will only be true if** $\vec{Y_2}$ can be exactly
-expressed as a scaled version of $\vec{Y_1}$.
+$\mathbf{y}_1\boldsymbol{\beta} = \mathbf{y}_2$
+**will only be true if** $\mathbf{y}_2$ can be exactly
+expressed as a scaled version of $\mathbf{y}_1$.
 In practice this is seldom true. In our example,
 it certainly isn't (see [Fig 6.](#fig-6)).
 
@@ -212,52 +212,54 @@ it certainly isn't (see [Fig 6.](#fig-6)).
 ![scaled_vector]
 
 [Fig 6.](#fig-6) shows a subset of scaled versions
-of $\vec{Y_1}$ with the dashed green line and one randomly
+of $\mathbf{y}_1$ with the dashed green line and one randomly
 chosen realization with the orange mark. That line
 actually extends to infinity in both directions making up
-a [vector subspace]. Notice how $\vec{Y_2}$ does not fall
+a [vector subspace]. Notice how $\mathbf{y}_2$ does not fall
 within that subspace? This is why we need to **approximate**
 a solution to the system and why we used the $\approx$
 symbol in \ref{5}.
 
 It turns out that the best approximation we can get
-is the OP of $\vec{Y_2}$ onto $\vec{Y_1}$'s subspace.
+is the OP of $\mathbf{y}_2$ onto $\mathbf{y}_1$'s subspace.
 Omitting mathematical proofs, let's visualize that claim.
-We can define the distance from $\vec{Y_2}$ to $\vec{Y_1}$'s
-subspace as a function of some scalar, $\beta$, which computes
-the distance from $\vec{Y_2}$ to a scaled version of $\vec{Y_1}$.
+We can define the distance from $\mathbf{y}_2$ to $\mathbf{y}_1$'s
+subspace as a function of some scalar (in this example, a vector with one entry),
+$\boldsymbol{\beta}$, which computes the distance from
+$\mathbf{y}_2$ to a scaled version of $\mathbf{y}_1$.
 
 $$
-\delta(\beta) = euclidean\_distance(\vec{Y_2}, \beta \cdot \vec{Y_1})
+\delta(\boldsymbol{\beta}) =
+euclidean\_distance(\mathbf{y}_2, \boldsymbol{\beta} \cdot \mathbf{y}_1)
 \tag{6} \label{6}
 $$
 
 #### Fig. 7
 
-<iframe src="https://www.desmos.com/calculator/00manfmzno?embed"
+<iframe src="https://www.desmos.com/calculator/irvesdja2w?embed"
         width="500px"
         height="500px"
         style="border: 1px solid #ccc"
         frameborder=0>
 </iframe>
 
-[Fig 7.](#fig-7) shows the distance function, $\delta(\beta)$,
-and corresponding input-output tuple, ($\beta, \delta(\beta)$),
+[Fig 7.](#fig-7) shows the distance function, $\delta(\boldsymbol{\beta})$,
+and corresponding input-output tuple, ($\boldsymbol{\beta}, \delta(\boldsymbol{\beta})$),
 in red; of some difference-vector, in dotted orange.
-The difference-vector is the vector between $\vec{Y_2}$ and some vector
+The difference-vector is the vector between $\mathbf{y}_2$ and some vector
 (varied, indicated by the orange dotted line and mark)
-falling within $\vec{Y_1}$'s subspace. Notice that
+falling within $\mathbf{y}_1$'s subspace. Notice that
 the distance function is minimized when the difference-vector
-is orthogonal to $\vec{Y_1}$'s subspace. **The
-value of $\beta$, at the minimum is $0.84615385$, exactly the
+is orthogonal to $\mathbf{y}_1$'s subspace. **The
+value of $\boldsymbol{\beta}$, at the minimum is $0.84615385$, exactly the
 same solution observed in [Fig 3.](#fig-3) and [Fig 4.](#fig-4)**
 with OLS.
 
 The term "regression" has a concrete definition in the field of
 statistics but what does it mean to "regress" one variable "onto/against"
 another? My answer is OP. In this example we "regressed" our
-dependent variable, encoded as $\vec{Y_2}$, "onto/against" our 
-explanatory variable, encoded as $\vec{Y_1}$.
+dependent variable, encoded as $\mathbf{y}_2$, "onto/against" our 
+explanatory variable, encoded as $\mathbf{y}_1$.
 
 In hindsight, this duality may not come as such a surprise after all.
 If we consider the objective function from each perspective, they
@@ -265,7 +267,7 @@ both seek to minimize a similar, if not the same, _thing_. The only
 difference is how the problem is framed. I'll leave it up to you
 as the reader to make the comparison between [mean squared error]
 and the $L^2$ [norm] of the difference-vector, i.e.,
-$||\vec{Y_2} - \beta \cdot \vec{Y_1}||_2$. The differences
+$||\mathbf{y}_2 - \boldsymbol{\beta} \cdot \mathbf{y}_1||_2$. The differences
 come from applying normalizing constants and/or monotonic transformations,
 both of which have no effect on minimization.
 
@@ -287,7 +289,7 @@ users to visualize, study, and learn mathematics.
 [ordinary least squares]: https://en.wikipedia.org/wiki/Ordinary_least_squares
 [norm]: https://en.wikipedia.org/wiki/Norm_(mathematics)
 [mean squared error]: https://en.wikipedia.org/wiki/Mean_squared_error
-[visualization]: https://www.desmos.com/calculator/eowrcpdore
+[visualization]: https://www.desmos.com/calculator/4fy0c4u3qt
 [scikit-learn]: https://scikit-learn.org/stable/
 [LinearRegression]: https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html
 [supervised learning]: https://en.wikipedia.org/wiki/Supervised_learning
