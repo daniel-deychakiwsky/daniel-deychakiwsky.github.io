@@ -21,7 +21,7 @@ orthogonal projection (OP).
 In order to get more out of this post, you may want to brush up on:
 
 1. Wikipedias on [ordinary least squares], [vector projection],
-$L^2$ [norm], and [mean squared error].
+$L^2$ [norm], and ([minimum]) [mean squared error].
 2. [Vladimir Mikulik's post] on "Why Linear Regression
 is a projection".
 2. [Andrew Chamberlain's post] on
@@ -295,6 +295,7 @@ users to visualize, study, and learn mathematics.
 [supervised learning]: https://en.wikipedia.org/wiki/Supervised_learning
 [vector subspace]: https://en.wikipedia.org/wiki/Linear_subspace
 [polynomial interpolation]: https://en.wikipedia.org/wiki/Polynomial_interpolation
+[minimum]: https://en.wikipedia.org/wiki/Minimum_mean_square_error
 
 [toy_data_x]: assets/images/linear_regression_is_orthogonal_projection/toy_data_x.png
 [toy_data_x_y]: assets/images/linear_regression_is_orthogonal_projection/toy_data_x_y.png
