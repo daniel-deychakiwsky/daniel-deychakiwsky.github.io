@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta property="og:image" content="/assets/images/geometry.jpg"/><!-- Begin Jekyll SEO tag v2.6.1 -->
+<title>Simple Podcast Ad Insertion | Deylemma</title>
+<meta name="generator" content="Jekyll v4.1.1" />
+<meta property="og:title" content="Simple Podcast Ad Insertion" />
+<meta name="author" content="Daniel Deychakiwsky" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="This post outlines a simple time-domain energy-based algorithm for identifying ad opportunities in podcast audio. This post assumes basic knowledge of digital signal processing (DSP)." />
+<meta property="og:description" content="This post outlines a simple time-domain energy-based algorithm for identifying ad opportunities in podcast audio. This post assumes basic knowledge of digital signal processing (DSP)." />
+<link rel="canonical" href="http://localhost:4000/simple-podcast-ad-insertion" />
+<meta property="og:url" content="http://localhost:4000/simple-podcast-ad-insertion" />
+<meta property="og:site_name" content="Deylemma" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-03-21T00:00:00-05:00" />
+<script type="application/ld+json">
+{"url":"http://localhost:4000/simple-podcast-ad-insertion","author":{"@type":"Person","name":"Daniel Deychakiwsky"},"headline":"Simple Podcast Ad Insertion","dateModified":"2021-03-21T00:00:00-05:00","datePublished":"2021-03-21T00:00:00-05:00","description":"This post outlines a simple time-domain energy-based algorithm for identifying ad opportunities in podcast audio. This post assumes basic knowledge of digital signal processing (DSP).","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/simple-podcast-ad-insertion"},"@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Deylemma" />
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Deylemma</a></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Simple Podcast Ad Insertion</h1>
+    <p class="post-meta"><time class="dt-published" datetime="2021-03-21T00:00:00-05:00" itemprop="datePublished">
+        Mar 21, 2021
+      </time>• 
+          <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+            <span class="p-author h-card" itemprop="name">Daniel Deychakiwsky</span></span></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>This post outlines a simple time-domain energy-based
+algorithm for identifying ad opportunities in podcast audio.
+This post assumes basic knowledge of digital signal processing (DSP).</p>
+
+<ul id="markdown-toc">
+  <li><a href="#context" id="markdown-toc-context">Context</a>    <ul>
+      <li><a href="#podcasting-company" id="markdown-toc-podcasting-company">Podcasting Company</a></li>
+      <li><a href="#engineering-problem" id="markdown-toc-engineering-problem">Engineering Problem</a></li>
+      <li><a href="#engineering-approach" id="markdown-toc-engineering-approach">Engineering Approach</a>        <ul>
+          <li><a href="#applied-machine-learning-ml--artificial-intelligence-ai" id="markdown-toc-applied-machine-learning-ml--artificial-intelligence-ai">Applied Machine Learning (ML) / Artificial Intelligence (AI)</a></li>
+          <li><a href="#applied-digital-signal-processing-dsp" id="markdown-toc-applied-digital-signal-processing-dsp">Applied Digital Signal Processing (DSP)</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><a href="#solution--algorithm" id="markdown-toc-solution--algorithm">Solution / Algorithm</a>    <ul>
+      <li><a href="#approach" id="markdown-toc-approach">Approach</a>        <ul>
+          <li><a href="#root-mean-square-rms" id="markdown-toc-root-mean-square-rms">Root-Mean-Square (RMS)</a></li>
+          <li><a href="#amplitude-envelope-ae" id="markdown-toc-amplitude-envelope-ae">Amplitude Envelope (AE)</a></li>
+          <li><a href="#ae--rms" id="markdown-toc-ae--rms">AE + RMS</a></li>
+        </ul>
+      </li>
+      <li><a href="#demo" id="markdown-toc-demo">Demo</a>        <ul>
+          <li><a href="#fig-1" id="markdown-toc-fig-1">Fig. 1</a></li>
+          <li><a href="#fig-2" id="markdown-toc-fig-2">Fig. 2</a></li>
+          <li><a href="#fig-3" id="markdown-toc-fig-3">Fig. 3</a></li>
+          <li><a href="#fig-4" id="markdown-toc-fig-4">Fig. 4</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="context">Context</h1>
+
+<h2 id="podcasting-company">Podcasting Company</h2>
+
+<p>Imagine you and I start a podcasting business. Quite simply, users are
+able to create and upload content (podcasts) which can be shared with the
+public. In other words, consumption of these podcasts is a free experience.
+Anyone can access and enjoy these podcasts.</p>
+
+<h2 id="engineering-problem">Engineering Problem</h2>
+
+<p>We decide to monetize our business by inserting audio ads but how do
+we know when to interrupt the podcast content and play the audio ad? We call
+upon our engineering team to prototype a simple solution for a next day
+proof-of-concept (POC) demo. To be clear, our acceptance criteria is to 
+find the least obtrusive ad insertion points. We don’t need to worry about
+cross-fading the content with the ad to make it sound as smooth as possible, etc.
+as that will be handled by a different engineering team.</p>
+
+<h2 id="engineering-approach">Engineering Approach</h2>
+
+<h3 id="applied-machine-learning-ml--artificial-intelligence-ai">Applied Machine Learning (ML) / Artificial Intelligence (AI)</h3>
+
+<p>We may be tempted to apply ML / AI to solve this problem.
+While they are attractive options, they usually
+require lots of data to learn from. We could explore the subset of
+unsupervised ML algorithms which don’t require any other added information,
+e.g., labels, but even those require time for tuning.</p>
+
+<p>Google’s <a href="https://developers.google.com/machine-learning/guides/rules-of-ml#rule_1_don%E2%80%99t_be_afraid_to_launch_a_product_without_machine_learning">first rule</a> of ML is to not use any ML and in our case this may
+be our best option as we need to deliver the POC by tomorrow.</p>
+
+<blockquote>
+  <p>Machine learning is cool, but it requires data.
+Theoretically, you can take data from a different
+problem and then tweak the model for a new product,
+but this will likely underperform basic heuristics.
+If you think that machine learning will give you a 100% boost,
+then a heuristic will get you 50% of the way there.</p>
+</blockquote>
+
+<h3 id="applied-digital-signal-processing-dsp">Applied Digital Signal Processing (DSP)</h3>
+
+<p>It turns out that we can bootstrap a simple algorithm by applying
+basic DSP techniques. If you don’t know DSP, I’d suggest taking a few
+courses to learn it as the applications are endless. Coursera offers
+exceptional <a href="https://www.coursera.org/learn/dsp1">foundational</a> and useful <a href="https://www.coursera.org/learn/audio-signal-processing">music applications</a> courses.</p>
+
+<h1 id="solution--algorithm">Solution / Algorithm</h1>
+
+<h2 id="approach">Approach</h2>
+
+<p>How would you define “less-obtrusive”? This is a subjective measure.
+Is a podcast audio ad break best defined by a change in conversation, sentiment,
+emotion, or something else? Is it just the lack of voice activity?</p>
+
+<p>In the simplest case, we can develop a time-domain energy-based algorithm which
+may translate to one of many possible definitions on a case-by-case basis.</p>
+
+<p>We can track the signal’s energy over time and insert ads where the energy is lower
+than some threshold (relative to the signal) for some amount of time
+(also relative to the signal). We can find several of these ad breaks or ad insertion
+points and order them by the largest amount of time under the threshold.
+Thus, the best ad insertion point this algorithm would find
+is defined by the maximal contiguous low energy (thresholded) streak in time.</p>
+
+<p>If you’re into stock trading, you may see the resemblance this algorithm has
+to several technical indicators you may be familiar with.</p>
+
+<h3 id="root-mean-square-rms">Root-Mean-Square (RMS)</h3>
+
+<p>We will use <a href="https://en.wikipedia.org/wiki/Root_mean_square#Definition">RMS</a> to proxy the de facto time-domain signal <a href="https://en.wikipedia.org/wiki/Energy_(signal_processing)">energy</a> calculation.
+Generally, they’re trying to measure different spins of the same thing,
+the $L^2$ or <a href="https://en.wikipedia.org/wiki/Norm_(mathematics)#Euclidean_norm">euclidean norm</a>. In order to see how RMS changes over time we
+apply a windowed version of the calculation yielding a new signal
+which shows how the energy of our signal changes over time. Why
+not just use a windowed version of the energy calculation? I’m using RMS because
+a windowed version of it is already implemented in the audio package I’m importing.</p>
+
+<h3 id="amplitude-envelope-ae">Amplitude Envelope (AE)</h3>
+
+<p>The <a href="https://en.wikipedia.org/wiki/Envelope_(waves)">AE</a> is simply the maximum absolute value of a given window. It’s calculation
+also yields a signal that traces the signal’s upper envelope over time. Valerio Velardo’s
+<a href="https://www.youtube.com/watch?v=rlypsap6Wow">implementation</a> is all we need.</p>
+
+<h3 id="ae--rms">AE + RMS</h3>
+
+<p>We can combine these two measures to form our final algorithm. First we set the
+window and hop sizes that will be shared by both measures. Next, we calculate 
+both measures which leave us with two new signals. We will use the AE as our measure
+of how the signal’s energy changes over time along with the standard deviation of the
+RMS measure as the threshold. Everytime the AE dips below the threshold we set a mark and
+only remove that mark once it breaks back over the threshold. We then add that segment to
+a temporary result buffer. Once we’ve done this for the entire AE, we can sort the segments
+descending based off the length of the segment. We can insert ads in the midpoints of these
+segments, where the largest segments are considered the best ad breaks or insertion points.</p>
+
+<h2 id="demo">Demo</h2>
+
+<p>Here’s a fake podcast that I recorded with my voice:</p>
+
+<audio controls="">
+  <source src="/assets/audio/fake_podcast.mp3" type="audio/mpeg" />
+  Your browser does not support the audio element.
+</audio>
+
+<p>Here’s the waveform:</p>
+
+<h4 id="fig-1">Fig. 1</h4>
+<p><img src="assets/images/simple_podcast_ad_insertion/fake_podcast.png" alt="fake_podcast" /></p>
+
+<p>Here’s a fake audio ad that I recorded with my voice:</p>
+
+<audio controls="">
+  <source src="/assets/audio/fake_ad.mp3" type="audio/mpeg" />
+  Your browser does not support the audio element.
+</audio>
+
+<p>Here’s the waveform:</p>
+
+<h4 id="fig-2">Fig. 2</h4>
+<p><img src="assets/images/simple_podcast_ad_insertion/fake_ad.png" alt="fake_ad" /></p>
+
+<h4 id="fig-3">Fig. 3</h4>
+<p><img src="assets/images/simple_podcast_ad_insertion/result.png" alt="result" /></p>
+
+<p><a href="#fig-3">Fig 3.</a> shows the time-domain waveform in blue,
+the AE in red, RMS in pink, +/- one standard-deviation of
+RMS in yellow, and three ad breaks or insertion points in green
+which vary in thickness (thicker lines are better breaks).
+The <a href="https://en.wikipedia.org/wiki/Mel_scale#:~:text=The%20mel%20scale%20(after%20the,dB%20above%20the%20listener's%20threshold.">mel</a>-<a href="https://en.wikipedia.org/wiki/Spectrogram#:~:text=A%20spectrogram%20is%20a%20visual,they%20may%20be%20called%20waterfalls.">spectrogram</a> with the same hop-size is shown below.
+Since the ad breaks are present where the harmonics of my voice
+are not, the algorithm is inserting ads into places where I am
+not talking.</p>
+
+<p>Here’s the result of simply stitching in the fake audio ad (my voice)
+into the fake podcast (my voice) that into the best of the three ad breaks the
+algorithm found.</p>
+
+<audio controls="">
+  <source src="/assets/audio/stiched.mp3" type="audio/mpeg" />
+  Your browser does not support the audio element.
+</audio>
+
+<p>Here’s there waveform:</p>
+
+<h4 id="fig-4">Fig. 4</h4>
+<p><img src="assets/images/simple_podcast_ad_insertion/stiched.png" alt="stiched" /></p>
+
+
+  </div><a class="u-url" href="/simple-podcast-ad-insertion" hidden></a>
+</article><script>
+  (function () {
+    let script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML";
+
+    const config =  'MathJax.Hub.Config({' +
+                    'tex2jax: {' +
+                      'inlineMath: [ [\'$\',\'$\'] ],' +
+                      'processEscapes: true' +
+                    '}' +
+                  '});'
+
+    if (window.opera) {
+      script.innerHTML = config
+    } else {
+      script.text = config
+    }
+
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+<!--        <p class="feed-subscribe">-->
+<!--          <a href="/feed.xml">-->
+<!--            <svg class="svg-icon orange">-->
+<!--              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>-->
+<!--            </svg><span>Subscribe</span>-->
+<!--          </a>-->
+<!--        </p>-->
+        <ul class="contact-list">
+          <li class="p-name">Daniel Deychakiwsky</li>
+          <li><a class="u-email" href="mailto:d.deychak@gmail.com">d.deychak@gmail.com</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <p>An Engineering Blog
+</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/deychak" title="deychak"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://www.instagram.com/danieldeychak" title="danieldeychak"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#instagram"></use></svg></a></li><li><a rel="me" href="https://www.linkedin.com/in/danieldeychak" title="danieldeychak"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
