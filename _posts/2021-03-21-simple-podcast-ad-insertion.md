@@ -30,10 +30,10 @@ do we know where to interrupt a podcast to play an ad?
 
 We call upon our engineering team to prototype a simple solution for a **next day**
 proof-of-concept (POC) demo. To be clear, our acceptance criteria is to 
-find the "least obtrusive" ad break or insertion points for a given podcast.
-We don't need to worry about cross-fading the content with the audio ad to
-make it sound as smooth as possible as the stitching will be handled by
-a different engineering team. Our focus is finding where to insert the audio ads.
+find the "least obtrusive" ad breaks or insertion points for a given podcast.
+We don't need to worry about cross-fading the content with the ad 
+for smooth transitions as that will be handled by
+a different engineering team. Our focus is solely identifying ad breaks.
 
 ## Engineering Approach
 
