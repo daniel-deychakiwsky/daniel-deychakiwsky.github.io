@@ -167,14 +167,16 @@ Here's something a bit less basic, a [mel]-[spectrogram] of the fake podcast:
 
 Comparing [Fig 3.](#fig-3) to [Fig 4.](#fig-4)
 notice that the algorithm places ad breaks
-where there is a lack of frequency content.
-In this example, the algorithm is choosing to
+where there is a lack of frequency content,
+in this case, the harmonics produced by the speaking voice;
+the algorithm is choosing to
 insert ads where speech is not present.
 
-Here's the result of stitching in the fake ad
-into the fake podcast in the best of the three ad breaks the
+Here's the result of stitching the fake ad
+to the fake podcast in the best of the three ad breaks the
 algorithm has suggested. This stitching isn't meant to sound good,
-it's just a simple cut and paste.
+it's just a simple cut and paste. Remember, we'd dish this work off
+to a different engineering team or tackle it in a different scope.
 
 {% include embed-audio.html src="/assets/audio/simple_podcast_ad_insertion/fake_stitched.mp3" %}
 
