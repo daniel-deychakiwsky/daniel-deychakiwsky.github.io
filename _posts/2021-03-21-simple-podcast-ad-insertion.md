@@ -79,9 +79,9 @@ may translate to one of many possible definitions on a case-by-case basis.
 
 We can track the signal's energy over time and insert ads where the energy is lower
 than some threshold for some amount of time (relative to the signal).
-We can find several of these ad breaks or ad insertion
+We can find several of these insertion
 points and order them by the largest amount of time under the threshold.
-By this definition, the best ad insertion point is defined by the
+By this definition, the best ad insertion point is the
 maximal contiguous thresholded low energy streak in time.
 
 If you're into stock trading, you may see this algorithm's resemblance to
