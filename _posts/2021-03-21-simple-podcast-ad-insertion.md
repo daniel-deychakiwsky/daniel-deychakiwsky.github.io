@@ -40,7 +40,7 @@ a different engineering team. Our focus is solely identifying ad breaks.
 ### Machine Learning (ML) / Artificial Intelligence (AI)
 
 We may be tempted to apply ML / AI to solve this problem.
-While they are attractive options, they usually
+While they are attractive options, they
 require lots of data in order to learn. We could explore the subset of
 unsupervised ML algorithms which don't require additional information
 (labels) but even those require substantial time-boxing for tuning 
