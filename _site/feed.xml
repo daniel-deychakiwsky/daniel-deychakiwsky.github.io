@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-03-21T17:12:34-05:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Deylemma</title><subtitle>An Engineering Blog
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-03-21T19:50:47-05:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Deylemma</title><subtitle>An Engineering Blog
 </subtitle><author><name>Daniel Deychakiwsky</name><email>d.deychak@gmail.com</email></author><entry><title type="html">Simple Podcast Ad Insertion</title><link href="http://localhost:4000/simple-podcast-ad-insertion" rel="alternate" type="text/html" title="Simple Podcast Ad Insertion" /><published>2021-03-21T00:00:00-05:00</published><updated>2021-03-21T00:00:00-05:00</updated><id>http://localhost:4000/simple-podcast-ad-insertion</id><content type="html" xml:base="http://localhost:4000/simple-podcast-ad-insertion">&lt;p&gt;This post outlines a simple time-domain energy-based
 algorithm for identifying ad opportunities in podcast audio.
 This post assumes basic knowledge of digital signal processing (DSP).&lt;/p&gt;
 
 &lt;ul id=&quot;markdown-toc&quot;&gt;
   &lt;li&gt;&lt;a href=&quot;#context&quot; id=&quot;markdown-toc-context&quot;&gt;Context&lt;/a&gt;    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;#podcasting-company&quot; id=&quot;markdown-toc-podcasting-company&quot;&gt;Podcasting Company&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#our-podcasting-company&quot; id=&quot;markdown-toc-our-podcasting-company&quot;&gt;Our Podcasting Company&lt;/a&gt;&lt;/li&gt;
       &lt;li&gt;&lt;a href=&quot;#engineering-problem&quot; id=&quot;markdown-toc-engineering-problem&quot;&gt;Engineering Problem&lt;/a&gt;&lt;/li&gt;
       &lt;li&gt;&lt;a href=&quot;#engineering-approach&quot; id=&quot;markdown-toc-engineering-approach&quot;&gt;Engineering Approach&lt;/a&gt;        &lt;ul&gt;
           &lt;li&gt;&lt;a href=&quot;#applied-machine-learning-ml--artificial-intelligence-ai&quot; id=&quot;markdown-toc-applied-machine-learning-ml--artificial-intelligence-ai&quot;&gt;Applied Machine Learning (ML) / Artificial Intelligence (AI)&lt;/a&gt;&lt;/li&gt;
@@ -26,6 +26,7 @@ This post assumes basic knowledge of digital signal processing (DSP).&lt;/p&gt;
           &lt;li&gt;&lt;a href=&quot;#fig-2&quot; id=&quot;markdown-toc-fig-2&quot;&gt;Fig. 2&lt;/a&gt;&lt;/li&gt;
           &lt;li&gt;&lt;a href=&quot;#fig-3&quot; id=&quot;markdown-toc-fig-3&quot;&gt;Fig. 3&lt;/a&gt;&lt;/li&gt;
           &lt;li&gt;&lt;a href=&quot;#fig-4&quot; id=&quot;markdown-toc-fig-4&quot;&gt;Fig. 4&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#fig-5&quot; id=&quot;markdown-toc-fig-5&quot;&gt;Fig. 5&lt;/a&gt;&lt;/li&gt;
         &lt;/ul&gt;
       &lt;/li&gt;
     &lt;/ul&gt;
@@ -34,22 +35,24 @@ This post assumes basic knowledge of digital signal processing (DSP).&lt;/p&gt;
 
 &lt;h1 id=&quot;context&quot;&gt;Context&lt;/h1&gt;
 
-&lt;h2 id=&quot;podcasting-company&quot;&gt;Podcasting Company&lt;/h2&gt;
+&lt;h2 id=&quot;our-podcasting-company&quot;&gt;Our Podcasting Company&lt;/h2&gt;
 
-&lt;p&gt;Imagine you and I start a podcasting business. Quite simply, users are
-able to create and upload content (podcasts) which can be shared with the
-public. In other words, consumption of these podcasts is a free experience.
-Anyone can access and enjoy these podcasts.&lt;/p&gt;
+&lt;p&gt;Imagine you and I start a podcasting platform business.
+Our users can create and / or consume content (podcasts) on the platform.
+Our business model offers a free-tier consumer experience, i.e.,
+anyone with an account on our platform can listen to any podcast for free.
+We decide to monetize our business by inserting audio ads into the content on our
+platform but how do we know when to interrupt the podcast content and
+play the audio ad?&lt;/p&gt;
 
 &lt;h2 id=&quot;engineering-problem&quot;&gt;Engineering Problem&lt;/h2&gt;
 
-&lt;p&gt;We decide to monetize our business by inserting audio ads but how do
-we know when to interrupt the podcast content and play the audio ad? We call
-upon our engineering team to prototype a simple solution for a next day
+&lt;p&gt;We call upon our engineering team to prototype a simple solution for a &lt;strong&gt;next day&lt;/strong&gt;
 proof-of-concept (POC) demo. To be clear, our acceptance criteria is to 
-find the least obtrusive ad insertion points. We don’t need to worry about
-cross-fading the content with the ad to make it sound as smooth as possible, etc.
-as that will be handled by a different engineering team.&lt;/p&gt;
+find the “least obtrusive” ad break or insertion points for a given podcast.
+We don’t need to worry about cross-fading the content with the audio ad to
+make it sound as smooth as possible as the stitching will be handled by
+a different engineering team. Our focus is finding where to insert the audio ads.&lt;/p&gt;
 
 &lt;h2 id=&quot;engineering-approach&quot;&gt;Engineering Approach&lt;/h2&gt;
 
@@ -57,12 +60,15 @@ as that will be handled by a different engineering team.&lt;/p&gt;
 
 &lt;p&gt;We may be tempted to apply ML / AI to solve this problem.
 While they are attractive options, they usually
-require lots of data to learn from. We could explore the subset of
-unsupervised ML algorithms which don’t require any other added information,
-e.g., labels, but even those require time for tuning.&lt;/p&gt;
+require lots of data in order to learn. We could explore the subset of
+unsupervised ML algorithms which don’t require additional information
+(labels) but even those require substantial time-boxing for tuning 
+hyperparameters.&lt;/p&gt;
 
-&lt;p&gt;Google’s &lt;a href=&quot;https://developers.google.com/machine-learning/guides/rules-of-ml#rule_1_don%E2%80%99t_be_afraid_to_launch_a_product_without_machine_learning&quot;&gt;first rule&lt;/a&gt; of ML is to not use any ML and in our case this may
-be our best option as we need to deliver the POC by tomorrow.&lt;/p&gt;
+&lt;p&gt;Google’s &lt;a href=&quot;https://developers.google.com/machine-learning/guides/rules-of-ml#rule_1_don%E2%80%99t_be_afraid_to_launch_a_product_without_machine_learning&quot;&gt;first rule&lt;/a&gt; of ML is to not use any ML and in our case it may
+be wise to apply this philosophy as our POC deadline is tomorrow.
+If we convince our stakeholders there’s value in our approach, we can
+iterate with ML / AI in future versions.&lt;/p&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;Machine learning is cool, but it requires data.
@@ -75,7 +81,7 @@ then a heuristic will get you 50% of the way there.&lt;/p&gt;
 
 &lt;h3 id=&quot;applied-digital-signal-processing-dsp&quot;&gt;Applied Digital Signal Processing (DSP)&lt;/h3&gt;
 
-&lt;p&gt;It turns out that we can bootstrap a simple algorithm by applying
+&lt;p&gt;It turns out that we can chalk-up a simple algorithm by applying
 basic DSP techniques. If you don’t know DSP, I’d suggest taking a few
 courses to learn it as the applications are endless. Coursera offers
 exceptional &lt;a href=&quot;https://www.coursera.org/learn/dsp1&quot;&gt;foundational&lt;/a&gt; and useful &lt;a href=&quot;https://www.coursera.org/learn/audio-signal-processing&quot;&gt;music applications&lt;/a&gt; courses.&lt;/p&gt;
@@ -84,102 +90,118 @@ exceptional &lt;a href=&quot;https://www.coursera.org/learn/dsp1&quot;&gt;founda
 
 &lt;h2 id=&quot;approach&quot;&gt;Approach&lt;/h2&gt;
 
-&lt;p&gt;How would you define “less-obtrusive”? This is a subjective measure.
-Is a podcast audio ad break best defined by a change in conversation, sentiment,
-emotion, or something else? Is it just the lack of voice activity?&lt;/p&gt;
+&lt;p&gt;How would you define “least obtrusive”? This is a subjective measure.
+Is a podcast audio ad break best defined by a change in conversation,
+a change in sentiment, a change in emotion, the lack of voice activity,
+or something else?&lt;/p&gt;
 
 &lt;p&gt;In the simplest case, we can develop a time-domain energy-based algorithm which
 may translate to one of many possible definitions on a case-by-case basis.&lt;/p&gt;
 
 &lt;p&gt;We can track the signal’s energy over time and insert ads where the energy is lower
-than some threshold (relative to the signal) for some amount of time
-(also relative to the signal). We can find several of these ad breaks or ad insertion
+than some threshold for some amount of time (both relative to the signal).
+We can find several of these ad breaks or ad insertion
 points and order them by the largest amount of time under the threshold.
-Thus, the best ad insertion point this algorithm would find
-is defined by the maximal contiguous low energy (thresholded) streak in time.&lt;/p&gt;
+Under this definition, the best ad insertion point is defined by the
+maximal contiguous thresholded low energy streak in time.&lt;/p&gt;
 
-&lt;p&gt;If you’re into stock trading, you may see the resemblance this algorithm has
-to several technical indicators you may be familiar with.&lt;/p&gt;
+&lt;p&gt;If you’re into stock trading, you may see this algorithm’s resemblance to
+several technical indicators that you may be familiar with.&lt;/p&gt;
 
 &lt;h3 id=&quot;root-mean-square-rms&quot;&gt;Root-Mean-Square (RMS)&lt;/h3&gt;
 
 &lt;p&gt;We will use &lt;a href=&quot;https://en.wikipedia.org/wiki/Root_mean_square#Definition&quot;&gt;RMS&lt;/a&gt; to proxy the de facto time-domain signal &lt;a href=&quot;https://en.wikipedia.org/wiki/Energy_(signal_processing)&quot;&gt;energy&lt;/a&gt; calculation.
 Generally, they’re trying to measure different spins of the same thing,
-the $L^2$ or &lt;a href=&quot;https://en.wikipedia.org/wiki/Norm_(mathematics)#Euclidean_norm&quot;&gt;euclidean norm&lt;/a&gt;. In order to see how RMS changes over time we
-apply a windowed version of the calculation yielding a new signal
-which shows how the energy of our signal changes over time. Why
-not just use a windowed version of the energy calculation? I’m using RMS because
-a windowed version of it is already implemented in the audio package I’m importing.&lt;/p&gt;
+the $L^2$ or &lt;a href=&quot;https://en.wikipedia.org/wiki/Norm_(mathematics)#Euclidean_norm&quot;&gt;euclidean norm&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;In order to see how RMS changes over time we can
+apply a framed version of the calculation yielding a new signal
+which shows how the RMS of our signal changes over time.&lt;/p&gt;
+
+&lt;p&gt;When I say “framed” I mean that we’re considering $n$ audio samples
+in a single calculation, storing the result, shifting or hopping over by
+$m$ samples, and then repeating the process until we traverse the entire signal.&lt;/p&gt;
+
+&lt;p&gt;Why not just use a framed version of the energy calculation?
+I’m using RMS because a framed version of it’s already implemented
+in the audio package I’m importing. Work smart, not hard :).&lt;/p&gt;
 
 &lt;h3 id=&quot;amplitude-envelope-ae&quot;&gt;Amplitude Envelope (AE)&lt;/h3&gt;
 
-&lt;p&gt;The &lt;a href=&quot;https://en.wikipedia.org/wiki/Envelope_(waves)&quot;&gt;AE&lt;/a&gt; is simply the maximum absolute value of a given window. It’s calculation
-also yields a signal that traces the signal’s upper envelope over time. Valerio Velardo’s
-&lt;a href=&quot;https://www.youtube.com/watch?v=rlypsap6Wow&quot;&gt;implementation&lt;/a&gt; is all we need.&lt;/p&gt;
+&lt;p&gt;The &lt;a href=&quot;https://en.wikipedia.org/wiki/Envelope_(waves)&quot;&gt;AE&lt;/a&gt; is simply the maximum value of a given frame. Its calculation
+also yields a signal but this result traces the upper envelope over time.
+Valerio Velardo’s &lt;a href=&quot;https://www.youtube.com/watch?v=rlypsap6Wow&quot;&gt;implementation&lt;/a&gt; is all we need.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;numpy&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;amplitude_envelope&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;frame_size&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2048&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hop_length&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;512&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;max&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;frame_size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hop_length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)])&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;h3 id=&quot;ae--rms&quot;&gt;AE + RMS&lt;/h3&gt;
 
-&lt;p&gt;We can combine these two measures to form our final algorithm. First we set the
-window and hop sizes that will be shared by both measures. Next, we calculate 
-both measures which leave us with two new signals. We will use the AE as our measure
-of how the signal’s energy changes over time along with the standard deviation of the
-RMS measure as the threshold. Everytime the AE dips below the threshold we set a mark and
-only remove that mark once it breaks back over the threshold. We then add that segment to
+&lt;p&gt;We can combine these two measures to form our final algorithm. We set the
+frame and hop sizes that will be shared by both measures and calculate 
+them resulting in two new signals. We use the AE as our measure
+of how the signal’s energy changes over time, and the standard deviation of the
+framed RMS as the threshold.&lt;/p&gt;
+
+&lt;p&gt;Everytime the AE dips below the standard deviation of the framed RMS standard deviation,
+we mark the beginning of a potential ad break segment. Once it breaks back over the threshold,
+we mark the end of an ad break segment and add that segment to
 a temporary result buffer. Once we’ve done this for the entire AE, we can sort the segments
-descending based off the length of the segment. We can insert ads in the midpoints of these
-segments, where the largest segments are considered the best ad breaks or insertion points.&lt;/p&gt;
+by the length of the segment, descending. Finally, we can insert ads in the midpoints of these
+segments, where the largest segments are considered to be better ad breaks or insertion points.&lt;/p&gt;
 
 &lt;h2 id=&quot;demo&quot;&gt;Demo&lt;/h2&gt;
 
-&lt;p&gt;Here’s a fake podcast that I recorded with my voice:&lt;/p&gt;
+&lt;p&gt;Here’s a fake podcast with its waveform:&lt;/p&gt;
 
 &lt;audio controls=&quot;&quot;&gt;
-  &lt;source src=&quot;/assets/audio/fake_podcast.mp3&quot; type=&quot;audio/mpeg&quot; /&gt;
+  &lt;source src=&quot;/assets/audio/simple_podcast_ad_insertion/fake_podcast.mp3&quot; type=&quot;audio/mpeg&quot; /&gt;
   Your browser does not support the audio element.
 &lt;/audio&gt;
-
-&lt;p&gt;Here’s the waveform:&lt;/p&gt;
 
 &lt;h4 id=&quot;fig-1&quot;&gt;Fig. 1&lt;/h4&gt;
 &lt;p&gt;&lt;img src=&quot;assets/images/simple_podcast_ad_insertion/fake_podcast.png&quot; alt=&quot;fake_podcast&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;Here’s a fake audio ad that I recorded with my voice:&lt;/p&gt;
+&lt;p&gt;Here’s a fake audio ad with its waveform:&lt;/p&gt;
 
 &lt;audio controls=&quot;&quot;&gt;
-  &lt;source src=&quot;/assets/audio/fake_ad.mp3&quot; type=&quot;audio/mpeg&quot; /&gt;
+  &lt;source src=&quot;/assets/audio/simple_podcast_ad_insertion/fake_ad.mp3&quot; type=&quot;audio/mpeg&quot; /&gt;
   Your browser does not support the audio element.
 &lt;/audio&gt;
-
-&lt;p&gt;Here’s the waveform:&lt;/p&gt;
 
 &lt;h4 id=&quot;fig-2&quot;&gt;Fig. 2&lt;/h4&gt;
 &lt;p&gt;&lt;img src=&quot;assets/images/simple_podcast_ad_insertion/fake_ad.png&quot; alt=&quot;fake_ad&quot; /&gt;&lt;/p&gt;
 
 &lt;h4 id=&quot;fig-3&quot;&gt;Fig. 3&lt;/h4&gt;
-&lt;p&gt;&lt;img src=&quot;assets/images/simple_podcast_ad_insertion/result.png&quot; alt=&quot;result&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;assets/images/simple_podcast_ad_insertion/fake_result.png&quot; alt=&quot;fake_result&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&quot;#fig-3&quot;&gt;Fig 3.&lt;/a&gt; shows the time-domain waveform in blue,
 the AE in red, RMS in pink, +/- one standard-deviation of
 RMS in yellow, and three ad breaks or insertion points in green
-which vary in thickness (thicker lines are better breaks).
-The &lt;a href=&quot;https://en.wikipedia.org/wiki/Mel_scale#:~:text=The%20mel%20scale%20(after%20the,dB%20above%20the%20listener's%20threshold.&quot;&gt;mel&lt;/a&gt;-&lt;a href=&quot;https://en.wikipedia.org/wiki/Spectrogram#:~:text=A%20spectrogram%20is%20a%20visual,they%20may%20be%20called%20waterfalls.&quot;&gt;spectrogram&lt;/a&gt; with the same hop-size is shown below.
-Since the ad breaks are present where the harmonics of my voice
-are not, the algorithm is inserting ads into places where I am
-not talking.&lt;/p&gt;
+which vary in thickness (thicker lines are better breaks).&lt;/p&gt;
+
+&lt;h4 id=&quot;fig-4&quot;&gt;Fig. 4&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&quot;assets/images/simple_podcast_ad_insertion/fake_result_spec.png&quot; alt=&quot;fake_result_spec&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;#fig-4&quot;&gt;Fig 4.&lt;/a&gt; shows the &lt;a href=&quot;https://en.wikipedia.org/wiki/Mel_scale#:~:text=The%20mel%20scale%20(after%20the,dB%20above%20the%20listener's%20threshold.&quot;&gt;mel&lt;/a&gt;-&lt;a href=&quot;https://en.wikipedia.org/wiki/Spectrogram#:~:text=A%20spectrogram%20is%20a%20visual,they%20may%20be%20called%20waterfalls.&quot;&gt;spectrogram&lt;/a&gt; with the same
+hop-size is shown below. Since the ad breaks are present where the
+harmonics of my voice are not, the algorithm is inserting ads into
+places where I am not talking.&lt;/p&gt;
 
 &lt;p&gt;Here’s the result of simply stitching in the fake audio ad (my voice)
 into the fake podcast (my voice) that into the best of the three ad breaks the
 algorithm found.&lt;/p&gt;
 
 &lt;audio controls=&quot;&quot;&gt;
-  &lt;source src=&quot;/assets/audio/stiched.mp3&quot; type=&quot;audio/mpeg&quot; /&gt;
+  &lt;source src=&quot;/assets/audio/simple_podcast_ad_insertion/fake_stitched.mp3&quot; type=&quot;audio/mpeg&quot; /&gt;
   Your browser does not support the audio element.
 &lt;/audio&gt;
 
-&lt;p&gt;Here’s there waveform:&lt;/p&gt;
-
-&lt;h4 id=&quot;fig-4&quot;&gt;Fig. 4&lt;/h4&gt;
-&lt;p&gt;&lt;img src=&quot;assets/images/simple_podcast_ad_insertion/stiched.png&quot; alt=&quot;stiched&quot; /&gt;&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="digital-signal-processing" /><summary type="html">This post outlines a simple time-domain energy-based algorithm for identifying ad opportunities in podcast audio. This post assumes basic knowledge of digital signal processing (DSP).</summary></entry><entry><title type="html">Ordinary Least Squares is Orthogonal Projection</title><link href="http://localhost:4000/linear-regression-is-orthogonal-projection" rel="alternate" type="text/html" title="Ordinary Least Squares is Orthogonal Projection" /><published>2020-12-08T00:00:00-06:00</published><updated>2020-12-08T00:00:00-06:00</updated><id>http://localhost:4000/linear-regression-is-orthogonal-projection</id><content type="html" xml:base="http://localhost:4000/linear-regression-is-orthogonal-projection">&lt;p&gt;This post visualizes the equivalence of two perspectives
+&lt;h4 id=&quot;fig-5&quot;&gt;Fig. 5&lt;/h4&gt;
+&lt;p&gt;&lt;img src=&quot;assets/images/simple_podcast_ad_insertion/fake_stitched.png&quot; alt=&quot;fake_stitched&quot; /&gt;&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="digital-signal-processing" /><category term="podcast" /><summary type="html">This post outlines a simple time-domain energy-based algorithm for identifying ad opportunities in podcast audio. This post assumes basic knowledge of digital signal processing (DSP).</summary></entry><entry><title type="html">Ordinary Least Squares is Orthogonal Projection</title><link href="http://localhost:4000/linear-regression-is-orthogonal-projection" rel="alternate" type="text/html" title="Ordinary Least Squares is Orthogonal Projection" /><published>2020-12-08T00:00:00-06:00</published><updated>2020-12-08T00:00:00-06:00</updated><id>http://localhost:4000/linear-regression-is-orthogonal-projection</id><content type="html" xml:base="http://localhost:4000/linear-regression-is-orthogonal-projection">&lt;p&gt;This post visualizes the equivalence of two perspectives
 on estimating the unknown parameters in a simple linear
 regression model, ordinary least squares (OLS) and
 orthogonal projection (OP).&lt;/p&gt;
