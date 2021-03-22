@@ -49,7 +49,7 @@ hyperparameters.
 Google's [first rule] of ML is to not use ML; in our case it may
 be wise to follow such a philosophy in order to meet the deadline for our POC.
 If we convince our stakeholders of a value-add, we can
-incorporate ML / AI solutions to future iterations.
+incorporate ML / AI solutions in future iterations.
 
 > Machine learning is cool, but it requires data.
 > Theoretically, you can take data from a different
