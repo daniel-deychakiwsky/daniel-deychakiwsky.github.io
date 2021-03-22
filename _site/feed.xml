@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-03-21T19:50:47-05:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Deylemma</title><subtitle>An Engineering Blog
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-03-21T20:22:50-05:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Deylemma</title><subtitle>An Engineering Blog
 </subtitle><author><name>Daniel Deychakiwsky</name><email>d.deychak@gmail.com</email></author><entry><title type="html">Simple Podcast Ad Insertion</title><link href="http://localhost:4000/simple-podcast-ad-insertion" rel="alternate" type="text/html" title="Simple Podcast Ad Insertion" /><published>2021-03-21T00:00:00-05:00</published><updated>2021-03-21T00:00:00-05:00</updated><id>http://localhost:4000/simple-podcast-ad-insertion</id><content type="html" xml:base="http://localhost:4000/simple-podcast-ad-insertion">&lt;p&gt;This post outlines a simple time-domain energy-based
 algorithm for identifying ad opportunities in podcast audio.
 This post assumes basic knowledge of digital signal processing (DSP).&lt;/p&gt;
@@ -8,8 +8,8 @@ This post assumes basic knowledge of digital signal processing (DSP).&lt;/p&gt;
       &lt;li&gt;&lt;a href=&quot;#our-podcasting-company&quot; id=&quot;markdown-toc-our-podcasting-company&quot;&gt;Our Podcasting Company&lt;/a&gt;&lt;/li&gt;
       &lt;li&gt;&lt;a href=&quot;#engineering-problem&quot; id=&quot;markdown-toc-engineering-problem&quot;&gt;Engineering Problem&lt;/a&gt;&lt;/li&gt;
       &lt;li&gt;&lt;a href=&quot;#engineering-approach&quot; id=&quot;markdown-toc-engineering-approach&quot;&gt;Engineering Approach&lt;/a&gt;        &lt;ul&gt;
-          &lt;li&gt;&lt;a href=&quot;#applied-machine-learning-ml--artificial-intelligence-ai&quot; id=&quot;markdown-toc-applied-machine-learning-ml--artificial-intelligence-ai&quot;&gt;Applied Machine Learning (ML) / Artificial Intelligence (AI)&lt;/a&gt;&lt;/li&gt;
-          &lt;li&gt;&lt;a href=&quot;#applied-digital-signal-processing-dsp&quot; id=&quot;markdown-toc-applied-digital-signal-processing-dsp&quot;&gt;Applied Digital Signal Processing (DSP)&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#machine-learning-ml--artificial-intelligence-ai&quot; id=&quot;markdown-toc-machine-learning-ml--artificial-intelligence-ai&quot;&gt;Machine Learning (ML) / Artificial Intelligence (AI)&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#digital-signal-processing-dsp&quot; id=&quot;markdown-toc-digital-signal-processing-dsp&quot;&gt;Digital Signal Processing (DSP)&lt;/a&gt;&lt;/li&gt;
         &lt;/ul&gt;
       &lt;/li&gt;
     &lt;/ul&gt;
@@ -56,7 +56,7 @@ a different engineering team. Our focus is finding where to insert the audio ads
 
 &lt;h2 id=&quot;engineering-approach&quot;&gt;Engineering Approach&lt;/h2&gt;
 
-&lt;h3 id=&quot;applied-machine-learning-ml--artificial-intelligence-ai&quot;&gt;Applied Machine Learning (ML) / Artificial Intelligence (AI)&lt;/h3&gt;
+&lt;h3 id=&quot;machine-learning-ml--artificial-intelligence-ai&quot;&gt;Machine Learning (ML) / Artificial Intelligence (AI)&lt;/h3&gt;
 
 &lt;p&gt;We may be tempted to apply ML / AI to solve this problem.
 While they are attractive options, they usually
@@ -65,10 +65,10 @@ unsupervised ML algorithms which don’t require additional information
 (labels) but even those require substantial time-boxing for tuning 
 hyperparameters.&lt;/p&gt;
 
-&lt;p&gt;Google’s &lt;a href=&quot;https://developers.google.com/machine-learning/guides/rules-of-ml#rule_1_don%E2%80%99t_be_afraid_to_launch_a_product_without_machine_learning&quot;&gt;first rule&lt;/a&gt; of ML is to not use any ML and in our case it may
-be wise to apply this philosophy as our POC deadline is tomorrow.
-If we convince our stakeholders there’s value in our approach, we can
-iterate with ML / AI in future versions.&lt;/p&gt;
+&lt;p&gt;Google’s &lt;a href=&quot;https://developers.google.com/machine-learning/guides/rules-of-ml#rule_1_don%E2%80%99t_be_afraid_to_launch_a_product_without_machine_learning&quot;&gt;first rule&lt;/a&gt; of ML is to not use ML and in our case it may
+be wise to follow such a philosophy to meet the deadline for our POC.
+If we convince our stakeholders of a value-add, we can
+incorporate ML / AI solutions to future iterations.&lt;/p&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;Machine learning is cool, but it requires data.
@@ -79,7 +79,7 @@ If you think that machine learning will give you a 100% boost,
 then a heuristic will get you 50% of the way there.&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;h3 id=&quot;applied-digital-signal-processing-dsp&quot;&gt;Applied Digital Signal Processing (DSP)&lt;/h3&gt;
+&lt;h3 id=&quot;digital-signal-processing-dsp&quot;&gt;Digital Signal Processing (DSP)&lt;/h3&gt;
 
 &lt;p&gt;It turns out that we can chalk-up a simple algorithm by applying
 basic DSP techniques. If you don’t know DSP, I’d suggest taking a few
@@ -99,10 +99,10 @@ or something else?&lt;/p&gt;
 may translate to one of many possible definitions on a case-by-case basis.&lt;/p&gt;
 
 &lt;p&gt;We can track the signal’s energy over time and insert ads where the energy is lower
-than some threshold for some amount of time (both relative to the signal).
+than some threshold for some amount of time (relative to the signal).
 We can find several of these ad breaks or ad insertion
 points and order them by the largest amount of time under the threshold.
-Under this definition, the best ad insertion point is defined by the
+By this definition, the best ad insertion point is defined by the
 maximal contiguous thresholded low energy streak in time.&lt;/p&gt;
 
 &lt;p&gt;If you’re into stock trading, you may see this algorithm’s resemblance to
@@ -111,14 +111,13 @@ several technical indicators that you may be familiar with.&lt;/p&gt;
 &lt;h3 id=&quot;root-mean-square-rms&quot;&gt;Root-Mean-Square (RMS)&lt;/h3&gt;
 
 &lt;p&gt;We will use &lt;a href=&quot;https://en.wikipedia.org/wiki/Root_mean_square#Definition&quot;&gt;RMS&lt;/a&gt; to proxy the de facto time-domain signal &lt;a href=&quot;https://en.wikipedia.org/wiki/Energy_(signal_processing)&quot;&gt;energy&lt;/a&gt; calculation.
-Generally, they’re trying to measure different spins of the same thing,
-the $L^2$ or &lt;a href=&quot;https://en.wikipedia.org/wiki/Norm_(mathematics)#Euclidean_norm&quot;&gt;euclidean norm&lt;/a&gt;.&lt;/p&gt;
+They measure different spins of the same thing, the $L^2$ or &lt;a href=&quot;https://en.wikipedia.org/wiki/Norm_(mathematics)#Euclidean_norm&quot;&gt;euclidean norm&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;In order to see how RMS changes over time we can
 apply a framed version of the calculation yielding a new signal
-which shows how the RMS of our signal changes over time.&lt;/p&gt;
+which captures how the RMS of our signal changes over time.&lt;/p&gt;
 
-&lt;p&gt;When I say “framed” I mean that we’re considering $n$ audio samples
+&lt;p&gt;When I say “framed” I mean we’re considering $n$ audio samples
 in a single calculation, storing the result, shifting or hopping over by
 $m$ samples, and then repeating the process until we traverse the entire signal.&lt;/p&gt;
 
@@ -128,8 +127,8 @@ in the audio package I’m importing. Work smart, not hard :).&lt;/p&gt;
 
 &lt;h3 id=&quot;amplitude-envelope-ae&quot;&gt;Amplitude Envelope (AE)&lt;/h3&gt;
 
-&lt;p&gt;The &lt;a href=&quot;https://en.wikipedia.org/wiki/Envelope_(waves)&quot;&gt;AE&lt;/a&gt; is simply the maximum value of a given frame. Its calculation
-also yields a signal but this result traces the upper envelope over time.
+&lt;p&gt;The &lt;a href=&quot;https://en.wikipedia.org/wiki/Envelope_(waves)&quot;&gt;AE&lt;/a&gt; is also a framed calculation and is simply the maximum value of a given frame.
+Its calculation yields a signal that traces the upper envelope of the original signal over time.
 Valerio Velardo’s &lt;a href=&quot;https://www.youtube.com/watch?v=rlypsap6Wow&quot;&gt;implementation&lt;/a&gt; is all we need.&lt;/p&gt;
 
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;numpy&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;
@@ -140,18 +139,18 @@ Valerio Velardo’s &lt;a href=&quot;https://www.youtube.com/watch?v=rlypsap6Wow
 
 &lt;h3 id=&quot;ae--rms&quot;&gt;AE + RMS&lt;/h3&gt;
 
-&lt;p&gt;We can combine these two measures to form our final algorithm. We set the
-frame and hop sizes that will be shared by both measures and calculate 
-them resulting in two new signals. We use the AE as our measure
-of how the signal’s energy changes over time, and the standard deviation of the
-framed RMS as the threshold.&lt;/p&gt;
+&lt;p&gt;We combine these two measures to form our final algorithm. We set the
+frame and hop sizes that will be shared by both measures and carry out the calculations.
+We use the AE as our measure of how the signal’s energy changes over time,
+and the standard deviation of the framed RMS as the threshold.&lt;/p&gt;
 
-&lt;p&gt;Everytime the AE dips below the standard deviation of the framed RMS standard deviation,
+&lt;p&gt;Everytime the AE dips below the standard deviation of the framed RMS,
 we mark the beginning of a potential ad break segment. Once it breaks back over the threshold,
 we mark the end of an ad break segment and add that segment to
-a temporary result buffer. Once we’ve done this for the entire AE, we can sort the segments
-by the length of the segment, descending. Finally, we can insert ads in the midpoints of these
-segments, where the largest segments are considered to be better ad breaks or insertion points.&lt;/p&gt;
+a temporary result buffer. Once we’ve done this for the entire AE, we sort the segments
+by the length of the segment, descending. Finally, we define insertion points as the
+midpoints of these segments, where the largest segments are considered to be better
+ad breaks or insertion points.&lt;/p&gt;
 
 &lt;h2 id=&quot;demo&quot;&gt;Demo&lt;/h2&gt;
 

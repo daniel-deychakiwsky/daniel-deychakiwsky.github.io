@@ -38,7 +38,7 @@ a different engineering team. Our focus is finding where to insert the audio ads
 
 ## Engineering Approach
 
-### Applied Machine Learning (ML) / Artificial Intelligence (AI)
+### Machine Learning (ML) / Artificial Intelligence (AI)
 
 We may be tempted to apply ML / AI to solve this problem.
 While they are attractive options, they usually
@@ -47,10 +47,10 @@ unsupervised ML algorithms which don't require additional information
 (labels) but even those require substantial time-boxing for tuning 
 hyperparameters.
 
-Google's [first rule] of ML is to not use any ML and in our case it may
-be wise to apply this philosophy as our POC deadline is tomorrow.
-If we convince our stakeholders there's value in our approach, we can
-iterate with ML / AI in future versions.
+Google's [first rule] of ML is to not use ML and in our case it may
+be wise to follow such a philosophy to meet the deadline for our POC.
+If we convince our stakeholders of a value-add, we can
+incorporate ML / AI solutions to future iterations.
 
 > Machine learning is cool, but it requires data.
 > Theoretically, you can take data from a different
@@ -59,7 +59,7 @@ iterate with ML / AI in future versions.
 > If you think that machine learning will give you a 100% boost,
 > then a heuristic will get you 50% of the way there.
 
-### Applied Digital Signal Processing (DSP)
+### Digital Signal Processing (DSP)
 
 It turns out that we can chalk-up a simple algorithm by applying
 basic DSP techniques. If you don't know DSP, I'd suggest taking a few
@@ -79,10 +79,10 @@ In the simplest case, we can develop a time-domain energy-based algorithm which
 may translate to one of many possible definitions on a case-by-case basis.
 
 We can track the signal's energy over time and insert ads where the energy is lower
-than some threshold for some amount of time (both relative to the signal).
+than some threshold for some amount of time (relative to the signal).
 We can find several of these ad breaks or ad insertion
 points and order them by the largest amount of time under the threshold.
-Under this definition, the best ad insertion point is defined by the
+By this definition, the best ad insertion point is defined by the
 maximal contiguous thresholded low energy streak in time.
 
 If you're into stock trading, you may see this algorithm's resemblance to
@@ -91,14 +91,13 @@ several technical indicators that you may be familiar with.
 ### Root-Mean-Square (RMS)
 
 We will use [RMS] to proxy the de facto time-domain signal [energy] calculation.
-Generally, they're trying to measure different spins of the same thing,
-the $L^2$ or [euclidean norm]. 
+They measure different spins of the same thing, the $L^2$ or [euclidean norm]. 
 
 In order to see how RMS changes over time we can
 apply a framed version of the calculation yielding a new signal
-which shows how the RMS of our signal changes over time.
+which captures how the RMS of our signal changes over time.
 
-When I say "framed" I mean that we're considering $n$ audio samples
+When I say "framed" I mean we're considering $n$ audio samples
 in a single calculation, storing the result, shifting or hopping over by
 $m$ samples, and then repeating the process until we traverse the entire signal.
 
@@ -108,8 +107,8 @@ in the audio package I'm importing. Work smart, not hard :).
 
 ### Amplitude Envelope (AE)
 
-The [AE] is simply the maximum value of a given frame. Its calculation
-also yields a signal but this result traces the upper envelope over time.
+The [AE] is also a framed calculation and is simply the maximum value of a given frame.
+Its calculation yields a signal that traces the upper envelope of the original signal over time.
 Valerio Velardo's [implementation] is all we need.
 
 ```python
@@ -121,18 +120,18 @@ def amplitude_envelope(x, frame_size=2048, hop_length=512):
 
 ### AE + RMS
 
-We can combine these two measures to form our final algorithm. We set the
-frame and hop sizes that will be shared by both measures and calculate 
-them resulting in two new signals. We use the AE as our measure
-of how the signal's energy changes over time, and the standard deviation of the
-framed RMS as the threshold.
+We combine these two measures to form our final algorithm. We set the
+frame and hop sizes that will be shared by both measures and carry out the calculations.
+We use the AE as our measure of how the signal's energy changes over time,
+and the standard deviation of the framed RMS as the threshold.
 
-Everytime the AE dips below the standard deviation of the framed RMS standard deviation,
+Everytime the AE dips below the standard deviation of the framed RMS,
 we mark the beginning of a potential ad break segment. Once it breaks back over the threshold,
 we mark the end of an ad break segment and add that segment to
-a temporary result buffer. Once we've done this for the entire AE, we can sort the segments
-by the length of the segment, descending. Finally, we can insert ads in the midpoints of these
-segments, where the largest segments are considered to be better ad breaks or insertion points. 
+a temporary result buffer. Once we've done this for the entire AE, we sort the segments
+by the length of the segment, descending. Finally, we define insertion points as the
+midpoints of these segments, where the largest segments are considered to be better
+ad breaks or insertion points.
 
 ## Demo
 
