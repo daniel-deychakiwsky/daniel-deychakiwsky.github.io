@@ -157,7 +157,7 @@ with our algorithm's calculations and results:
 [Fig 3.](#fig-3) shows the time-domain waveform in blue,
 the AE in red, RMS in pink, +/- one standard-deviation of
 RMS in yellow, and three ad breaks or insertion points in green
-which vary in thickness (thicker lines are better breaks).
+which vary in thickness (thicker lines are better ad breaks).
 
 Here's something a bit less basic, a [mel]-[spectrogram] of the fake podcast:
 
