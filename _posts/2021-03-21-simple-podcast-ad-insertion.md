@@ -174,7 +174,7 @@ insert ads where speech is not present.
 
 Here's the result of stitching the fake ad
 to the fake podcast in the best of the three ad breaks the
-algorithm has suggested. This stitching isn't meant to sound good,
+algorithm has suggested and its waveform. This stitching isn't meant to sound good,
 it's just a simple cut and paste. Remember, we'd dish this work off
 to a different engineering team or tackle it in a different scope.
 
