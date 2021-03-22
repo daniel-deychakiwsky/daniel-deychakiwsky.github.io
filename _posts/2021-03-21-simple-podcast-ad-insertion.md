@@ -22,10 +22,9 @@ This post assumes basic knowledge of digital signal processing (DSP).
 Imagine you and I start a podcasting platform business.
 Our users can create and / or consume content (podcasts) on the platform.
 Our business model offers a free-tier consumer experience, i.e.,
-anyone with an account on our platform can listen to any podcast for free.
-We decide to monetize our business by inserting audio ads into the content on our
-platform but how do we know when to interrupt the podcast content and
-play the audio ad?
+anyone with an account can listen to any podcast for free.
+We decide to monetize our business by inserting audio ads but how
+do we know where to interrupt a podcast and play an ad?
 
 ## Engineering Problem
 
