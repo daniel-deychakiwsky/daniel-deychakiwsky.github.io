@@ -46,8 +46,8 @@ unsupervised ML algorithms which don't require additional information
 (labels) but even those require substantial time-boxing for tuning 
 hyperparameters.
 
-Google's [first rule] of ML is to not use ML and in our case it may
-be wise to follow such a philosophy to meet the deadline for our POC.
+Google's [first rule] of ML is to not use ML; in our case it may
+be wise to follow such a philosophy in order to meet the deadline for our POC.
 If we convince our stakeholders of a value-add, we can
 incorporate ML / AI solutions to future iterations.
 
