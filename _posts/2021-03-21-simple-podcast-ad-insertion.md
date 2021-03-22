@@ -87,7 +87,7 @@ maximal contiguous thresholded low energy streak in time.
 If you're into stock trading, you may see this algorithm's resemblance to
 several technical indicators that you may be familiar with.
 
-### Root-Mean-Square (RMS)
+### Root Mean Square (RMS)
 
 We will use [RMS] to proxy the de facto time-domain signal [energy] calculation.
 They measure different spins of the same thing, the $L^2$ or [euclidean norm]. 
@@ -101,7 +101,7 @@ in a single calculation, storing the result, shifting or hopping over by
 $m$ samples, and then repeating the process until we traverse the entire signal.
 
 Why not just use a framed version of the energy calculation?
-I'm using RMS because a framed version of it's already implemented
+I'm using RMS because a framed version of it is already implemented
 in the audio package I'm importing. Work smart, not hard :).
 
 ### Amplitude Envelope (AE)
