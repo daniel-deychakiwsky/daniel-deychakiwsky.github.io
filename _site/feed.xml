@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-03-21T20:22:50-05:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Deylemma</title><subtitle>An Engineering Blog
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-03-21T22:04:49-05:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Deylemma</title><subtitle>An Engineering Blog
 </subtitle><author><name>Daniel Deychakiwsky</name><email>d.deychak@gmail.com</email></author><entry><title type="html">Simple Podcast Ad Insertion</title><link href="http://localhost:4000/simple-podcast-ad-insertion" rel="alternate" type="text/html" title="Simple Podcast Ad Insertion" /><published>2021-03-21T00:00:00-05:00</published><updated>2021-03-21T00:00:00-05:00</updated><id>http://localhost:4000/simple-podcast-ad-insertion</id><content type="html" xml:base="http://localhost:4000/simple-podcast-ad-insertion">&lt;p&gt;This post outlines a simple time-domain energy-based
 algorithm for identifying ad opportunities in podcast audio.
 This post assumes basic knowledge of digital signal processing (DSP).&lt;/p&gt;
@@ -174,6 +174,9 @@ ad breaks or insertion points.&lt;/p&gt;
 &lt;h4 id=&quot;fig-2&quot;&gt;Fig. 2&lt;/h4&gt;
 &lt;p&gt;&lt;img src=&quot;assets/images/simple_podcast_ad_insertion/fake_ad.png&quot; alt=&quot;fake_ad&quot; /&gt;&lt;/p&gt;
 
+&lt;p&gt;Here’s the fake podcast waveform overlaid
+with our algorithm’s calculations and results:&lt;/p&gt;
+
 &lt;h4 id=&quot;fig-3&quot;&gt;Fig. 3&lt;/h4&gt;
 &lt;p&gt;&lt;img src=&quot;assets/images/simple_podcast_ad_insertion/fake_result.png&quot; alt=&quot;fake_result&quot; /&gt;&lt;/p&gt;
 
@@ -182,17 +185,21 @@ the AE in red, RMS in pink, +/- one standard-deviation of
 RMS in yellow, and three ad breaks or insertion points in green
 which vary in thickness (thicker lines are better breaks).&lt;/p&gt;
 
+&lt;p&gt;Here’s something a bit less basic, a &lt;a href=&quot;https://en.wikipedia.org/wiki/Mel_scale#:~:text=The%20mel%20scale%20(after%20the,dB%20above%20the%20listener's%20threshold.&quot;&gt;mel&lt;/a&gt;-&lt;a href=&quot;https://en.wikipedia.org/wiki/Spectrogram#:~:text=A%20spectrogram%20is%20a%20visual,they%20may%20be%20called%20waterfalls.&quot;&gt;spectrogram&lt;/a&gt; of the fake podcast:&lt;/p&gt;
+
 &lt;h4 id=&quot;fig-4&quot;&gt;Fig. 4&lt;/h4&gt;
 &lt;p&gt;&lt;img src=&quot;assets/images/simple_podcast_ad_insertion/fake_result_spec.png&quot; alt=&quot;fake_result_spec&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;#fig-4&quot;&gt;Fig 4.&lt;/a&gt; shows the &lt;a href=&quot;https://en.wikipedia.org/wiki/Mel_scale#:~:text=The%20mel%20scale%20(after%20the,dB%20above%20the%20listener's%20threshold.&quot;&gt;mel&lt;/a&gt;-&lt;a href=&quot;https://en.wikipedia.org/wiki/Spectrogram#:~:text=A%20spectrogram%20is%20a%20visual,they%20may%20be%20called%20waterfalls.&quot;&gt;spectrogram&lt;/a&gt; with the same
-hop-size is shown below. Since the ad breaks are present where the
-harmonics of my voice are not, the algorithm is inserting ads into
-places where I am not talking.&lt;/p&gt;
+&lt;p&gt;Comparing &lt;a href=&quot;#fig-3&quot;&gt;Fig 3.&lt;/a&gt; to &lt;a href=&quot;#fig-4&quot;&gt;Fig 4.&lt;/a&gt;
+notice that the algorithm places ad breaks
+where there is a lack of frequency content.
+In this example, the algorithm is choosing to
+insert ads where speech is not present.&lt;/p&gt;
 
-&lt;p&gt;Here’s the result of simply stitching in the fake audio ad (my voice)
-into the fake podcast (my voice) that into the best of the three ad breaks the
-algorithm found.&lt;/p&gt;
+&lt;p&gt;Here’s the result of stitching in the fake ad
+into the fake podcast in the best of the three ad breaks the
+algorithm has suggested. This stitching isn’t meant to sound good,
+it’s just a simple cut and paste.&lt;/p&gt;
 
 &lt;audio controls=&quot;&quot;&gt;
   &lt;source src=&quot;/assets/audio/simple_podcast_ad_insertion/fake_stitched.mp3&quot; type=&quot;audio/mpeg&quot; /&gt;

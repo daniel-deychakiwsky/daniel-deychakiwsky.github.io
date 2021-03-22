@@ -149,6 +149,9 @@ Here's a fake audio ad with its waveform:
 #### Fig. 2
 ![fake_ad]
 
+Here's the fake podcast waveform overlaid
+with our algorithm's calculations and results: 
+
 #### Fig. 3
 ![fake_result]
 
@@ -157,17 +160,21 @@ the AE in red, RMS in pink, +/- one standard-deviation of
 RMS in yellow, and three ad breaks or insertion points in green
 which vary in thickness (thicker lines are better breaks).
 
+Here's something a bit less basic, a [mel]-[spectrogram] of the fake podcast:
+
 #### Fig. 4
 ![fake_result_spec]
 
-[Fig 4.](#fig-4) shows the [mel]-[spectrogram] with the same
-hop-size is shown below. Since the ad breaks are present where the
-harmonics of my voice are not, the algorithm is inserting ads into
-places where I am not talking.
+Comparing [Fig 3.](#fig-3) to [Fig 4.](#fig-4)
+notice that the algorithm places ad breaks
+where there is a lack of frequency content.
+In this example, the algorithm is choosing to
+insert ads where speech is not present.
 
-Here's the result of simply stitching in the fake audio ad (my voice)
-into the fake podcast (my voice) that into the best of the three ad breaks the
-algorithm found.
+Here's the result of stitching in the fake ad
+into the fake podcast in the best of the three ad breaks the
+algorithm has suggested. This stitching isn't meant to sound good,
+it's just a simple cut and paste.
 
 {% include embed-audio.html src="/assets/audio/simple_podcast_ad_insertion/fake_stitched.mp3" %}
 
