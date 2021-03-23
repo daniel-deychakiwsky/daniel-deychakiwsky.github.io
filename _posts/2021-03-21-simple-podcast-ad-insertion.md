@@ -1,9 +1,9 @@
 ---
 layout: post
-title: Simple Podcast Ad Insertion
+title: Simple Podcast Ad Break Detection
 categories: digital-signal-processing podcast
 author: Daniel Deychakiwsky
-meta: Simple Podcast Ad Insertion
+meta: Simple Podcast Ad Break Detection
 mathjax: true
 permalink: /:title
 ---
@@ -117,8 +117,9 @@ Valerio Velardo's [implementation] is all we need.
 ```python
 import numpy as np
 
-def amplitude_envelope(x, frame_size=2048, hop_length=512):
-    return np.array([max(x[i: i + frame_size]) for i in range(0, x.size, hop_length)])
+def amplitude_envelope(x=np.array([]), frame_size=2048, hop_length=512):
+    return np.array([max(x[i: i + frame_size])
+                     for i in range(0, x.size, hop_length)])
 ```
 
 ### AE + RMS
@@ -140,14 +141,14 @@ ad breaks or insertion points.
 
 Here's a fake podcast with its waveform:
 
-{% include embed-audio.html src="/assets/audio/simple_podcast_ad_insertion/fake_podcast.mp3" %}
+{% include embed-audio.html src="/assets/audio/simple_podcast_ad_break_detection/fake_podcast.mp3" %}
 
 #### Fig. 1
 ![fake_podcast]
 
 Here's a fake audio ad with its waveform:
 
-{% include embed-audio.html src="/assets/audio/simple_podcast_ad_insertion/fake_ad.mp3" %}
+{% include embed-audio.html src="/assets/audio/simple_podcast_ad_break_detection/fake_ad.mp3" %}
 
 #### Fig. 2
 ![fake_ad]
@@ -182,7 +183,7 @@ algorithm has suggested and its waveform. This stitching isn't meant to sound go
 it's just a simple cut and paste. Remember, we'd dish this work off
 to a different engineering team or tackle it in a different scope.
 
-{% include embed-audio.html src="/assets/audio/simple_podcast_ad_insertion/fake_stitched.mp3" %}
+{% include embed-audio.html src="/assets/audio/simple_podcast_ad_break_detection/fake_stitched.mp3" %}
 
 #### Fig. 5
 ![fake_stitched]
@@ -199,8 +200,8 @@ to a different engineering team or tackle it in a different scope.
 [mel]: https://en.wikipedia.org/wiki/Mel_scale#:~:text=The%20mel%20scale%20(after%20the,dB%20above%20the%20listener's%20threshold.
 [Parseval's theorem]: https://en.wikipedia.org/wiki/Parseval%27s_theorem
 
-[fake_podcast]: assets/images/simple_podcast_ad_insertion/fake_podcast.png
-[fake_ad]: assets/images/simple_podcast_ad_insertion/fake_ad.png
-[fake_stitched]: assets/images/simple_podcast_ad_insertion/fake_stitched.png
-[fake_result]: assets/images/simple_podcast_ad_insertion/fake_result.png
-[fake_result_spec]: assets/images/simple_podcast_ad_insertion/fake_result_spec.png
+[fake_podcast]: assets/images/simple_podcast_ad_break_detection/fake_podcast.png
+[fake_ad]: assets/images/simple_podcast_ad_break_detection/fake_ad.png
+[fake_stitched]: assets/images/simple_podcast_ad_break_detection/fake_stitched.png
+[fake_result]: assets/images/simple_podcast_ad_break_detection/fake_result.png
+[fake_result_spec]: assets/images/simple_podcast_ad_break_detection/fake_result_spec.png
