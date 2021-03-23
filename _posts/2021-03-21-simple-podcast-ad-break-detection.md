@@ -78,7 +78,7 @@ Is a podcast audio ad break best defined by a change in conversation,
 a change in sentiment, a change in emotion, the lack of voice activity,
 or something else?
 
-In the simplest case, we can develop a time-domain energy-based algorithm which
+One simple idea that we'll explore is a time-domain energy-based algorithm which
 may translate to one of many possible definitions on a case-by-case basis.
 
 We can track the signal's energy over time and insert ads where the energy is lower
