@@ -23,10 +23,14 @@ Imagine you and I start a podcasting platform business.
 Users can create and / or consume content (podcasts) on the platform.
 Our business model offers a free-tier consumer experience, i.e.,
 anyone with an account can listen to any podcast for free.
-We decide to monetize our business by inserting audio ads but how
-do we know where to interrupt a podcast to play an ad?
+We decide to monetize our business by inserting audio ads. In order
+to generate a scalable ad supply, we need to generate ad breaks
+not only in the beginning and / or end of a podcast but also during
+a podcast.
 
 ## Engineering Problem
+
+How do we know where to interrupt a podcast to play an ad?
 
 We call upon our engineering team to prototype a simple solution for a **next day**
 proof-of-concept (POC) demo. To be clear, our acceptance criteria is to 
