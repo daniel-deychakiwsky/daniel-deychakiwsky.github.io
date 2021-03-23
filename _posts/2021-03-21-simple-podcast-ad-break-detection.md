@@ -118,8 +118,8 @@ Valerio Velardo's [implementation] is all we need.
 import numpy as np
 
 def amplitude_envelope(x=np.array([]), frame_size=2048, hop_length=512):
-    return np.array([max(x[i: i + frame_size])
-                     for i in range(0, x.size, hop_length)])
+    ae = [max(x[i: i + frame_size]) for i in range(0, x.size, hop_length)]
+    return np.array(ae)
 ```
 
 ### AE + RMS
