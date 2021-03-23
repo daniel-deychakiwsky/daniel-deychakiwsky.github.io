@@ -164,12 +164,13 @@ Here's something a bit less basic, a [mel]-[spectrogram] of the fake podcast:
 #### Fig. 4
 ![fake_result_spec]
 
-Comparing [Fig 3.](#fig-3) to [Fig 4.](#fig-4)
-notice that the algorithm places ad breaks
-where there is a lack of frequency content,
-in this case, the harmonics produced by the speaking voice;
-the algorithm is choosing to
-insert ads where speech is not present.
+Comparing [Fig 3.](#fig-3) to [Fig 4.](#fig-4),
+notice the algorithm's placement of ad breaks. The insertion points
+lack energy in both the time and frequency domains.
+Ads are inserted where speech is not present as conveyed by low
+amplitudes in the time-domain and lack of vocal harmonics in the
+frequency domain. This connection between energy conservation in the time
+and frequency-domain is formally captured by [Parseval's theorem]. 
 
 Here's the result of stitching the fake ad
 to the fake podcast in the best of the three ad breaks the
@@ -192,6 +193,7 @@ to a different engineering team or tackle it in a different scope.
 [AE]: https://en.wikipedia.org/wiki/Envelope_(waves)
 [spectrogram]: https://en.wikipedia.org/wiki/Spectrogram#:~:text=A%20spectrogram%20is%20a%20visual,they%20may%20be%20called%20waterfalls.
 [mel]: https://en.wikipedia.org/wiki/Mel_scale#:~:text=The%20mel%20scale%20(after%20the,dB%20above%20the%20listener's%20threshold.
+[Parseval's theorem]: https://en.wikipedia.org/wiki/Parseval%27s_theorem
 
 [fake_podcast]: assets/images/simple_podcast_ad_insertion/fake_podcast.png
 [fake_ad]: assets/images/simple_podcast_ad_insertion/fake_ad.png
