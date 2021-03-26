@@ -188,6 +188,17 @@ to a different engineering team or tackle it in a different scope.
 #### Fig. 5
 ![fake_stitched]
 
+# Improvements
+
+There are infinite improvements that can be made to our POC. The algorithm is
+certainly "overfitting" to a specific type of podcast. For example, how would the algorithm
+behave with different types of inputs like a mediation / relaxation podcast, or a podcast
+with background music? In some cases it will suffice to hand-engineer additional information,
+e.g., human [voice frequency] (voice band) detection. In other cases, manually
+engineering features may have less effect if any effect at all. I believe the more robust solutions
+will result from applied ML / AI algorithms that are able to generalize to a broader spectrum of
+podcast audio, of course, depending on larger amounts of high quality data. 
+
 [first rule]: https://developers.google.com/machine-learning/guides/rules-of-ml#rule_1_don%E2%80%99t_be_afraid_to_launch_a_product_without_machine_learning
 [foundational]: https://www.coursera.org/learn/dsp1
 [music applications]: https://www.coursera.org/learn/audio-signal-processing
@@ -199,6 +210,7 @@ to a different engineering team or tackle it in a different scope.
 [spectrogram]: https://en.wikipedia.org/wiki/Spectrogram#:~:text=A%20spectrogram%20is%20a%20visual,they%20may%20be%20called%20waterfalls.
 [mel]: https://en.wikipedia.org/wiki/Mel_scale#:~:text=The%20mel%20scale%20(after%20the,dB%20above%20the%20listener's%20threshold.
 [Parseval's theorem]: https://en.wikipedia.org/wiki/Parseval%27s_theorem
+[voice frequency]: https://en.wikipedia.org/wiki/Voice_frequency
 
 [fake_podcast]: assets/images/simple_podcast_ad_break_detection/fake_podcast.png
 [fake_ad]: assets/images/simple_podcast_ad_break_detection/fake_ad.png
