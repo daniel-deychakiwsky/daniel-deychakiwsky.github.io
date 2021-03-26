@@ -195,7 +195,7 @@ certainly overfitting to a specific type of podcast. For example, how would the 
 behave with different types of inputs like a mediation / relaxation podcast, or a podcast
 with background music? In some cases it will suffice to hand-engineer additional information,
 e.g., human [voice frequency] (voice band) detection. In other cases, manually
-engineering features may have less effect if any effect at all. I believe the more robust solutions
+engineering features may have less-of if any effect at all. I believe the more robust solutions
 will result from applied ML / AI algorithms that are able to generalize to a broader spectrum of
 podcast audio, of course, depending on larger amounts of high quality data. 
 
