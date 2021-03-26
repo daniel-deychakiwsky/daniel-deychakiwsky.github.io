@@ -191,7 +191,7 @@ to a different engineering team or tackle it in a different scope.
 # Improvements
 
 There are infinite improvements that can be made to our POC. The algorithm is
-certainly "overfitting" to a specific type of podcast. For example, how would the algorithm
+certainly overfitting to a specific type of podcast. For example, how would the algorithm
 behave with different types of inputs like a mediation / relaxation podcast, or a podcast
 with background music? In some cases it will suffice to hand-engineer additional information,
 e.g., human [voice frequency] (voice band) detection. In other cases, manually
