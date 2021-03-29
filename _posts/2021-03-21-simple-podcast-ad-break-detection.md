@@ -33,8 +33,9 @@ a podcast.
 How do we know where to interrupt a podcast to play an ad?
 
 We call upon our engineering team to prototype a simple solution for a **next day**
-proof-of-concept (POC) demo. To be clear, our acceptance criteria is to 
-find the "least obtrusive" ad breaks or insertion points for a given podcast.
+proof-of-concept (POC) demo. Our acceptance criteria is to 
+find the "least obtrusive" (which is left for us to define) ad breaks or
+insertion points for a given podcast.
 We don't need to worry about cross-fading the content with the ad 
 for smooth transitions as that will be handled by
 a different engineering team. Our focus is solely identifying ad breaks.
