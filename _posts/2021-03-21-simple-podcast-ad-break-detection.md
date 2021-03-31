@@ -69,8 +69,8 @@ It turns out that we can chalk-up a simple algorithm by applying
 basic DSP techniques. If you don't know DSP, I'd suggest taking a few
 courses to learn it as the applications are endless. Coursera offers
 exceptional [foundational] and useful [music applications] courses.
-To refresh your current working knowledge, I'd recommend
-checking out Jack Schaedler's compact [primer].
+Regardless, I'd recommend checking out Jack Schaedler's
+compact [primer].
 
 # Solution / Algorithm
 
