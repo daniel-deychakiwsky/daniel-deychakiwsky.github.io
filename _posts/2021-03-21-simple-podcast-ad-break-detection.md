@@ -69,6 +69,7 @@ It turns out that we can chalk-up a simple algorithm by applying
 basic DSP techniques. If you don't know DSP, I'd suggest taking a few
 courses to learn it as the applications are endless. Coursera offers
 exceptional [foundational] and useful [music applications] courses.
+Want something quick and compact? Jack Schaedler's [primer] is incredible. 
 
 # Solution / Algorithm
 
@@ -212,6 +213,7 @@ will result from applied ML / AI algorithms that are able to generalize to a bro
 [mel]: https://en.wikipedia.org/wiki/Mel_scale#:~:text=The%20mel%20scale%20(after%20the,dB%20above%20the%20listener's%20threshold.
 [Parseval's theorem]: https://en.wikipedia.org/wiki/Parseval%27s_theorem
 [voice frequency]: https://en.wikipedia.org/wiki/Voice_frequency
+[primer]: https://jackschaedler.github.io/circles-sines-signals/
 
 [fake_podcast]: assets/images/simple_podcast_ad_break_detection/fake_podcast.png
 [fake_ad]: assets/images/simple_podcast_ad_break_detection/fake_ad.png
