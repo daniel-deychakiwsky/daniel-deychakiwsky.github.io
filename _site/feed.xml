@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.1.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-03-23T10:14:04-05:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Deylemma</title><subtitle>An Engineering Blog
-</subtitle><author><name>Daniel Deychakiwsky</name><email>d.deychak@gmail.com</email></author><entry><title type="html">Simple Podcast Ad Break Detection</title><link href="http://localhost:4000/simple-podcast-ad-break-detection" rel="alternate" type="text/html" title="Simple Podcast Ad Break Detection" /><published>2021-03-21T00:00:00-05:00</published><updated>2021-03-21T00:00:00-05:00</updated><id>http://localhost:4000/simple-podcast-ad-break-detection</id><content type="html" xml:base="http://localhost:4000/simple-podcast-ad-break-detection">&lt;p&gt;This post outlines a simple time-domain energy-based
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2021-04-20T17:00:27-05:00</updated><id>/feed.xml</id><title type="html">Deylemma</title><subtitle>An Engineering Blog
+</subtitle><author><name>Daniel Deychakiwsky</name><email>d.deychak@gmail.com</email></author><entry><title type="html">Simple Podcast Ad Break Detection</title><link href="/simple-podcast-ad-break-detection" rel="alternate" type="text/html" title="Simple Podcast Ad Break Detection" /><published>2021-03-21T00:00:00-05:00</published><updated>2021-03-21T00:00:00-05:00</updated><id>/simple-podcast-ad-break-detection</id><content type="html" xml:base="/simple-podcast-ad-break-detection">&lt;p&gt;This post outlines a simple time-domain energy-based
 algorithm for identifying ad opportunities in podcast audio.
 This post assumes basic knowledge of digital signal processing (DSP).&lt;/p&gt;
 
@@ -31,6 +31,7 @@ This post assumes basic knowledge of digital signal processing (DSP).&lt;/p&gt;
       &lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#improvements&quot; id=&quot;markdown-toc-improvements&quot;&gt;Improvements&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h1 id=&quot;context&quot;&gt;Context&lt;/h1&gt;
@@ -42,7 +43,7 @@ Users can create and / or consume content (podcasts) on the platform.
 Our business model offers a free-tier consumer experience, i.e.,
 anyone with an account can listen to any podcast for free.
 We decide to monetize our business by inserting audio ads. In order
-to generate a scalable ad supply, we need to generate ad breaks
+to generate a scalable ad supply, we need to detect potential ad breaks
 not only in the beginning and / or end of a podcast but also during
 a podcast.&lt;/p&gt;
 
@@ -51,8 +52,9 @@ a podcast.&lt;/p&gt;
 &lt;p&gt;How do we know where to interrupt a podcast to play an ad?&lt;/p&gt;
 
 &lt;p&gt;We call upon our engineering team to prototype a simple solution for a &lt;strong&gt;next day&lt;/strong&gt;
-proof-of-concept (POC) demo. To be clear, our acceptance criteria is to 
-find the “least obtrusive” ad breaks or insertion points for a given podcast.
+proof-of-concept (POC) demo. Our acceptance criteria is to 
+find the “least obtrusive” (which is left for us to define) ad breaks or
+insertion points for a given podcast.
 We don’t need to worry about cross-fading the content with the ad 
 for smooth transitions as that will be handled by
 a different engineering team. Our focus is solely identifying ad breaks.&lt;/p&gt;
@@ -87,7 +89,8 @@ then a heuristic will get you 50% of the way there.&lt;/p&gt;
 &lt;p&gt;It turns out that we can chalk-up a simple algorithm by applying
 basic DSP techniques. If you don’t know DSP, I’d suggest taking a few
 courses to learn it as the applications are endless. Coursera offers
-exceptional &lt;a href=&quot;https://www.coursera.org/learn/dsp1&quot;&gt;foundational&lt;/a&gt; and useful &lt;a href=&quot;https://www.coursera.org/learn/audio-signal-processing&quot;&gt;music applications&lt;/a&gt; courses.&lt;/p&gt;
+exceptional &lt;a href=&quot;https://www.coursera.org/learn/dsp1&quot;&gt;foundational&lt;/a&gt; and useful &lt;a href=&quot;https://www.coursera.org/learn/audio-signal-processing&quot;&gt;music applications&lt;/a&gt; courses.
+In addition, I recommend checking out Jack Schaedler’s compact &lt;a href=&quot;https://jackschaedler.github.io/circles-sines-signals/&quot;&gt;primer&lt;/a&gt;.&lt;/p&gt;
 
 &lt;h1 id=&quot;solution--algorithm&quot;&gt;Solution / Algorithm&lt;/h1&gt;
 
@@ -98,7 +101,7 @@ Is a podcast audio ad break best defined by a change in conversation,
 a change in sentiment, a change in emotion, the lack of voice activity,
 or something else?&lt;/p&gt;
 
-&lt;p&gt;In the simplest case, we can develop a time-domain energy-based algorithm which
+&lt;p&gt;One simple idea that we’ll explore is a time-domain energy-based algorithm which
 may translate to one of many possible definitions on a case-by-case basis.&lt;/p&gt;
 
 &lt;p&gt;We can track the signal’s energy over time and insert ads where the energy is lower
@@ -114,7 +117,8 @@ several technical indicators that you may be familiar with.&lt;/p&gt;
 &lt;h3 id=&quot;root-mean-square-rms&quot;&gt;Root Mean Square (RMS)&lt;/h3&gt;
 
 &lt;p&gt;We will use &lt;a href=&quot;https://en.wikipedia.org/wiki/Root_mean_square#Definition&quot;&gt;RMS&lt;/a&gt; to proxy the de facto time-domain signal &lt;a href=&quot;https://en.wikipedia.org/wiki/Energy_(signal_processing)&quot;&gt;energy&lt;/a&gt; calculation.
-They measure different spins of the same thing, the $L^2$ or &lt;a href=&quot;https://en.wikipedia.org/wiki/Norm_(mathematics)#Euclidean_norm&quot;&gt;euclidean norm&lt;/a&gt;.&lt;/p&gt;
+They measure different spins of approximately the same thing,
+the $L^2$ or &lt;a href=&quot;https://en.wikipedia.org/wiki/Norm_(mathematics)#Euclidean_norm&quot;&gt;euclidean norm&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;In order to see how RMS changes over time we can
 apply a framed version of the calculation yielding a new signal
@@ -131,14 +135,15 @@ in the audio package I’m importing. Work smart, not hard :).&lt;/p&gt;
 &lt;h3 id=&quot;amplitude-envelope-ae&quot;&gt;Amplitude Envelope (AE)&lt;/h3&gt;
 
 &lt;p&gt;The &lt;a href=&quot;https://en.wikipedia.org/wiki/Envelope_(waves)&quot;&gt;AE&lt;/a&gt; is also a framed calculation and is simply the maximum value of a given frame.
+This can be interpreted as measuring a spin of the $L^\infty$ or &lt;a href=&quot;https://en.wikipedia.org/wiki/Uniform_norm&quot;&gt;infinity norm&lt;/a&gt;.
 Its calculation yields a signal that traces the upper envelope of the original signal over time.
 Valerio Velardo’s &lt;a href=&quot;https://www.youtube.com/watch?v=rlypsap6Wow&quot;&gt;implementation&lt;/a&gt; is all we need.&lt;/p&gt;
 
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;numpy&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;
 
 &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;amplitude_envelope&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([]),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;frame_size&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2048&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hop_length&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;512&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;max&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;frame_size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
-                     &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hop_length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)])&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;ae&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;max&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;frame_size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hop_length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)]&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ae&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;h3 id=&quot;ae--rms&quot;&gt;AE + RMS&lt;/h3&gt;
@@ -189,7 +194,7 @@ the AE in red, RMS in pink, +/- one standard deviation of
 RMS in yellow, and three ad breaks or insertion points in green
 which vary in thickness (thicker lines are better ad breaks).&lt;/p&gt;
 
-&lt;p&gt;Here’s something a bit less basic, a &lt;a href=&quot;https://en.wikipedia.org/wiki/Mel_scale#:~:text=The%20mel%20scale%20(after%20the,dB%20above%20the%20listener's%20threshold.&quot;&gt;mel&lt;/a&gt;-&lt;a href=&quot;https://en.wikipedia.org/wiki/Spectrogram#:~:text=A%20spectrogram%20is%20a%20visual,they%20may%20be%20called%20waterfalls.&quot;&gt;spectrogram&lt;/a&gt; of the fake podcast:&lt;/p&gt;
+&lt;p&gt;Here’s something a bit less basic, a &lt;a href=&quot;https://en.wikipedia.org/wiki/Mel_scale#:~:text=The%20mel%20scale%20(after%20the,dB%20above%20the%20listener&apos;s%20threshold.&quot;&gt;mel&lt;/a&gt;-&lt;a href=&quot;https://en.wikipedia.org/wiki/Spectrogram#:~:text=A%20spectrogram%20is%20a%20visual,they%20may%20be%20called%20waterfalls.&quot;&gt;spectrogram&lt;/a&gt; of the fake podcast:&lt;/p&gt;
 
 &lt;h4 id=&quot;fig-4&quot;&gt;Fig. 4&lt;/h4&gt;
 &lt;p&gt;&lt;img src=&quot;assets/images/simple_podcast_ad_break_detection/fake_result_spec.png&quot; alt=&quot;fake_result_spec&quot; /&gt;&lt;/p&gt;
@@ -214,7 +219,18 @@ to a different engineering team or tackle it in a different scope.&lt;/p&gt;
 &lt;/audio&gt;
 
 &lt;h4 id=&quot;fig-5&quot;&gt;Fig. 5&lt;/h4&gt;
-&lt;p&gt;&lt;img src=&quot;assets/images/simple_podcast_ad_break_detection/fake_stitched.png&quot; alt=&quot;fake_stitched&quot; /&gt;&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="digital-signal-processing" /><category term="podcast" /><summary type="html">This post outlines a simple time-domain energy-based algorithm for identifying ad opportunities in podcast audio. This post assumes basic knowledge of digital signal processing (DSP).</summary></entry><entry><title type="html">Ordinary Least Squares is Orthogonal Projection</title><link href="http://localhost:4000/linear-regression-is-orthogonal-projection" rel="alternate" type="text/html" title="Ordinary Least Squares is Orthogonal Projection" /><published>2020-12-08T00:00:00-06:00</published><updated>2020-12-08T00:00:00-06:00</updated><id>http://localhost:4000/linear-regression-is-orthogonal-projection</id><content type="html" xml:base="http://localhost:4000/linear-regression-is-orthogonal-projection">&lt;p&gt;This post visualizes the equivalence of two perspectives
+&lt;p&gt;&lt;img src=&quot;assets/images/simple_podcast_ad_break_detection/fake_stitched.png&quot; alt=&quot;fake_stitched&quot; /&gt;&lt;/p&gt;
+
+&lt;h1 id=&quot;improvements&quot;&gt;Improvements&lt;/h1&gt;
+
+&lt;p&gt;There are infinite improvements that can be made to our POC. The algorithm is
+certainly overfitting to a specific type of podcast. For example, how would the algorithm
+behave with different types of inputs like a mediation / relaxation podcast, or a podcast
+with background music? In some cases it will suffice to hand-engineer additional information,
+e.g., human &lt;a href=&quot;https://en.wikipedia.org/wiki/Voice_frequency&quot;&gt;voice frequency&lt;/a&gt; (voice band) detection. In other cases, manually
+engineering features will have less-of, if any effect at all. I believe the more robust solutions
+will result from applied ML / AI algorithms that are able to generalize to a broader spectrum of
+(pod|vod)casts, of course, requiring larger amounts of high quality data.&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="digital-signal-processing" /><category term="podcast" /><summary type="html">This post outlines a simple time-domain energy-based algorithm for identifying ad opportunities in podcast audio. This post assumes basic knowledge of digital signal processing (DSP).</summary></entry><entry><title type="html">Ordinary Least Squares is Orthogonal Projection</title><link href="/linear-regression-is-orthogonal-projection" rel="alternate" type="text/html" title="Ordinary Least Squares is Orthogonal Projection" /><published>2020-12-08T00:00:00-06:00</published><updated>2020-12-08T00:00:00-06:00</updated><id>/linear-regression-is-orthogonal-projection</id><content type="html" xml:base="/linear-regression-is-orthogonal-projection">&lt;p&gt;This post visualizes the equivalence of two perspectives
 on estimating the unknown parameters in a simple linear
 regression model, ordinary least squares (OLS) and
 orthogonal projection (OP).&lt;/p&gt;
@@ -345,7 +361,7 @@ to only &lt;em&gt;one learnable parameter&lt;/em&gt;. Let’s train the model.&l
 &lt;span class=&quot;n&quot;&gt;X&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]])&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]])&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;reg&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LinearRegression&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fit_intercept&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;False&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'weights/parameters'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;reg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;coef_&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&apos;weights/parameters&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;reg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;coef_&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;weights/parameters array([[0.84615385]])
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
@@ -491,7 +507,7 @@ elegant visualization.&lt;/p&gt;
 
 &lt;p&gt;I built the visualizations for this post with &lt;a href=&quot;https://www.desmos.com/&quot;&gt;Desmos&lt;/a&gt;,
 an incredible graphing web application that enables
-users to visualize, study, and learn mathematics.&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="machine-learning" /><category term="artificial-intelligence" /><summary type="html">This post visualizes the equivalence of two perspectives on estimating the unknown parameters in a simple linear regression model, ordinary least squares (OLS) and orthogonal projection (OP).</summary></entry><entry><title type="html">Normalized Cross-Entropy</title><link href="http://localhost:4000/normalized-cross-entropy" rel="alternate" type="text/html" title="Normalized Cross-Entropy" /><published>2020-05-29T00:00:00-05:00</published><updated>2020-05-29T00:00:00-05:00</updated><id>http://localhost:4000/normalized-cross-entropy</id><content type="html" xml:base="http://localhost:4000/normalized-cross-entropy">&lt;p&gt;This post explores a normalized version of binary cross-entropy loss which removes the effect
+users to visualize, study, and learn mathematics.&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="machine-learning" /><category term="artificial-intelligence" /><summary type="html">This post visualizes the equivalence of two perspectives on estimating the unknown parameters in a simple linear regression model, ordinary least squares (OLS) and orthogonal projection (OP).</summary></entry><entry><title type="html">Normalized Cross-Entropy</title><link href="/normalized-cross-entropy" rel="alternate" type="text/html" title="Normalized Cross-Entropy" /><published>2020-05-29T00:00:00-05:00</published><updated>2020-05-29T00:00:00-05:00</updated><id>/normalized-cross-entropy</id><content type="html" xml:base="/normalized-cross-entropy">&lt;p&gt;This post explores a normalized version of binary cross-entropy loss which removes the effect
 of the prior (class imbalance within the dataset) on the resulting value.&lt;/p&gt;
 
 &lt;ul id=&quot;markdown-toc&quot;&gt;
@@ -1250,7 +1266,7 @@ offers support for three-dimensional rendering.&lt;/p&gt;
 
 &lt;p&gt;[13] https://github.com/deychak/notebooks/blob/master/experiments/cross_entropy_log_likelihood.ipynb&lt;/p&gt;
 
-&lt;p&gt;[14] https://github.com/deychak/notebooks/blob/master/simulations/prior_cross_entropy_convergence_sim.ipynb&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="machine-learning" /><category term="artificial-intelligence" /><summary type="html">This post explores a normalized version of binary cross-entropy loss which removes the effect of the prior (class imbalance within the dataset) on the resulting value.</summary></entry><entry><title type="html">About Me</title><link href="http://localhost:4000/about-me" rel="alternate" type="text/html" title="About Me" /><published>2020-05-28T00:00:00-05:00</published><updated>2020-05-28T00:00:00-05:00</updated><id>http://localhost:4000/about-me</id><content type="html" xml:base="http://localhost:4000/about-me">&lt;p&gt;This is my first post. Here’s a bit about who I am and why I started this blog :).&lt;/p&gt;
+&lt;p&gt;[14] https://github.com/deychak/notebooks/blob/master/simulations/prior_cross_entropy_convergence_sim.ipynb&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="machine-learning" /><category term="artificial-intelligence" /><summary type="html">This post explores a normalized version of binary cross-entropy loss which removes the effect of the prior (class imbalance within the dataset) on the resulting value.</summary></entry><entry><title type="html">About Me</title><link href="/about-me" rel="alternate" type="text/html" title="About Me" /><published>2020-05-28T00:00:00-05:00</published><updated>2020-05-28T00:00:00-05:00</updated><id>/about-me</id><content type="html" xml:base="/about-me">&lt;p&gt;This is my first post. Here’s a bit about who I am and why I started this blog :).&lt;/p&gt;
 
 &lt;h2 id=&quot;who-am-i&quot;&gt;Who am I?&lt;/h2&gt;
 
@@ -1261,10 +1277,20 @@ offers support for three-dimensional rendering.&lt;/p&gt;
 &lt;p&gt;My name is Daniel Deychakiwsky (pronounced “day-check-eve-ski”). The long last name is Ukrainian.
 We like to shorten it to “Deychak” for obvious reasons :).&lt;/p&gt;
 
-&lt;p&gt;By day, I’m a senior machine learning / artificial intelligence engineer.
-I have about 10 years of software engineering experience,
-two bachelor degrees, and one masters degree. I live in Austin,
-TX with my girlfriend and our dog Bondi (named after our favorite Australian beach).&lt;/p&gt;
+&lt;p&gt;Professionally by day, I’m a senior machine learning engineer @ Spotify,
+where I get to contribute to a platform that fuses my love for music
+and passion for technology. I have about 10 years of software engineering experience,
+two Bachelor of Science (BS) degrees, and a Master of Science (MS) degree.
+In my spare time, I enjoy reading up on current trends in mathematics, statistics,
+machine learning, artificial intelligence, reinforcement learning,
+and robotics. I enjoy enrolling in engineering courses offered via
+Coursera and Udacity.&lt;/p&gt;
+
+&lt;p&gt;On a personal level, I live in Austin, TX with my girlfriend and our dog (named Bondi
+after our favorite Australian beach). I try to play soccer and tennis
+whenever I can find leagues or pick up matches. I’ve been vegetarian for quite a bit
+and stay far away from gluten as I’m a celiac. I hope to be fortunate enough to travel
+all over the world someday.&lt;/p&gt;
 
 &lt;h2 id=&quot;why-am-i-doing-this&quot;&gt;Why am I doing this?&lt;/h2&gt;
 

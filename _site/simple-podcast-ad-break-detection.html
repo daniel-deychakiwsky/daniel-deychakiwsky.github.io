@@ -3,23 +3,23 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta property="og:image" content="/assets/images/geometry.jpg"/><!-- Begin Jekyll SEO tag v2.6.1 -->
+  <meta property="og:image" content="/assets/images/geometry.jpg"/><!-- Begin Jekyll SEO tag v2.7.1 -->
 <title>Simple Podcast Ad Break Detection | Deylemma</title>
-<meta name="generator" content="Jekyll v4.1.1" />
+<meta name="generator" content="Jekyll v4.2.0" />
 <meta property="og:title" content="Simple Podcast Ad Break Detection" />
 <meta name="author" content="Daniel Deychakiwsky" />
 <meta property="og:locale" content="en_US" />
 <meta name="description" content="This post outlines a simple time-domain energy-based algorithm for identifying ad opportunities in podcast audio. This post assumes basic knowledge of digital signal processing (DSP)." />
 <meta property="og:description" content="This post outlines a simple time-domain energy-based algorithm for identifying ad opportunities in podcast audio. This post assumes basic knowledge of digital signal processing (DSP)." />
-<link rel="canonical" href="http://localhost:4000/simple-podcast-ad-break-detection" />
-<meta property="og:url" content="http://localhost:4000/simple-podcast-ad-break-detection" />
 <meta property="og:site_name" content="Deylemma" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2021-03-21T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Simple Podcast Ad Break Detection" />
 <script type="application/ld+json">
-{"url":"http://localhost:4000/simple-podcast-ad-break-detection","headline":"Simple Podcast Ad Break Detection","dateModified":"2021-03-21T00:00:00-05:00","datePublished":"2021-03-21T00:00:00-05:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/simple-podcast-ad-break-detection"},"author":{"@type":"Person","name":"Daniel Deychakiwsky"},"description":"This post outlines a simple time-domain energy-based algorithm for identifying ad opportunities in podcast audio. This post assumes basic knowledge of digital signal processing (DSP).","@type":"BlogPosting","@context":"https://schema.org"}</script>
+{"description":"This post outlines a simple time-domain energy-based algorithm for identifying ad opportunities in podcast audio. This post assumes basic knowledge of digital signal processing (DSP).","headline":"Simple Podcast Ad Break Detection","dateModified":"2021-03-21T00:00:00-05:00","datePublished":"2021-03-21T00:00:00-05:00","mainEntityOfPage":{"@type":"WebPage","@id":"/simple-podcast-ad-break-detection"},"url":"/simple-podcast-ad-break-detection","author":{"@type":"Person","name":"Daniel Deychakiwsky"},"@type":"BlogPosting","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
-<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Deylemma" />
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Deylemma" />
 </head>
 <body><header class="site-header">
 
@@ -71,6 +71,7 @@ This post assumes basic knowledge of digital signal processing (DSP).</p>
       </li>
     </ul>
   </li>
+  <li><a href="#improvements" id="markdown-toc-improvements">Improvements</a></li>
 </ul>
 
 <h1 id="context">Context</h1>
@@ -82,7 +83,7 @@ Users can create and / or consume content (podcasts) on the platform.
 Our business model offers a free-tier consumer experience, i.e.,
 anyone with an account can listen to any podcast for free.
 We decide to monetize our business by inserting audio ads. In order
-to generate a scalable ad supply, we need to generate ad breaks
+to generate a scalable ad supply, we need to detect potential ad breaks
 not only in the beginning and / or end of a podcast but also during
 a podcast.</p>
 
@@ -91,8 +92,9 @@ a podcast.</p>
 <p>How do we know where to interrupt a podcast to play an ad?</p>
 
 <p>We call upon our engineering team to prototype a simple solution for a <strong>next day</strong>
-proof-of-concept (POC) demo. To be clear, our acceptance criteria is to 
-find the “least obtrusive” ad breaks or insertion points for a given podcast.
+proof-of-concept (POC) demo. Our acceptance criteria is to 
+find the “least obtrusive” (which is left for us to define) ad breaks or
+insertion points for a given podcast.
 We don’t need to worry about cross-fading the content with the ad 
 for smooth transitions as that will be handled by
 a different engineering team. Our focus is solely identifying ad breaks.</p>
@@ -127,7 +129,8 @@ then a heuristic will get you 50% of the way there.</p>
 <p>It turns out that we can chalk-up a simple algorithm by applying
 basic DSP techniques. If you don’t know DSP, I’d suggest taking a few
 courses to learn it as the applications are endless. Coursera offers
-exceptional <a href="https://www.coursera.org/learn/dsp1">foundational</a> and useful <a href="https://www.coursera.org/learn/audio-signal-processing">music applications</a> courses.</p>
+exceptional <a href="https://www.coursera.org/learn/dsp1">foundational</a> and useful <a href="https://www.coursera.org/learn/audio-signal-processing">music applications</a> courses.
+In addition, I recommend checking out Jack Schaedler’s compact <a href="https://jackschaedler.github.io/circles-sines-signals/">primer</a>.</p>
 
 <h1 id="solution--algorithm">Solution / Algorithm</h1>
 
@@ -138,7 +141,7 @@ Is a podcast audio ad break best defined by a change in conversation,
 a change in sentiment, a change in emotion, the lack of voice activity,
 or something else?</p>
 
-<p>In the simplest case, we can develop a time-domain energy-based algorithm which
+<p>One simple idea that we’ll explore is a time-domain energy-based algorithm which
 may translate to one of many possible definitions on a case-by-case basis.</p>
 
 <p>We can track the signal’s energy over time and insert ads where the energy is lower
@@ -154,7 +157,8 @@ several technical indicators that you may be familiar with.</p>
 <h3 id="root-mean-square-rms">Root Mean Square (RMS)</h3>
 
 <p>We will use <a href="https://en.wikipedia.org/wiki/Root_mean_square#Definition">RMS</a> to proxy the de facto time-domain signal <a href="https://en.wikipedia.org/wiki/Energy_(signal_processing)">energy</a> calculation.
-They measure different spins of the same thing, the $L^2$ or <a href="https://en.wikipedia.org/wiki/Norm_(mathematics)#Euclidean_norm">euclidean norm</a>.</p>
+They measure different spins of approximately the same thing,
+the $L^2$ or <a href="https://en.wikipedia.org/wiki/Norm_(mathematics)#Euclidean_norm">euclidean norm</a>.</p>
 
 <p>In order to see how RMS changes over time we can
 apply a framed version of the calculation yielding a new signal
@@ -171,14 +175,15 @@ in the audio package I’m importing. Work smart, not hard :).</p>
 <h3 id="amplitude-envelope-ae">Amplitude Envelope (AE)</h3>
 
 <p>The <a href="https://en.wikipedia.org/wiki/Envelope_(waves)">AE</a> is also a framed calculation and is simply the maximum value of a given frame.
+This can be interpreted as measuring a spin of the $L^\infty$ or <a href="https://en.wikipedia.org/wiki/Uniform_norm">infinity norm</a>.
 Its calculation yields a signal that traces the upper envelope of the original signal over time.
 Valerio Velardo’s <a href="https://www.youtube.com/watch?v=rlypsap6Wow">implementation</a> is all we need.</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
 
 <span class="k">def</span> <span class="nf">amplitude_envelope</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">([]),</span> <span class="n">frame_size</span><span class="o">=</span><span class="mi">2048</span><span class="p">,</span> <span class="n">hop_length</span><span class="o">=</span><span class="mi">512</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">([</span><span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">frame_size</span><span class="p">])</span>
-                     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">x</span><span class="p">.</span><span class="n">size</span><span class="p">,</span> <span class="n">hop_length</span><span class="p">)])</span>
+    <span class="n">ae</span> <span class="o">=</span> <span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">frame_size</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">x</span><span class="p">.</span><span class="n">size</span><span class="p">,</span> <span class="n">hop_length</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">(</span><span class="n">ae</span><span class="p">)</span>
 </code></pre></div></div>
 
 <h3 id="ae--rms">AE + RMS</h3>
@@ -255,6 +260,17 @@ to a different engineering team or tackle it in a different scope.</p>
 
 <h4 id="fig-5">Fig. 5</h4>
 <p><img src="assets/images/simple_podcast_ad_break_detection/fake_stitched.png" alt="fake_stitched" /></p>
+
+<h1 id="improvements">Improvements</h1>
+
+<p>There are infinite improvements that can be made to our POC. The algorithm is
+certainly overfitting to a specific type of podcast. For example, how would the algorithm
+behave with different types of inputs like a mediation / relaxation podcast, or a podcast
+with background music? In some cases it will suffice to hand-engineer additional information,
+e.g., human <a href="https://en.wikipedia.org/wiki/Voice_frequency">voice frequency</a> (voice band) detection. In other cases, manually
+engineering features will have less-of, if any effect at all. I believe the more robust solutions
+will result from applied ML / AI algorithms that are able to generalize to a broader spectrum of
+(pod|vod)casts, of course, requiring larger amounts of high quality data.</p>
 
 
   </div><a class="u-url" href="/simple-podcast-ad-break-detection" hidden></a>

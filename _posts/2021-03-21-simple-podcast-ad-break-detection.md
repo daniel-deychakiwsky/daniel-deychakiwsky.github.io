@@ -96,7 +96,8 @@ several technical indicators that you may be familiar with.
 ### Root Mean Square (RMS)
 
 We will use [RMS] to proxy the de facto time-domain signal [energy] calculation.
-They measure different spins of the same thing, the $L^2$ or [euclidean norm]. 
+They measure different spins of approximately the same thing,
+the $L^2$ or [euclidean norm]. 
 
 In order to see how RMS changes over time we can
 apply a framed version of the calculation yielding a new signal
@@ -113,6 +114,7 @@ in the audio package I'm importing. Work smart, not hard :).
 ### Amplitude Envelope (AE)
 
 The [AE] is also a framed calculation and is simply the maximum value of a given frame.
+This can be interpreted as measuring a spin of the $L^\infty$ or [infinity norm].
 Its calculation yields a signal that traces the upper envelope of the original signal over time.
 Valerio Velardo's [implementation] is all we need.
 
@@ -206,6 +208,7 @@ will result from applied ML / AI algorithms that are able to generalize to a bro
 [music applications]: https://www.coursera.org/learn/audio-signal-processing
 [implementation]: https://www.youtube.com/watch?v=rlypsap6Wow
 [euclidean norm]: https://en.wikipedia.org/wiki/Norm_(mathematics)#Euclidean_norm
+[infinity norm]: https://en.wikipedia.org/wiki/Uniform_norm
 [energy]: https://en.wikipedia.org/wiki/Energy_(signal_processing)
 [RMS]: https://en.wikipedia.org/wiki/Root_mean_square#Definition
 [AE]: https://en.wikipedia.org/wiki/Envelope_(waves)
