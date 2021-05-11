@@ -8,8 +8,8 @@ mathjax: true
 permalink: /:title
 ---
 
-This post explores a normalized version of binary cross-entropy loss which removes the effect
-of the prior (class imbalance within the dataset) on the resulting value.
+This post explores a normalized version of binary cross-entropy loss in attempt to 
+remove the effect of the prior (class imbalance within the dataset) on the resulting value.
 
 * TOC
 {:toc}
