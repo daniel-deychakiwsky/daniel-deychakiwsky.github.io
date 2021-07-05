@@ -24,8 +24,8 @@ Users can create and / or consume content (podcasts) on the platform.
 Our business model offers a free-tier consumer experience, i.e.,
 anyone with an account can listen to any podcast for free.
 We decide to monetize our business by inserting audio ads. In order
-to generate a scalable ad supply, we need to detect potential ad breaks
-not only in the beginning and / or end of a podcast but also during
+to generate a scalable ad supply, we need to detect potential ad breaks;
+not only in the beginning and / or end of a podcast, but also during
 a podcast.
 
 ## Engineering Problem
