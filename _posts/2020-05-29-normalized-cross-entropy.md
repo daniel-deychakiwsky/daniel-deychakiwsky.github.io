@@ -16,7 +16,7 @@ remove the effect of the prior (class imbalance within the dataset) on the resul
 
 ## Context
 
-A common task in advertising is to model a user's propensity to click:
+A common machine-learning task within the advertising domain is to model user click propensity.
 
 $$
 P(click \space | \space user,ad)
