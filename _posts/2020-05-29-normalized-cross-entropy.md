@@ -16,10 +16,7 @@ remove the effect of the prior (class imbalance within the dataset) on the resul
 
 ## Context
 
-The business has invoked our expertise to model click conversions;
-we need to provide a score for how likely a given user is to click on
-a given ad. The business can then use the scores to optimize various objectives,
-i.e., choose which ads to show. We collect data by logging user-ad interactions
+We collect data by logging user-ad interactions
 to keep track of what users saw what ad and if those ad-impressions resulted in a click.
 We can join the logs with preexisting user and ad-specific data. In the simplest case,
 our task it to train a model to output the probability that a user will click based on the
