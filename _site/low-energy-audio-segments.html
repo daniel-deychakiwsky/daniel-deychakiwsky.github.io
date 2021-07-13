@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta property="og:image" content="/assets/images/geometry.jpg"/><!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Low Energy Audio Segments | Deylemma</title>
+<meta name="generator" content="Jekyll v4.2.0" />
+<meta property="og:title" content="Low Energy Audio Segments" />
+<meta name="author" content="Daniel Deychakiwsky" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="This post outlines a simple algorithm for identifying low energy audio segments. This post assumes basic knowledge of digital signal processing (DSP)." />
+<meta property="og:description" content="This post outlines a simple algorithm for identifying low energy audio segments. This post assumes basic knowledge of digital signal processing (DSP)." />
+<meta property="og:site_name" content="Deylemma" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-03-21T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Low Energy Audio Segments" />
+<script type="application/ld+json">
+{"description":"This post outlines a simple algorithm for identifying low energy audio segments. This post assumes basic knowledge of digital signal processing (DSP).","headline":"Low Energy Audio Segments","dateModified":"2021-03-21T00:00:00-05:00","datePublished":"2021-03-21T00:00:00-05:00","mainEntityOfPage":{"@type":"WebPage","@id":"/low-energy-audio-segments"},"url":"/low-energy-audio-segments","author":{"@type":"Person","name":"Daniel Deychakiwsky"},"@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Deylemma" />
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Deylemma</a></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Low Energy Audio Segments</h1>
+    <p class="post-meta"><time class="dt-published" datetime="2021-03-21T00:00:00-05:00" itemprop="datePublished">
+        Mar 21, 2021
+      </time>• 
+          <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+            <span class="p-author h-card" itemprop="name">Daniel Deychakiwsky</span></span></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>This post outlines a simple algorithm for
+identifying low energy audio segments.
+This post assumes basic knowledge of digital 
+signal processing (DSP).</p>
+
+<ul id="markdown-toc">
+  <li><a href="#digital-signal-processing-dsp" id="markdown-toc-digital-signal-processing-dsp">Digital Signal Processing (DSP)</a>    <ul>
+      <li><a href="#root-mean-square-rms" id="markdown-toc-root-mean-square-rms">Root Mean Square (RMS)</a></li>
+      <li><a href="#amplitude-envelope-ae" id="markdown-toc-amplitude-envelope-ae">Amplitude Envelope (AE)</a></li>
+      <li><a href="#ae--rms" id="markdown-toc-ae--rms">AE + RMS</a></li>
+      <li><a href="#demo" id="markdown-toc-demo">Demo</a>        <ul>
+          <li><a href="#fig-1" id="markdown-toc-fig-1">Fig. 1</a></li>
+          <li><a href="#fig-2" id="markdown-toc-fig-2">Fig. 2</a></li>
+          <li><a href="#fig-3" id="markdown-toc-fig-3">Fig. 3</a></li>
+        </ul>
+      </li>
+      <li><a href="#improvements" id="markdown-toc-improvements">Improvements</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="digital-signal-processing-dsp">Digital Signal Processing (DSP)</h1>
+
+<p>If you don’t know DSP, I’d suggest taking a few
+courses to learn it as the applications are endless. Coursera offers
+exceptional <a href="https://www.coursera.org/learn/dsp1">foundational</a> and useful <a href="https://www.coursera.org/learn/audio-signal-processing">music applications</a> courses.
+In addition, I recommend checking out Jack Schaedler’s compact <a href="https://jackschaedler.github.io/circles-sines-signals/">primer</a>.</p>
+
+<h2 id="root-mean-square-rms">Root Mean Square (RMS)</h2>
+
+<p>We will use <a href="https://en.wikipedia.org/wiki/Root_mean_square#Definition">RMS</a> to proxy the de facto time-domain signal <a href="https://en.wikipedia.org/wiki/Energy_(signal_processing)">energy</a> calculation.
+They measure different spins of approximately the same thing,
+the $L^2$ or <a href="https://en.wikipedia.org/wiki/Norm_(mathematics)#Euclidean_norm">euclidean norm</a>.</p>
+
+<p>In order to see how RMS changes over time we can
+apply a framed version of the calculation yielding a new signal
+which captures how the RMS of our signal changes over time.</p>
+
+<p>When I say “framed” I mean we’re considering $n$ audio samples
+in a single calculation, storing the result, shifting or hopping over by
+$m$ samples, and then repeating the process until we traverse the entire signal.</p>
+
+<p>Why not just use a framed version of the energy calculation?
+I’m using RMS because a framed version of it is already implemented
+in the audio package I’m importing. Work smart, not hard :).</p>
+
+<h2 id="amplitude-envelope-ae">Amplitude Envelope (AE)</h2>
+
+<p>The <a href="https://en.wikipedia.org/wiki/Envelope_(waves)">AE</a> is also a framed calculation and is simply the maximum value of a given frame.
+This can be interpreted as measuring a spin of the $L^\infty$ or <a href="https://en.wikipedia.org/wiki/Uniform_norm">infinity norm</a>.
+Its calculation yields a signal that traces the upper envelope of the original signal over time.
+Valerio Velardo’s <a href="https://www.youtube.com/watch?v=rlypsap6Wow">implementation</a> is all we need.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+
+<span class="k">def</span> <span class="nf">amplitude_envelope</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">([]),</span> <span class="n">frame_size</span><span class="o">=</span><span class="mi">2048</span><span class="p">,</span> <span class="n">hop_length</span><span class="o">=</span><span class="mi">512</span><span class="p">):</span>
+    <span class="n">ae</span> <span class="o">=</span> <span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">frame_size</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">x</span><span class="p">.</span><span class="n">size</span><span class="p">,</span> <span class="n">hop_length</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">(</span><span class="n">ae</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h2 id="ae--rms">AE + RMS</h2>
+
+<p>We combine these two measures to form our final algorithm. We set the
+frame and hop sizes that will be shared by both measures and carry out the calculations.
+We use the AE as our measure of how the signal’s energy changes over time,
+and the standard deviation of the framed RMS as the threshold.</p>
+
+<p>Everytime the AE dips below the standard deviation of the framed RMS,
+we mark the beginning of a potential segment. Once it breaks back over the threshold,
+we mark the end of a segment and add that segment to
+a temporary result buffer. Once we’ve done this for the entire AE, we sort the segments
+by the length of the segment, descending.</p>
+
+<h2 id="demo">Demo</h2>
+
+<p>Here’s some fake audio with its waveform:</p>
+
+<audio controls="">
+  <source src="/assets/audio/low_energy_audio_segments/fake_audio.mp3" type="audio/mpeg" />
+  Your browser does not support the audio element.
+</audio>
+
+<h4 id="fig-1">Fig. 1</h4>
+<p><img src="assets/images/low_energy_audio_segments/fake_audio.png" alt="fake_audio" /></p>
+
+<p>Here’s the same fake audio waveform with the aforementioned calculations overlaid:</p>
+
+<h4 id="fig-2">Fig. 2</h4>
+<p><img src="assets/images/low_energy_audio_segments/fake_audio_result.png" alt="fake_audio_result" /></p>
+
+<p><a href="#fig-2">Fig 2.</a> shows the time-domain waveform in blue,
+the AE in red, RMS in pink, +/- one standard deviation of
+RMS in yellow, and three segments found in green
+which vary by thickness which indicates a lower energy segment.</p>
+
+<p>Here’s something a bit less basic, a <a href="https://en.wikipedia.org/wiki/Mel_scale#:~:text=The%20mel%20scale%20(after%20the,dB%20above%20the%20listener's%20threshold.">mel</a>-<a href="https://en.wikipedia.org/wiki/Spectrogram#:~:text=A%20spectrogram%20is%20a%20visual,they%20may%20be%20called%20waterfalls.">spectrogram</a> of the fake audio:</p>
+
+<h4 id="fig-3">Fig. 3</h4>
+<p><img src="assets/images/low_energy_audio_segments/fake_audio_spec.png" alt="fake_audio_spec" /></p>
+
+<p>Comparing <a href="#fig-2">Fig 2.</a> to <a href="#fig-3">Fig 3.</a>,
+energy lacking in the time-domain corresponds to 
+energy lacking in the frequency-domain.
+Low-to-no speaking energy, as conveyed by low
+amplitudes in the time-domain, corresponds
+to a lack of vocal harmonics in the
+frequency-domain. This conservation of energy between
+domains is formally captured by <a href="https://en.wikipedia.org/wiki/Parseval%27s_theorem">Parseval’s theorem</a>.</p>
+
+<h2 id="improvements">Improvements</h2>
+
+<p>There are infinite improvements that can be made. The algorithm is as basic as it gets and is
+certainly overfitting to a specific type of audio. In some cases it will suffice 
+to hand-engineer additional information, e.g., human <a href="https://en.wikipedia.org/wiki/Voice_frequency">voice frequency</a> (voice band) detection. 
+In other cases, manually engineering features will have less-of, if any effect at all
+(think background music). I believe the more robust solutions will result from applied 
+ML / AI / RL algorithms that are able to generalize to a broader spectrum of audio, 
+of course, requiring larger amounts quality data.</p>
+
+
+  </div><a class="u-url" href="/low-energy-audio-segments" hidden></a>
+</article><script>
+  (function () {
+    let script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML";
+
+    const config =  'MathJax.Hub.Config({' +
+                    'tex2jax: {' +
+                      'inlineMath: [ [\'$\',\'$\'] ],' +
+                      'processEscapes: true' +
+                    '}' +
+                  '});'
+
+    if (window.opera) {
+      script.innerHTML = config
+    } else {
+      script.text = config
+    }
+
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+<!--        <p class="feed-subscribe">-->
+<!--          <a href="/feed.xml">-->
+<!--            <svg class="svg-icon orange">-->
+<!--              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>-->
+<!--            </svg><span>Subscribe</span>-->
+<!--          </a>-->
+<!--        </p>-->
+        <ul class="contact-list">
+          <li class="p-name">Daniel Deychakiwsky</li>
+          <li><a class="u-email" href="mailto:d.deychak@gmail.com">d.deychak@gmail.com</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <p>An Engineering Blog
+</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/deychak" title="deychak"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://www.instagram.com/danieldeychak" title="danieldeychak"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#instagram"></use></svg></a></li><li><a rel="me" href="https://www.linkedin.com/in/danieldeychak" title="danieldeychak"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

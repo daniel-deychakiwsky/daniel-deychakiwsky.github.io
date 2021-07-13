@@ -16,9 +16,6 @@ remove the effect of the prior (class imbalance within the dataset) on the resul
 
 ## Context
 
-Let's assume we are machine-learning engineers at a technology company
-that monetizes its flagship product with advertisements.
-
 The business has invoked our expertise to model click conversions;
 we need to provide a score for how likely a given user is to click on
 a given ad. The business can then use the scores to optimize various objectives,
