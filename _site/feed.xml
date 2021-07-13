@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2021-04-20T17:00:27-05:00</updated><id>/feed.xml</id><title type="html">Deylemma</title><subtitle>An Engineering Blog
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2021-07-12T20:18:21-05:00</updated><id>/feed.xml</id><title type="html">Deylemma</title><subtitle>An Engineering Blog
 </subtitle><author><name>Daniel Deychakiwsky</name><email>d.deychak@gmail.com</email></author><entry><title type="html">Simple Podcast Ad Break Detection</title><link href="/simple-podcast-ad-break-detection" rel="alternate" type="text/html" title="Simple Podcast Ad Break Detection" /><published>2021-03-21T00:00:00-05:00</published><updated>2021-03-21T00:00:00-05:00</updated><id>/simple-podcast-ad-break-detection</id><content type="html" xml:base="/simple-podcast-ad-break-detection">&lt;p&gt;This post outlines a simple time-domain energy-based
 algorithm for identifying ad opportunities in podcast audio.
 This post assumes basic knowledge of digital signal processing (DSP).&lt;/p&gt;
@@ -43,8 +43,8 @@ Users can create and / or consume content (podcasts) on the platform.
 Our business model offers a free-tier consumer experience, i.e.,
 anyone with an account can listen to any podcast for free.
 We decide to monetize our business by inserting audio ads. In order
-to generate a scalable ad supply, we need to detect potential ad breaks
-not only in the beginning and / or end of a podcast but also during
+to generate a scalable ad supply, we need to detect potential ad breaks;
+not only in the beginning and / or end of a podcast, but also during
 a podcast.&lt;/p&gt;
 
 &lt;h2 id=&quot;engineering-problem&quot;&gt;Engineering Problem&lt;/h2&gt;
@@ -229,8 +229,8 @@ behave with different types of inputs like a mediation / relaxation podcast, or 
 with background music? In some cases it will suffice to hand-engineer additional information,
 e.g., human &lt;a href=&quot;https://en.wikipedia.org/wiki/Voice_frequency&quot;&gt;voice frequency&lt;/a&gt; (voice band) detection. In other cases, manually
 engineering features will have less-of, if any effect at all. I believe the more robust solutions
-will result from applied ML / AI algorithms that are able to generalize to a broader spectrum of
-(pod|vod)casts, of course, requiring larger amounts of high quality data.&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="digital-signal-processing" /><category term="podcast" /><summary type="html">This post outlines a simple time-domain energy-based algorithm for identifying ad opportunities in podcast audio. This post assumes basic knowledge of digital signal processing (DSP).</summary></entry><entry><title type="html">Ordinary Least Squares is Orthogonal Projection</title><link href="/linear-regression-is-orthogonal-projection" rel="alternate" type="text/html" title="Ordinary Least Squares is Orthogonal Projection" /><published>2020-12-08T00:00:00-06:00</published><updated>2020-12-08T00:00:00-06:00</updated><id>/linear-regression-is-orthogonal-projection</id><content type="html" xml:base="/linear-regression-is-orthogonal-projection">&lt;p&gt;This post visualizes the equivalence of two perspectives
+will result from applied ML / AI / RL algorithms that are able to generalize to a broader spectrum
+of (pod|vod)casts, of course, requiring larger amounts of high quality data.&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="digital-signal-processing" /><category term="podcast" /><summary type="html">This post outlines a simple time-domain energy-based algorithm for identifying ad opportunities in podcast audio. This post assumes basic knowledge of digital signal processing (DSP).</summary></entry><entry><title type="html">Ordinary Least Squares is Orthogonal Projection</title><link href="/linear-regression-is-orthogonal-projection" rel="alternate" type="text/html" title="Ordinary Least Squares is Orthogonal Projection" /><published>2020-12-08T00:00:00-06:00</published><updated>2020-12-08T00:00:00-06:00</updated><id>/linear-regression-is-orthogonal-projection</id><content type="html" xml:base="/linear-regression-is-orthogonal-projection">&lt;p&gt;This post visualizes the equivalence of two perspectives
 on estimating the unknown parameters in a simple linear
 regression model, ordinary least squares (OLS) and
 orthogonal projection (OP).&lt;/p&gt;
@@ -507,8 +507,8 @@ elegant visualization.&lt;/p&gt;
 
 &lt;p&gt;I built the visualizations for this post with &lt;a href=&quot;https://www.desmos.com/&quot;&gt;Desmos&lt;/a&gt;,
 an incredible graphing web application that enables
-users to visualize, study, and learn mathematics.&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="machine-learning" /><category term="artificial-intelligence" /><summary type="html">This post visualizes the equivalence of two perspectives on estimating the unknown parameters in a simple linear regression model, ordinary least squares (OLS) and orthogonal projection (OP).</summary></entry><entry><title type="html">Normalized Cross-Entropy</title><link href="/normalized-cross-entropy" rel="alternate" type="text/html" title="Normalized Cross-Entropy" /><published>2020-05-29T00:00:00-05:00</published><updated>2020-05-29T00:00:00-05:00</updated><id>/normalized-cross-entropy</id><content type="html" xml:base="/normalized-cross-entropy">&lt;p&gt;This post explores a normalized version of binary cross-entropy loss which removes the effect
-of the prior (class imbalance within the dataset) on the resulting value.&lt;/p&gt;
+users to visualize, study, and learn mathematics.&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="machine-learning" /><category term="artificial-intelligence" /><summary type="html">This post visualizes the equivalence of two perspectives on estimating the unknown parameters in a simple linear regression model, ordinary least squares (OLS) and orthogonal projection (OP).</summary></entry><entry><title type="html">Normalized Cross-Entropy</title><link href="/normalized-cross-entropy" rel="alternate" type="text/html" title="Normalized Cross-Entropy" /><published>2020-05-29T00:00:00-05:00</published><updated>2020-05-29T00:00:00-05:00</updated><id>/normalized-cross-entropy</id><content type="html" xml:base="/normalized-cross-entropy">&lt;p&gt;This post explores a normalized version of binary cross-entropy loss in attempt to 
+remove the effect of the prior (class imbalance within the dataset) on the resulting value.&lt;/p&gt;
 
 &lt;ul id=&quot;markdown-toc&quot;&gt;
   &lt;li&gt;&lt;a href=&quot;#context&quot; id=&quot;markdown-toc-context&quot;&gt;Context&lt;/a&gt;&lt;/li&gt;
@@ -1266,7 +1266,14 @@ offers support for three-dimensional rendering.&lt;/p&gt;
 
 &lt;p&gt;[13] https://github.com/deychak/notebooks/blob/master/experiments/cross_entropy_log_likelihood.ipynb&lt;/p&gt;
 
-&lt;p&gt;[14] https://github.com/deychak/notebooks/blob/master/simulations/prior_cross_entropy_convergence_sim.ipynb&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="machine-learning" /><category term="artificial-intelligence" /><summary type="html">This post explores a normalized version of binary cross-entropy loss which removes the effect of the prior (class imbalance within the dataset) on the resulting value.</summary></entry><entry><title type="html">About Me</title><link href="/about-me" rel="alternate" type="text/html" title="About Me" /><published>2020-05-28T00:00:00-05:00</published><updated>2020-05-28T00:00:00-05:00</updated><id>/about-me</id><content type="html" xml:base="/about-me">&lt;p&gt;This is my first post. Here’s a bit about who I am and why I started this blog :).&lt;/p&gt;
+&lt;p&gt;[14] https://github.com/deychak/notebooks/blob/master/simulations/prior_cross_entropy_convergence_sim.ipynb&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="machine-learning" /><category term="artificial-intelligence" /><summary type="html">This post explores a normalized version of binary cross-entropy loss in attempt to remove the effect of the prior (class imbalance within the dataset) on the resulting value.</summary></entry><entry><title type="html">About Me</title><link href="/about-me" rel="alternate" type="text/html" title="About Me" /><published>2020-05-28T00:00:00-05:00</published><updated>2020-05-28T00:00:00-05:00</updated><id>/about-me</id><content type="html" xml:base="/about-me">&lt;p&gt;This is my first post. Here’s a bit about who I am and why I started this blog :).&lt;/p&gt;
+
+&lt;ul id=&quot;markdown-toc&quot;&gt;
+  &lt;li&gt;&lt;a href=&quot;#who-am-i&quot; id=&quot;markdown-toc-who-am-i&quot;&gt;Who am I?&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#why-am-i-doing-this&quot; id=&quot;markdown-toc-why-am-i-doing-this&quot;&gt;Why am I doing this?&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#whats-a-deylemma&quot; id=&quot;markdown-toc-whats-a-deylemma&quot;&gt;What’s a Deylemma?&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#disclaimer&quot; id=&quot;markdown-toc-disclaimer&quot;&gt;Disclaimer&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
 
 &lt;h2 id=&quot;who-am-i&quot;&gt;Who am I?&lt;/h2&gt;
 
@@ -1277,9 +1284,8 @@ offers support for three-dimensional rendering.&lt;/p&gt;
 &lt;p&gt;My name is Daniel Deychakiwsky (pronounced “day-check-eve-ski”). The long last name is Ukrainian.
 We like to shorten it to “Deychak” for obvious reasons :).&lt;/p&gt;
 
-&lt;p&gt;Professionally by day, I’m a senior machine learning engineer @ Spotify,
-where I get to contribute to a platform that fuses my love for music
-and passion for technology. I have about 10 years of software engineering experience,
+&lt;p&gt;Professionally by day, I’m a senior machine learning engineer.
+I have about 10 years of software engineering experience,
 two Bachelor of Science (BS) degrees, and a Master of Science (MS) degree.
 In my spare time, I enjoy reading up on current trends in mathematics, statistics,
 machine learning, artificial intelligence, reinforcement learning,
@@ -1309,4 +1315,10 @@ the first mathematical term that came to mind that together was easy to remember
   &lt;p&gt;In mathematics, informal logic and argument mapping,
 a lemma is a generally minor, proven proposition which is used as a
 stepping stone to a larger result.&lt;/p&gt;
-&lt;/blockquote&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="about" /><summary type="html">This is my first post. Here’s a bit about who I am and why I started this blog :).</summary></entry></feed>
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;disclaimer&quot;&gt;Disclaimer&lt;/h2&gt;
+
+&lt;p&gt;The content of this blog, in entirety,
+is not affiliated with any of my previous 
+or current employer(s).&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="about" /><summary type="html">This is my first post. Here’s a bit about who I am and why I started this blog :).</summary></entry></feed>
