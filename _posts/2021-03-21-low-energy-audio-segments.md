@@ -85,8 +85,8 @@ Here's the same fake audio waveform with the aforementioned calculations overlai
 
 [Fig 2.](#fig-2) shows the time-domain waveform in blue,
 the AE in red, RMS in pink, +/- one standard deviation of
-RMS in yellow, and three segments found in green
-which vary by thickness which indicates a lower energy segment.
+RMS in yellow, and three segment midpoints found in green
+where thickness indicates a longer low energy segment.
 
 Here's something a bit less basic, a [mel]-[spectrogram] of the fake audio:
 
