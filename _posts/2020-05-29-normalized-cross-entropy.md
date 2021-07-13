@@ -16,11 +16,7 @@ remove the effect of the prior (class imbalance within the dataset) on the resul
 
 ## Context
 
-We collect data by logging user-ad interactions
-to keep track of what users saw what ad and if those ad-impressions resulted in a click.
-We can join the logs with preexisting user and ad-specific data. In the simplest case,
-our task it to train a model to output the probability that a user will click based on the
-data we've collected.
+A common task in advertising is to model a user's propensity to click:
 
 $$
 P(click \space | \space user,ad)
