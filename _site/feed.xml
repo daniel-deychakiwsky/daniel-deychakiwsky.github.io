@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.0">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2021-07-12T21:19:21-05:00</updated><id>/feed.xml</id><title type="html">Deylemma</title><subtitle>An Engineering Blog
-</subtitle><author><name>Daniel Deychakiwsky</name><email>d.deychak@gmail.com</email></author><entry><title type="html">Low Energy Audio Segments</title><link href="/low-energy-audio-segments" rel="alternate" type="text/html" title="Low Energy Audio Segments" /><published>2021-03-21T00:00:00-05:00</published><updated>2021-03-21T00:00:00-05:00</updated><id>/low-energy-audio-segments</id><content type="html" xml:base="/low-energy-audio-segments">&lt;p&gt;This post outlines a simple algorithm for
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-12-31T11:32:39-06:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Deylemma</title><subtitle>An Engineering Blog
+</subtitle><author><name>Daniel Deychakiwsky</name><email>d.deychak@gmail.com</email></author><entry><title type="html">Low Energy Audio Segments</title><link href="http://localhost:4000/low-energy-audio-segments" rel="alternate" type="text/html" title="Low Energy Audio Segments" /><published>2021-03-21T00:00:00-05:00</published><updated>2021-03-21T00:00:00-05:00</updated><id>http://localhost:4000/low-energy-audio-segments</id><content type="html" xml:base="http://localhost:4000/low-energy-audio-segments">&lt;p&gt;This post outlines a simple algorithm for
 identifying low energy audio segments.
 This post assumes basic knowledge of digital 
 signal processing (DSP).&lt;/p&gt;
@@ -91,10 +91,10 @@ by the length of the segment, descending.&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&quot;#fig-2&quot;&gt;Fig 2.&lt;/a&gt; shows the time-domain waveform in blue,
 the AE in red, RMS in pink, +/- one standard deviation of
-RMS in yellow, and three segments found in green
-which vary by thickness which indicates a lower energy segment.&lt;/p&gt;
+RMS in yellow, and three segment midpoints found in green
+where thickness indicates a longer low energy segment.&lt;/p&gt;
 
-&lt;p&gt;Here’s something a bit less basic, a &lt;a href=&quot;https://en.wikipedia.org/wiki/Mel_scale#:~:text=The%20mel%20scale%20(after%20the,dB%20above%20the%20listener&apos;s%20threshold.&quot;&gt;mel&lt;/a&gt;-&lt;a href=&quot;https://en.wikipedia.org/wiki/Spectrogram#:~:text=A%20spectrogram%20is%20a%20visual,they%20may%20be%20called%20waterfalls.&quot;&gt;spectrogram&lt;/a&gt; of the fake audio:&lt;/p&gt;
+&lt;p&gt;Here’s something a bit less basic, a &lt;a href=&quot;https://en.wikipedia.org/wiki/Mel_scale#:~:text=The%20mel%20scale%20(after%20the,dB%20above%20the%20listener's%20threshold.&quot;&gt;mel&lt;/a&gt;-&lt;a href=&quot;https://en.wikipedia.org/wiki/Spectrogram#:~:text=A%20spectrogram%20is%20a%20visual,they%20may%20be%20called%20waterfalls.&quot;&gt;spectrogram&lt;/a&gt; of the fake audio:&lt;/p&gt;
 
 &lt;h4 id=&quot;fig-3&quot;&gt;Fig. 3&lt;/h4&gt;
 &lt;p&gt;&lt;img src=&quot;assets/images/low_energy_audio_segments/fake_audio_spec.png&quot; alt=&quot;fake_audio_spec&quot; /&gt;&lt;/p&gt;
@@ -116,7 +116,7 @@ to hand-engineer additional information, e.g., human &lt;a href=&quot;https://en
 In other cases, manually engineering features will have less-of, if any effect at all
 (think background music). I believe the more robust solutions will result from applied 
 ML / AI / RL algorithms that are able to generalize to a broader spectrum of audio, 
-of course, requiring larger amounts quality data.&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="digital-signal-processing" /><summary type="html">This post outlines a simple algorithm for identifying low energy audio segments. This post assumes basic knowledge of digital signal processing (DSP).</summary></entry><entry><title type="html">Ordinary Least Squares is Orthogonal Projection</title><link href="/linear-regression-is-orthogonal-projection" rel="alternate" type="text/html" title="Ordinary Least Squares is Orthogonal Projection" /><published>2020-12-08T00:00:00-06:00</published><updated>2020-12-08T00:00:00-06:00</updated><id>/linear-regression-is-orthogonal-projection</id><content type="html" xml:base="/linear-regression-is-orthogonal-projection">&lt;p&gt;This post visualizes the equivalence of two perspectives
+of course, requiring larger amounts quality data.&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="digital-signal-processing" /><summary type="html">This post outlines a simple algorithm for identifying low energy audio segments. This post assumes basic knowledge of digital signal processing (DSP).</summary></entry><entry><title type="html">Ordinary Least Squares is Orthogonal Projection</title><link href="http://localhost:4000/linear-regression-is-orthogonal-projection" rel="alternate" type="text/html" title="Ordinary Least Squares is Orthogonal Projection" /><published>2020-12-08T00:00:00-06:00</published><updated>2020-12-08T00:00:00-06:00</updated><id>http://localhost:4000/linear-regression-is-orthogonal-projection</id><content type="html" xml:base="http://localhost:4000/linear-regression-is-orthogonal-projection">&lt;p&gt;This post visualizes the equivalence of two perspectives
 on estimating the unknown parameters in a simple linear
 regression model, ordinary least squares (OLS) and
 orthogonal projection (OP).&lt;/p&gt;
@@ -247,7 +247,7 @@ to only &lt;em&gt;one learnable parameter&lt;/em&gt;. Let’s train the model.&l
 &lt;span class=&quot;n&quot;&gt;X&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]])&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]])&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;reg&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LinearRegression&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fit_intercept&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;False&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;X&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;y&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&apos;weights/parameters&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;reg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;coef_&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'weights/parameters'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;reg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;coef_&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;weights/parameters array([[0.84615385]])
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
@@ -393,7 +393,7 @@ elegant visualization.&lt;/p&gt;
 
 &lt;p&gt;I built the visualizations for this post with &lt;a href=&quot;https://www.desmos.com/&quot;&gt;Desmos&lt;/a&gt;,
 an incredible graphing web application that enables
-users to visualize, study, and learn mathematics.&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="machine-learning" /><category term="artificial-intelligence" /><summary type="html">This post visualizes the equivalence of two perspectives on estimating the unknown parameters in a simple linear regression model, ordinary least squares (OLS) and orthogonal projection (OP).</summary></entry><entry><title type="html">Normalized Cross-Entropy</title><link href="/normalized-cross-entropy" rel="alternate" type="text/html" title="Normalized Cross-Entropy" /><published>2020-05-29T00:00:00-05:00</published><updated>2020-05-29T00:00:00-05:00</updated><id>/normalized-cross-entropy</id><content type="html" xml:base="/normalized-cross-entropy">&lt;p&gt;This post explores a normalized version of binary cross-entropy loss in attempt to 
+users to visualize, study, and learn mathematics.&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="machine-learning" /><category term="artificial-intelligence" /><summary type="html">This post visualizes the equivalence of two perspectives on estimating the unknown parameters in a simple linear regression model, ordinary least squares (OLS) and orthogonal projection (OP).</summary></entry><entry><title type="html">Normalized Cross-Entropy</title><link href="http://localhost:4000/normalized-cross-entropy" rel="alternate" type="text/html" title="Normalized Cross-Entropy" /><published>2020-05-29T00:00:00-05:00</published><updated>2020-05-29T00:00:00-05:00</updated><id>http://localhost:4000/normalized-cross-entropy</id><content type="html" xml:base="http://localhost:4000/normalized-cross-entropy">&lt;p&gt;This post explores a normalized version of binary cross-entropy loss in attempt to 
 remove the effect of the prior (class imbalance within the dataset) on the resulting value.&lt;/p&gt;
 
 &lt;ul id=&quot;markdown-toc&quot;&gt;
@@ -404,7 +404,7 @@ remove the effect of the prior (class imbalance within the dataset) on the resul
       &lt;li&gt;&lt;a href=&quot;#equation&quot; id=&quot;markdown-toc-equation&quot;&gt;Equation&lt;/a&gt;&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#what-is-log-loss&quot; id=&quot;markdown-toc-what-is-log-loss&quot;&gt;What is log-Loss?&lt;/a&gt;    &lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;#what-is-log-loss&quot; id=&quot;markdown-toc-what-is-log-loss&quot;&gt;What is log-loss?&lt;/a&gt;    &lt;ul&gt;
       &lt;li&gt;&lt;a href=&quot;#probability-theory-derivation&quot; id=&quot;markdown-toc-probability-theory-derivation&quot;&gt;Probability Theory derivation&lt;/a&gt;        &lt;ul&gt;
           &lt;li&gt;&lt;a href=&quot;#bernoulli&quot; id=&quot;markdown-toc-bernoulli&quot;&gt;Bernoulli&lt;/a&gt;&lt;/li&gt;
           &lt;li&gt;&lt;a href=&quot;#binomial&quot; id=&quot;markdown-toc-binomial&quot;&gt;Binomial&lt;/a&gt;&lt;/li&gt;
@@ -458,14 +458,7 @@ remove the effect of the prior (class imbalance within the dataset) on the resul
 
 &lt;h2 id=&quot;context&quot;&gt;Context&lt;/h2&gt;
 
-&lt;p&gt;The business has invoked our expertise to model click conversions;
-we need to provide a score for how likely a given user is to click on
-a given ad. The business can then use the scores to optimize various objectives,
-i.e., choose which ads to show. We collect data by logging user-ad interactions
-to keep track of what users saw what ad and if those ad-impressions resulted in a click.
-We can join the logs with preexisting user and ad-specific data. In the simplest case,
-our task it to train a model to output the probability that a user will click based on the
-data we’ve collected.&lt;/p&gt;
+&lt;p&gt;A common machine-learning task within the advertising domain is modeling user-ad click propensity.&lt;/p&gt;
 
 \[P(click \space | \space user,ad)
 \tag 1 \label 1\]
@@ -556,7 +549,7 @@ our model’s predicted probability score (that the user will click).&lt;/li&gt;
 }
 \tag 4 \label 4\]
 
-&lt;h2 id=&quot;what-is-log-loss&quot;&gt;What is log-Loss?&lt;/h2&gt;
+&lt;h2 id=&quot;what-is-log-loss&quot;&gt;What is log-loss?&lt;/h2&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;In mathematical optimization and decision theory,
@@ -1149,7 +1142,7 @@ offers support for three-dimensional rendering.&lt;/p&gt;
 
 &lt;p&gt;[13] https://github.com/deychak/notebooks/blob/master/experiments/cross_entropy_log_likelihood.ipynb&lt;/p&gt;
 
-&lt;p&gt;[14] https://github.com/deychak/notebooks/blob/master/simulations/prior_cross_entropy_convergence_sim.ipynb&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="machine-learning" /><category term="artificial-intelligence" /><summary type="html">This post explores a normalized version of binary cross-entropy loss in attempt to remove the effect of the prior (class imbalance within the dataset) on the resulting value.</summary></entry><entry><title type="html">About Me</title><link href="/about-me" rel="alternate" type="text/html" title="About Me" /><published>2020-05-28T00:00:00-05:00</published><updated>2020-05-28T00:00:00-05:00</updated><id>/about-me</id><content type="html" xml:base="/about-me">&lt;p&gt;This is my first post. Here’s a bit about who I am and why I started this blog :).&lt;/p&gt;
+&lt;p&gt;[14] https://github.com/deychak/notebooks/blob/master/simulations/prior_cross_entropy_convergence_sim.ipynb&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="machine-learning" /><category term="artificial-intelligence" /><summary type="html">This post explores a normalized version of binary cross-entropy loss in attempt to remove the effect of the prior (class imbalance within the dataset) on the resulting value.</summary></entry><entry><title type="html">About Me</title><link href="http://localhost:4000/about-me" rel="alternate" type="text/html" title="About Me" /><published>2020-05-28T00:00:00-05:00</published><updated>2020-05-28T00:00:00-05:00</updated><id>http://localhost:4000/about-me</id><content type="html" xml:base="http://localhost:4000/about-me">&lt;p&gt;This is my first post. Here’s a bit about who I am and why I started this blog :).&lt;/p&gt;
 
 &lt;ul id=&quot;markdown-toc&quot;&gt;
   &lt;li&gt;&lt;a href=&quot;#who-am-i&quot; id=&quot;markdown-toc-who-am-i&quot;&gt;Who am I?&lt;/a&gt;&lt;/li&gt;

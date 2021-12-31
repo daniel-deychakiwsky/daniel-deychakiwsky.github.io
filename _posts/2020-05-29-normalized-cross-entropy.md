@@ -108,7 +108,7 @@ NCE=\\
 \tag 4 \label 4
 $$
 
-## What is log-Loss?
+## What is log-loss?
 
 > In mathematical optimization and decision theory,
   a loss function or cost function is a function that
