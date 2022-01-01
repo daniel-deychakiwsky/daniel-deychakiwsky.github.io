@@ -152,7 +152,7 @@ model hypothesis, $\boldsymbol{\hat \theta}$. Per equation \ref{2}, $h$ represen
 that is, after the linear transform's output passes through the link function.
 
 $$
-\hat Y \sim Bernoulli(\hat p)=\\
+\hat Y|X \sim Bernoulli(\hat p)=\\
 Bernoulli(h_\boldsymbol{\hat \theta}(\textbf x))
 \tag 7 \label 7
 $$
