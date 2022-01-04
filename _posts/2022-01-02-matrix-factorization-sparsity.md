@@ -18,47 +18,48 @@ recommender systems.
 # Primer
 
 This post assumes understanding of the general *recommendations*
-machine learning (ML) problem, basic modeling approaches, along with
-commonly used evaluation metrics.
+machine learning (ML) problem, basic modeling approaches,
+and commonly used evaluation metrics.
 For a refresher, check out Google's recommender systems mini-[course]
 which introduces Content-Based Filtering (CBF),
 Collaborative Filtering (CF) with Matrix Factorization (MF),
-and Deep Neural Networks (DNN) for recommendations.
-The remainder of this post focuses on MF for **sparse implicit**
-user-item interactions. 
+and Deep Neural Networks (DNN). The remainder of this post 
+focuses on MF for **sparse implicit** user-item interactions. 
 
 # Matrix Factorization
 
-MF is a type of model-based (parametric) CF. The product of two matrices,
-$\mathbf{W}$ and $\mathbf{H}$, is learned to minimize reconstruction error against a 
-user-item interaction matrix, $\mathbf{V}$. Although MF is inherently linear, it is proven
-to produce serendipitous recommendations and is often a great starting point
-as a simple initial model.
-
-The algorithm exposes a hyperparameter that serves to expand or
-contract the columns of $\mathbf{W}$ and the rows of $\mathbf{H}$ by the same dimension.
-It can be set so that $\mathbf{W}$ and $\mathbf{H}$ become low-rank matrix factors
-of $\mathbf{V}$. This forces a compressed encoding which captures the most
-important information for approximating $\mathbf{V}$ resulting in effective
-user and item embeddings.
+CF with MF is a type of model-based (parametric) algorithm that
+decomposes $\mathbf{V}$ (user-item interaction matrix)
+into a product of two matrices, $\mathbf{W}$ (latent user embeddings)
+and $\mathbf{H}$ (latent item embeddings), by minimizing
+some flavor of reconstruction error. Although MF is
+inherently linear, it is a "tried and true" technique 
+that is often reported to produce serendipitous recommendations.
 
 $$
 \mathbf{W}\mathbf{H}^\top \approx \mathbf{V}
 \tag{1} \label{1}
 $$
 
+The algorithm exposes a hyperparameter that serves to expand or
+contract the columns of $\mathbf{W}$ and the rows of $\mathbf{H}$ by the same dimension.
+It can be set so that $\mathbf{W}$ and $\mathbf{H}$ become low-rank factors
+of $\mathbf{V}$. This forces a compressed encoding which captures the most
+important information for approximating $\mathbf{V}$ resulting in effective
+latent user and item embeddings.
+
 ![mf]
 
 # Sparsity
 
 At production grade scale it's common to produce recommendations
-for users and items of higher cardinalities from sparse implicit 
-interactions, e.g., user-item purchases.
+for millions users and items from sparse implicit interactions,
+e.g., purchases.
 
 Imagine a scenario with $24$ unique items and $24$ unique users.
 If each user purchases 3 unique items, on average,
-the number of non-zeros in the interaction matrix becomes $24 * 3 = 72$ while
-the remaining entries are all zeros. That's a sparsity of
+the number of non-zeros in this interaction matrix is $24 * 3 = 72$
+while the remaining entries are all zeros. That's a sparsity of
 $1 - (72 / (24 * 24)) = 0.875$. In other words, $87.5\%$ of 
 the interaction matrix entries are zeros.
 
@@ -72,20 +73,26 @@ $$
 \tag{2} \label{2}
 $$
 
-MF models are robust but once sparsity spills over $99.5\%$, 
-it can become problematic. The [research] that introduced
-the famous Neural Collaborative Filtering (NCF) model reported
-sparsity of $99.73\%$ on their Pinterest dataset.
+MF models can handle sparsity to an extent 
+but when it spills over roughly $99.5\%$, 
+it can become problematic. There are strategies
+to reduce sparsity. Researchers tend to subsample users
+and items in such a way that some amount of coverage is
+guaranteed. Another mechanism is bringing in more interaction
+data from other implicit data sources. The authors of 
+the famous Neural Collaborative Filtering ([NCF]) model
+reported sparsity of $99.73\%$ on their Pinterest dataset,
+so they subsampled users based on interactions.
 
-*\*\*Bows to the audience and says ...*
-
-> The original data is very large but highly sparse.
-
-*\*\*then drops the mic and exits to a standing ovation?*
+> The original data is very large but highly sparse. 
+For example, over 20% of users have only one pin, making it difficult
+to evaluate collaborative filtering algorithms. As such, we
+filtered the dataset in the same way as the MovieLens data
+that retained only users with at least 20 interactions (pins).
 
 ## Why is it problematic?
 
-ML models are only as powerful as the data that powers them
+ML models are only as good as the data that powers them
 and MF is no exception to that rule. To demonstrate why sparsity
 is a problem, let's consider a wild edge case.
 
@@ -93,8 +100,8 @@ Let's continue with the scenario from above, $24$ users and $24$ items,
 but let's add an evil twist so that each user has purchased only one
 distinct item that no other user has purchased. We could reorder the
 user indices (or rows of the interaction matrix) to arrive at the 
-identity matrix, i.e., a canonical orthonormal basis that is 
-linearly independent by definition. In other words, there isn't
+identity matrix, i.e., a canonical orthonormal basis $\in \mathbb{R}^{24\times24}$
+that is linearly independent by definition. In other words, there isn't
 much to learn as the unit vectors point in orthogonal directions.
 
 $$
@@ -109,10 +116,10 @@ $$
 $$
 
 So what does MF learn in this case? Before we answer that, let's get even more evil.
-Imagine we train the model with 24 `factors` (the hyperparameter discussed earlier),
-what do you think the model would learn? It ends up learning exactly what it should;
-to approximate the interaction matrix by inverting the item factor matrix to produce
-the identity.
+We train the model with 24 `factors` (the hyperparameter discussed earlier),
+what do you think the model will learn? It ends up learning exactly what it should;
+an approximation of the interaction matrix (identity) by 
+**inverting the item factor matrix**.
 
 ```python
 import implicit.als as mf
@@ -130,10 +137,9 @@ $$
 \tag{4} \label{4}
 $$
 
-In hindsight, the inversion should be obvious given $\mathbf{W} \in \mathbb{R}^{24\times24}$, 
-$\mathbf{H} \in \mathbb{R}^{24\times24}$, and $\mathbf{I}_{24}$. The interesting
-aspect of this degenerate case is it highlights how the model behaves
-with no correlational signal within the data.
+Although the inversion is obvious given $\mathbf{W} \in \mathbb{R}^{24\times24}$, 
+$\mathbf{H} \in \mathbb{R}^{24\times24}$, and $\mathbf{I}_{24}$, this degenerate case 
+highlights how helpless the model is with no correlational signal within the data.
 
 ## Simulation
 
@@ -229,7 +235,7 @@ for sparsity in sparsities:
 ![sparsity_sim]
 
 [course]: https://developers.google.com/machine-learning/recommendation/collaborative/basics
-[research]: https://arxiv.org/pdf/1708.05031.pdf
+[NCF]: https://arxiv.org/pdf/1708.05031.pdf
 [square wave]: https://en.wikipedia.org/wiki/Square_wave
 
 [mf]: assets/images/matrix_factorization_sparsity/mf.png
