@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta property="og:image" content="/assets/images/geometry.jpg"/><!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Matrix Factorization Sparsity | Deylemma</title>
+<meta name="generator" content="Jekyll v4.2.1" />
+<meta property="og:title" content="Matrix Factorization Sparsity" />
+<meta name="author" content="Daniel Deychakiwsky" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="This post explores how implicit user-item interaction sparsity poses a challenge for matrix factorization (model-based) collaborative filtering recommender systems." />
+<meta property="og:description" content="This post explores how implicit user-item interaction sparsity poses a challenge for matrix factorization (model-based) collaborative filtering recommender systems." />
+<link rel="canonical" href="http://localhost:4000/matrix-factorization-sparsity" />
+<meta property="og:url" content="http://localhost:4000/matrix-factorization-sparsity" />
+<meta property="og:site_name" content="Deylemma" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-01-02T00:00:00-06:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Matrix Factorization Sparsity" />
+<script type="application/ld+json">
+{"headline":"Matrix Factorization Sparsity","url":"http://localhost:4000/matrix-factorization-sparsity","dateModified":"2022-01-02T00:00:00-06:00","datePublished":"2022-01-02T00:00:00-06:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/matrix-factorization-sparsity"},"author":{"@type":"Person","name":"Daniel Deychakiwsky"},"description":"This post explores how implicit user-item interaction sparsity poses a challenge for matrix factorization (model-based) collaborative filtering recommender systems.","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Deylemma" />
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Deylemma</a></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Matrix Factorization Sparsity</h1>
+    <p class="post-meta"><time class="dt-published" datetime="2022-01-02T00:00:00-06:00" itemprop="datePublished">
+        Jan 2, 2022
+      </time>• 
+          <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+            <span class="p-author h-card" itemprop="name">Daniel Deychakiwsky</span></span></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>This post explores how implicit user-item interaction sparsity poses
+a challenge for matrix factorization (model-based) collaborative filtering
+recommender systems.</p>
+
+<ul id="markdown-toc">
+  <li><a href="#primer" id="markdown-toc-primer">Primer</a></li>
+  <li><a href="#matrix-factorization" id="markdown-toc-matrix-factorization">Matrix Factorization</a></li>
+  <li><a href="#sparsity" id="markdown-toc-sparsity">Sparsity</a>    <ul>
+      <li><a href="#why-is-it-problematic" id="markdown-toc-why-is-it-problematic">Why is it problematic?</a></li>
+      <li><a href="#simulation" id="markdown-toc-simulation">Simulation</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="primer">Primer</h1>
+
+<p>This post assumes understanding of the general <em>recommendations</em>
+machine learning (ML) problem, basic modeling approaches, along with
+commonly used evaluation metrics.
+For a refresher, check out Google’s recommender systems mini-<a href="https://developers.google.com/machine-learning/recommendation/collaborative/basics">course</a>
+which introduces Content-Based Filtering (CBF),
+Collaborative Filtering (CF) with Matrix Factorization (MF),
+and Deep Neural Networks (DNN) for recommendations.
+The remainder of this post focuses on MF for <strong>sparse implicit</strong>
+user-item interactions.</p>
+
+<h1 id="matrix-factorization">Matrix Factorization</h1>
+
+<p>MF is a type of model-based (parametric) CF. The product of two matrices,
+$\mathbf{W}$ and $\mathbf{H}$, is learned to minimize reconstruction error against a 
+user-item interaction matrix, $\mathbf{V}$. Although MF is inherently linear, it is proven
+to produce serendipitous recommendations and is often a great starting point
+as a simple initial model.</p>
+
+<p>The algorithm exposes a hyperparameter that serves to expand or
+contract the columns of $\mathbf{W}$ and the rows of $\mathbf{H}$ by the same dimension.
+It can be set so that $\mathbf{W}$ and $\mathbf{H}$ become low-rank matrix factors
+of $\mathbf{V}$. This forces a compressed encoding which captures the most
+important information for approximating $\mathbf{V}$ resulting in effective
+user and item embeddings.</p>
+
+\[\mathbf{W}\mathbf{H}^\top \approx \mathbf{V}
+\tag{1} \label{1}\]
+
+<p><img src="assets/images/matrix_factorization_sparsity/mf.png" alt="mf" /></p>
+
+<h1 id="sparsity">Sparsity</h1>
+
+<p>At production grade scale it’s common to produce recommendations
+for users and items of higher cardinalities from sparse implicit 
+interactions, e.g., user-item purchases.</p>
+
+<p>Imagine a scenario with $24$ unique items and $24$ unique users.
+If each user purchases 3 unique items, on average,
+the number of non-zeros in the interaction matrix becomes $24 * 3 = 72$ while
+the remaining entries are all zeros. That’s a sparsity of
+$1 - (72 / (24 * 24)) = 0.875$. In other words, $87.5\%$ of 
+the interaction matrix entries are zeros.</p>
+
+\[\begin{bmatrix}
+0 &amp;  0  &amp; \ldots &amp; 0\\
+0  &amp;  1 &amp; \ldots &amp; 0\\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots\\
+1  &amp;   0       &amp;\ldots &amp; 0
+\end{bmatrix}
+\tag{2} \label{2}\]
+
+<p>MF models are robust but once sparsity spills over $99.5\%$, 
+it can become problematic. The <a href="https://arxiv.org/pdf/1708.05031.pdf">research</a> that introduced
+the famous Neural Collaborative Filtering (NCF) model reported
+sparsity of $99.73\%$ on their Pinterest dataset.</p>
+
+<p><em>**Bows to the audience and says …</em></p>
+
+<blockquote>
+  <p>The original data is very large but highly sparse.</p>
+</blockquote>
+
+<p><em>**then drops the mic and exits to a standing ovation?</em></p>
+
+<h2 id="why-is-it-problematic">Why is it problematic?</h2>
+
+<p>ML models are only as powerful as the data that powers them
+and MF is no exception to that rule. To demonstrate why sparsity
+is a problem, let’s consider a wild edge case.</p>
+
+<p>Let’s continue with the scenario from above, $24$ users and $24$ items, 
+but let’s add an evil twist so that each user has purchased only one
+distinct item that no other user has purchased. We could reorder the
+user indices (or rows of the interaction matrix) to arrive at the 
+identity matrix, i.e., a canonical orthonormal basis that is 
+linearly independent by definition. In other words, there isn’t
+much to learn as the unit vectors point in orthogonal directions.</p>
+
+\[\mathbf{I}_{24} =
+\begin{bmatrix}
+1 &amp;  0  &amp; \ldots &amp; 0\\
+0  &amp;  1 &amp; \ldots &amp; 0\\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots\\
+0  &amp;   0       &amp;\ldots &amp; 1
+\end{bmatrix}
+\tag{3} \label{3}\]
+
+<p>So what does MF learn in this case? Before we answer that, let’s get even more evil.
+Imagine we train the model with 24 <code class="language-plaintext highlighter-rouge">factors</code> (the hyperparameter discussed earlier),
+what do you think the model would learn? It ends up learning exactly what it should;
+to approximate the interaction matrix by inverting the item factor matrix to produce
+the identity.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">implicit.als</span> <span class="k">as</span> <span class="n">mf</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">import</span> <span class="nn">scipy.sparse</span> <span class="k">as</span> <span class="n">sp</span>
+
+<span class="n">m</span> <span class="o">=</span> <span class="n">mf</span><span class="p">.</span><span class="n">AlternatingLeastSquares</span><span class="p">(</span><span class="n">factors</span><span class="o">=</span><span class="mi">24</span><span class="p">)</span>
+<span class="n">m</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">sp</span><span class="p">.</span><span class="n">csr_matrix</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">24</span><span class="p">)))</span>
+<span class="n">np</span><span class="p">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">m</span><span class="p">.</span><span class="n">user_factors</span><span class="p">,</span> <span class="n">np</span><span class="p">.</span><span class="n">linalg</span><span class="p">.</span><span class="n">inv</span><span class="p">(</span><span class="n">m</span><span class="p">.</span><span class="n">item_factors</span><span class="p">.</span><span class="n">T</span><span class="p">),</span> <span class="n">atol</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+<span class="c1"># True
+</span></code></pre></div></div>
+
+\[\mathbf{W}(\mathbf{H}^\top)^{-1} \approx \mathbf{I}
+\tag{4} \label{4}\]
+
+<p>In hindsight, the inversion should be obvious given $\mathbf{W} \in \mathbb{R}^{24\times24}$, 
+$\mathbf{H} \in \mathbb{R}^{24\times24}$, and $\mathbf{I}_{24}$. The interesting
+aspect of this degenerate case is it highlights how the model behaves
+with no correlational signal within the data.</p>
+
+<h2 id="simulation">Simulation</h2>
+
+<p>Speaking of “signals” and “correlations”, the user-item interaction matrix
+is exactly that. For whatever scenario you may find yourself in, these interactions
+follow some natural generative process. If we knew that process we wouldn’t
+need any models to begin with!</p>
+
+<p>let’s generate a simulated interaction matrix by stacking harmonics
+(integer multiple increasing frequencies) of a 5Hz <a href="https://en.wikipedia.org/wiki/Square_wave">square wave</a> sampled
+at 1000 Hz.</p>
+
+<p><img src="assets/images/matrix_factorization_sparsity/square_wave.png" alt="square_wave" /></p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">import</span> <span class="nn">scipy.signal</span> <span class="k">as</span> <span class="n">sl</span>
+
+<span class="n">interactions</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">([</span>
+    <span class="n">sl</span><span class="p">.</span><span class="n">square</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="p">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">f</span> <span class="o">*</span> <span class="n">np</span><span class="p">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="bp">False</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">25</span><span class="p">)</span>
+<span class="p">])</span>
+<span class="n">interactions</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">delete</span><span class="p">(</span><span class="n">interactions</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">interactions</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">delete</span><span class="p">(</span><span class="n">interactions</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">interactions</span><span class="p">[</span><span class="n">interactions</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+</code></pre></div></div>
+
+<p>By clipping this signal to the $[0, 1]$ range,
+we end up with a bitmap, that is our interaction matrix.</p>
+
+<p><img src="assets/images/matrix_factorization_sparsity/interactions.png" alt="interactions" /></p>
+
+<p>The pattern that emerges from the square waves’ auto
+and harmonic correlations is jumping out at us because
+our brains (and eyes) are pattern recognition
+machines. Before we move to simulating machine
+reconstruction/approximation of this interaction matrix,
+don’t you think you could get close to reproducing it
+yourself just by looking at for a few seconds? I think so.
+Do you see how certain rows are correlated with other rows
+and the same across columns? The sparsity of this matrix is
+$48.7\%$, more than half of the matrix entries are non-zeros.</p>
+
+<p>Let’s run a monte-carlo simulation to investigate the effect of
+increasing sparsity on this easy-to-learn interaction matrix.
+We’ll report performance using standard ranking eval metrics
+against a random $80\%-20\%$ train-test split on the data.</p>
+
+<p>Here’s the simulation algorithm’s pseudocode followed by
+a python implementation.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>For a range of sparsities
+    For a range of trials (monte-carlo)
+        randomly sparsify interaction matrix to sparsity level
+        train and eval MF model
+        store eval metrics
+    store trials for given sparsity
+. . . 
+Plot mean and std for every eval metric across sparsities
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">implicit.als</span> <span class="k">as</span> <span class="n">mf</span>
+<span class="kn">import</span> <span class="nn">implicit.evaluation</span> <span class="k">as</span> <span class="n">ev</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">import</span> <span class="nn">scipy.sparse</span> <span class="k">as</span> <span class="n">sp</span>
+
+<span class="n">n_users</span> <span class="o">=</span> <span class="mi">24</span>
+<span class="n">n_items</span> <span class="o">=</span> <span class="mi">24</span>
+<span class="n">n_factors</span> <span class="o">=</span> <span class="mi">24</span>
+<span class="n">n_sim</span> <span class="o">=</span> <span class="mi">24</span>
+<span class="n">n_el</span> <span class="o">=</span> <span class="n">n_users</span> <span class="o">*</span> <span class="n">n_items</span>
+<span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">shuffle</span> <span class="o">=</span> <span class="bp">False</span>
+<span class="n">sparsities</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.91</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">sparsity</span> <span class="ow">in</span> <span class="n">sparsities</span><span class="p">:</span>
+    <span class="n">ranking_metrics</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_sim</span><span class="p">):</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">interactions</span><span class="p">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">n_z</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n_el</span> <span class="o">*</span> <span class="n">sparsity</span><span class="p">)</span>
+        <span class="n">r_z</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="n">choice</span><span class="p">(</span><span class="n">n_el</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">n_z</span><span class="p">)</span>
+        <span class="n">i</span><span class="p">[</span><span class="n">np</span><span class="p">.</span><span class="n">unravel_index</span><span class="p">(</span><span class="n">r_z</span><span class="p">,</span> <span class="p">(</span><span class="n">n_users</span><span class="p">,</span> <span class="n">n_items</span><span class="p">))]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">trn_i</span><span class="p">,</span> <span class="n">tst_i</span> <span class="o">=</span> <span class="n">ev</span><span class="p">.</span><span class="n">train_test_split</span><span class="p">(</span><span class="n">sp</span><span class="p">.</span><span class="n">csr_matrix</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">mf</span><span class="p">.</span><span class="n">AlternatingLeastSquares</span><span class="p">(</span><span class="n">factors</span><span class="o">=</span><span class="n">n_factors</span><span class="p">)</span>
+        <span class="n">m</span><span class="p">.</span><span class="n">fit</span><span class="p">(</span><span class="n">trn_i</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="n">ev</span><span class="p">.</span><span class="n">ranking_metrics_at_k</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">trn_i</span><span class="p">,</span> <span class="n">tst_i</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">ranking_metrics</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+    <span class="n">results</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">ranking_metrics</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p><img src="assets/images/matrix_factorization_sparsity/sparsity_sim.png" alt="sparsity_sim" /></p>
+
+
+  </div><a class="u-url" href="/matrix-factorization-sparsity" hidden></a>
+</article><script>
+  (function () {
+    let script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML";
+
+    const config =  'MathJax.Hub.Config({' +
+                    'tex2jax: {' +
+                      'inlineMath: [ [\'$\',\'$\'] ],' +
+                      'processEscapes: true' +
+                    '}' +
+                  '});'
+
+    if (window.opera) {
+      script.innerHTML = config
+    } else {
+      script.text = config
+    }
+
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+<!--        <p class="feed-subscribe">-->
+<!--          <a href="/feed.xml">-->
+<!--            <svg class="svg-icon orange">-->
+<!--              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>-->
+<!--            </svg><span>Subscribe</span>-->
+<!--          </a>-->
+<!--        </p>-->
+        <ul class="contact-list">
+          <li class="p-name">Daniel Deychakiwsky</li>
+          <li><a class="u-email" href="mailto:d.deychak@gmail.com">d.deychak@gmail.com</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <p>An Engineering Blog
+</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/deychak" title="deychak"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://www.instagram.com/danieldeychak" title="danieldeychak"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#instagram"></use></svg></a></li><li><a rel="me" href="https://www.linkedin.com/in/danieldeychak" title="danieldeychak"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
