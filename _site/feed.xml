@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2022-01-04T11:53:03-06:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Deylemma</title><subtitle>An Engineering Blog
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2022-01-04T21:22:00-06:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Deylemma</title><subtitle>An Engineering Blog
 </subtitle><author><name>Daniel Deychakiwsky</name><email>d.deychak@gmail.com</email></author><entry><title type="html">Matrix Factorization Sparsity</title><link href="http://localhost:4000/matrix-factorization-sparsity" rel="alternate" type="text/html" title="Matrix Factorization Sparsity" /><published>2022-01-02T00:00:00-06:00</published><updated>2022-01-02T00:00:00-06:00</updated><id>http://localhost:4000/matrix-factorization-sparsity</id><content type="html" xml:base="http://localhost:4000/matrix-factorization-sparsity">&lt;p&gt;This post explores how implicit user-item interaction sparsity poses
 a challenge for matrix factorization (model-based) collaborative filtering
 recommender systems.&lt;/p&gt;
@@ -38,25 +38,25 @@ that is often reported to produce serendipitous recommendations.&lt;/p&gt;
 \tag{1} \label{1}\]
 
 &lt;p&gt;The algorithm exposes a hyperparameter that serves to expand or
-contract the columns of $\mathbf{W}$ and the rows of $\mathbf{H}$ by the same dimension.
-It can be set so that $\mathbf{W}$ and $\mathbf{H}$ become low-rank factors
-of $\mathbf{V}$. This forces a compressed encoding which captures the most
-important information for approximating $\mathbf{V}$ resulting in effective
-latent user and item embeddings.&lt;/p&gt;
+contract the dimensionality of the columns in $\mathbf{W}$ 
+and the rows in $\mathbf{H}$. It can be set so that $\mathbf{W}$ and 
+$\mathbf{H}$ become low-rank factors of $\mathbf{V}$, 
+forcing a compressed encoding that must capture the latent structure
+(import information) for approximating $\mathbf{V}$.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;assets/images/matrix_factorization_sparsity/mf.png&quot; alt=&quot;mf&quot; /&gt;&lt;/p&gt;
 
 &lt;h1 id=&quot;sparsity&quot;&gt;Sparsity&lt;/h1&gt;
 
 &lt;p&gt;At production grade scale it’s common to produce recommendations
-for millions users and items from sparse implicit interactions,
-e.g., purchases.&lt;/p&gt;
+for millions of users and items based off of sparse implicit 
+interactions, e.g., purchases, streams, etc.&lt;/p&gt;
 
-&lt;p&gt;Imagine a scenario with $24$ unique items and $24$ unique users.
-If each user purchases 3 unique items, on average,
+&lt;p&gt;Imagine a scenario with just $24$ unique items and $24$ unique users.
+If each user purchased 3 unique items on average,
 the number of non-zeros in this interaction matrix is $24 * 3 = 72$
-while the remaining entries are all zeros. That’s a sparsity of
-$1 - (72 / (24 * 24)) = 0.875$. In other words, $87.5\%$ of 
+while the remaining $(24 ∗ 24) - 72 = 504$ entries are all zeros.
+That’s a sparsity of $1 - (72 / (24 * 24)) = 0.875$. In other words, $87.5\%$ of 
 the interaction matrix entries are zeros.&lt;/p&gt;
 
 \[\begin{bmatrix}
@@ -67,14 +67,14 @@ the interaction matrix entries are zeros.&lt;/p&gt;
 \end{bmatrix}
 \tag{2} \label{2}\]
 
-&lt;p&gt;MF models can handle sparsity to an extent 
+&lt;p&gt;MF models are fairly resilient to sparse data 
 but when it spills over roughly $99.5\%$, 
 it can become problematic. There are strategies
-to reduce sparsity. Researchers tend to subsample users
+to reduce sparsity. Researchers tend to either subsample users
 and items in such a way that some amount of coverage is
-guaranteed. Another mechanism is bringing in more interaction
-data from other implicit data sources. The authors of 
-the famous Neural Collaborative Filtering (&lt;a href=&quot;https://arxiv.org/pdf/1708.05031.pdf&quot;&gt;NCF&lt;/a&gt;) model
+guaranteed and / or collect multi-channel interaction
+data (lower affinity) from other implicit data sources, e.g., time-on-page.
+The authors of the famous Neural Collaborative Filtering (&lt;a href=&quot;https://arxiv.org/pdf/1708.05031.pdf&quot;&gt;NCF&lt;/a&gt;) model
 reported sparsity of $99.73\%$ on their Pinterest dataset,
 so they subsampled users based on interactions.&lt;/p&gt;
 
@@ -90,7 +90,8 @@ that retained only users with at least 20 interactions (pins).&lt;/p&gt;
 
 &lt;p&gt;ML models are only as good as the data that powers them
 and MF is no exception to that rule. To demonstrate why sparsity
-is a problem, let’s consider a wild edge case.&lt;/p&gt;
+is a problem, let’s consider a wild edge case that you’d likely never
+encounter - but really, more of a thought experiment.&lt;/p&gt;
 
 &lt;p&gt;Let’s continue with the scenario from above, $24$ users and $24$ items, 
 but let’s add an evil twist so that each user has purchased only one
@@ -109,11 +110,11 @@ much to learn as the unit vectors point in orthogonal directions.&lt;/p&gt;
 \end{bmatrix}
 \tag{3} \label{3}\]
 
-&lt;p&gt;So what does MF learn in this case? Before we answer that, let’s get even more evil.
-We train the model with 24 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;factors&lt;/code&gt; (the hyperparameter discussed earlier),
-what do you think the model will learn? It ends up learning exactly what it should;
-an approximation of the interaction matrix (identity) by 
-&lt;strong&gt;inverting the item factor matrix&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;Let’s get even more evil! We train the model with 24 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;factors&lt;/code&gt; 
+(the hyperparameter discussed earlier), what do you think 
+the model learns to do? It ends up learning exactly what it’s
+supposed to; its best reconstruction of the interaction (identity)
+matrix and it does so by &lt;strong&gt;inverting the item factor matrix&lt;/strong&gt;.&lt;/p&gt;
 
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;implicit.als&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mf&lt;/span&gt;
 &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;numpy&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;
@@ -130,7 +131,7 @@ an approximation of the interaction matrix (identity) by
 
 &lt;p&gt;Although the inversion is obvious given $\mathbf{W} \in \mathbb{R}^{24\times24}$, 
 $\mathbf{H} \in \mathbb{R}^{24\times24}$, and $\mathbf{I}_{24}$, this degenerate case 
-highlights how helpless the model is with no correlational signal within the data.&lt;/p&gt;
+highlights how helpless the model becomes with no correlational signal in the data.&lt;/p&gt;
 
 &lt;h2 id=&quot;simulation&quot;&gt;Simulation&lt;/h2&gt;
 
@@ -139,11 +140,14 @@ is exactly that. For whatever scenario you may find yourself in, these interacti
 follow some natural generative process. If we knew that process we wouldn’t
 need any models to begin with!&lt;/p&gt;
 
-&lt;p&gt;let’s generate a simulated interaction matrix by stacking harmonics
-(integer multiple increasing frequencies) of a 5Hz &lt;a href=&quot;https://en.wikipedia.org/wiki/Square_wave&quot;&gt;square wave&lt;/a&gt; sampled
-at 1000 Hz.&lt;/p&gt;
+&lt;p&gt;Let’s drive this point accross by generating a simulated interaction matrix
+by stacking harmonics (integer multiple increasing frequencies) of a
+5Hz &lt;a href=&quot;https://en.wikipedia.org/wiki/Square_wave&quot;&gt;square wave&lt;/a&gt; sampled at 1000 Hz.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;assets/images/matrix_factorization_sparsity/square_wave.png&quot; alt=&quot;square_wave&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;By clipping the stacked signals to the $[0, 1]$ range,
+we end up with a bitmap, that is our interaction matrix.&lt;/p&gt;
 
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;numpy&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;
 &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;scipy.signal&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sl&lt;/span&gt;
@@ -157,38 +161,43 @@ at 1000 Hz.&lt;/p&gt;
 &lt;span class=&quot;n&quot;&gt;interactions&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;interactions&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;By clipping this signal to the $[0, 1]$ range,
-we end up with a bitmap, that is our interaction matrix.&lt;/p&gt;
-
 &lt;p&gt;&lt;img src=&quot;assets/images/matrix_factorization_sparsity/interactions.png&quot; alt=&quot;interactions&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;The pattern that emerges from the square waves’ auto
-and harmonic correlations is jumping out at us because
-our brains (and eyes) are pattern recognition
-machines. Before we move to simulating machine
-reconstruction/approximation of this interaction matrix,
-don’t you think you could get close to reproducing it
-yourself just by looking at for a few seconds? I think so.
-Do you see how certain rows are correlated with other rows
-and the same across columns? The sparsity of this matrix is
-$48.7\%$, more than half of the matrix entries are non-zeros.&lt;/p&gt;
+&lt;p&gt;The spirals that emerge from the square waves’ auto
+and harmonic correlations jump out because
+the brain is a pattern recognition (correlating)
+machine. Don’t you think you could get close to drawing it
+just by looking at for a few seconds? I bet you could!
+Notice how certain rows are correlated with other rows
+and the same holds across columns? Hey, why
+draw any more attention to something the brain has 
+already and automatically “figured out” :).
+The sparsity of this matrix is $48.7\%$, more than half 
+of the entries are non-zeros.
+Since this interaction matrix exerts noticeable correlation
+and is not relatively sparse, this should be a piece of 
+cake for MF but what if we started loosing signal, 
+literally, by randomly zeroing out non-zero entries
+and thereby increasing sparsity?&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;assets/images/matrix_factorization_sparsity/interactions_removed.png&quot; alt=&quot;interactions_removed&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Let’s run a monte-carlo simulation to investigate the effect of
 increasing sparsity on this easy-to-learn interaction matrix.
-We’ll report performance using standard ranking eval metrics
-against a random $80\%-20\%$ train-test split on the data.&lt;/p&gt;
+We’ll report performance using standard ranking evaluation metrics
+against a random $80\%-20\%$ train-test split.&lt;/p&gt;
 
-&lt;p&gt;Here’s the simulation algorithm’s pseudocode followed by
-a python implementation.&lt;/p&gt;
+&lt;p&gt;Here’s the simulation pseudocode followed by a python implementation.&lt;/p&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;For a range of sparsities
-    For a range of trials (monte-carlo)
-        randomly sparsify interaction matrix to sparsity level
-        train and eval MF model
-        store eval metrics
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;for a range of sparsities
+    for many trials (monte-carlo)
+        randomly sparsify matrix (to current sparsity)
+        split matrix into train and test sets
+        train and evaluate MF model
+        store evaluation metrics
     store trials for given sparsity
 . . . 
-Plot mean and std for every eval metric across sparsities
+plot mean and std for every eval metric for every sparsity
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;implicit.als&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mf&lt;/span&gt;

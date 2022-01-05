@@ -42,25 +42,25 @@ $$
 $$
 
 The algorithm exposes a hyperparameter that serves to expand or
-contract the columns of $\mathbf{W}$ and the rows of $\mathbf{H}$ by the same dimension.
-It can be set so that $\mathbf{W}$ and $\mathbf{H}$ become low-rank factors
-of $\mathbf{V}$. This forces a compressed encoding which captures the most
-important information for approximating $\mathbf{V}$ resulting in effective
-latent user and item embeddings.
+contract the dimensionality of the columns in $\mathbf{W}$ 
+and the rows in $\mathbf{H}$. It can be set so that $\mathbf{W}$ and 
+$\mathbf{H}$ become low-rank factors of $\mathbf{V}$, 
+forcing a compressed encoding that must capture the latent structure
+(import information) for approximating $\mathbf{V}$.
 
 ![mf]
 
 # Sparsity
 
 At production grade scale it's common to produce recommendations
-for millions users and items from sparse implicit interactions,
-e.g., purchases.
+for millions of users and items based off of sparse implicit 
+interactions, e.g., purchases, streams, etc.
 
-Imagine a scenario with $24$ unique items and $24$ unique users.
-If each user purchases 3 unique items, on average,
+Imagine a scenario with just $24$ unique items and $24$ unique users.
+If each user purchased 3 unique items on average,
 the number of non-zeros in this interaction matrix is $24 * 3 = 72$
-while the remaining entries are all zeros. That's a sparsity of
-$1 - (72 / (24 * 24)) = 0.875$. In other words, $87.5\%$ of 
+while the remaining $(24 ∗ 24) - 72 = 504$ entries are all zeros.
+That's a sparsity of $1 - (72 / (24 * 24)) = 0.875$. In other words, $87.5\%$ of 
 the interaction matrix entries are zeros.
 
 $$
@@ -73,14 +73,14 @@ $$
 \tag{2} \label{2}
 $$
 
-MF models can handle sparsity to an extent 
+MF models are fairly resilient to sparse data 
 but when it spills over roughly $99.5\%$, 
 it can become problematic. There are strategies
-to reduce sparsity. Researchers tend to subsample users
+to reduce sparsity. Researchers tend to either subsample users
 and items in such a way that some amount of coverage is
-guaranteed. Another mechanism is bringing in more interaction
-data from other implicit data sources. The authors of 
-the famous Neural Collaborative Filtering ([NCF]) model
+guaranteed and / or collect multi-channel interaction
+data (lower affinity) from other implicit data sources, e.g., time-on-page.
+The authors of the famous Neural Collaborative Filtering ([NCF]) model
 reported sparsity of $99.73\%$ on their Pinterest dataset,
 so they subsampled users based on interactions.
 
@@ -94,7 +94,8 @@ that retained only users with at least 20 interactions (pins).
 
 ML models are only as good as the data that powers them
 and MF is no exception to that rule. To demonstrate why sparsity
-is a problem, let's consider a wild edge case.
+is a problem, let's consider a wild edge case that you'd likely never
+encounter - but really, more of a thought experiment.
 
 Let's continue with the scenario from above, $24$ users and $24$ items, 
 but let's add an evil twist so that each user has purchased only one
@@ -115,11 +116,11 @@ $$
 \tag{3} \label{3}
 $$
 
-So what does MF learn in this case? Before we answer that, let's get even more evil.
-We train the model with 24 `factors` (the hyperparameter discussed earlier),
-what do you think the model will learn? It ends up learning exactly what it should;
-an approximation of the interaction matrix (identity) by 
-**inverting the item factor matrix**.
+Let's get even more evil! We train the model with 24 `factors` 
+(the hyperparameter discussed earlier), what do you think 
+the model learns to do? It ends up learning exactly what it's
+supposed to; its best reconstruction of the interaction (identity)
+matrix and it does so by **inverting the item factor matrix**.
 
 ```python
 import implicit.als as mf
@@ -139,7 +140,7 @@ $$
 
 Although the inversion is obvious given $\mathbf{W} \in \mathbb{R}^{24\times24}$, 
 $\mathbf{H} \in \mathbb{R}^{24\times24}$, and $\mathbf{I}_{24}$, this degenerate case 
-highlights how helpless the model is with no correlational signal within the data.
+highlights how helpless the model becomes with no correlational signal in the data.
 
 ## Simulation
 
@@ -148,11 +149,14 @@ is exactly that. For whatever scenario you may find yourself in, these interacti
 follow some natural generative process. If we knew that process we wouldn't
 need any models to begin with!
 
-let's generate a simulated interaction matrix by stacking harmonics
-(integer multiple increasing frequencies) of a 5Hz [square wave] sampled
-at 1000 Hz.
+Let's drive this point accross by generating a simulated interaction matrix
+by stacking harmonics (integer multiple increasing frequencies) of a
+5Hz [square wave] sampled at 1000 Hz.
 
 ![square_wave]
+
+By clipping the stacked signals to the $[0, 1]$ range,
+we end up with a bitmap, that is our interaction matrix.
 
 ```python
 import numpy as np
@@ -167,39 +171,44 @@ interactions = np.delete(interactions, 0, axis=1)
 interactions[interactions == -1] = 0
 ```
 
-By clipping this signal to the $[0, 1]$ range,
-we end up with a bitmap, that is our interaction matrix.
-
 ![interactions]
 
-The pattern that emerges from the square waves' auto
-and harmonic correlations is jumping out at us because
-our brains (and eyes) are pattern recognition
-machines. Before we move to simulating machine
-reconstruction/approximation of this interaction matrix,
-don't you think you could get close to reproducing it
-yourself just by looking at for a few seconds? I think so.
-Do you see how certain rows are correlated with other rows
-and the same across columns? The sparsity of this matrix is
-$48.7\%$, more than half of the matrix entries are non-zeros.
+The spirals that emerge from the square waves' auto
+and harmonic correlations jump out because
+the brain is a pattern recognition (correlating)
+machine. Don't you think you could get close to drawing it
+just by looking at for a few seconds? I bet you could!
+Notice how certain rows are correlated with other rows
+and the same holds across columns? Hey, why
+draw any more attention to something the brain has 
+already and automatically "figured out" :).
+The sparsity of this matrix is $48.7\%$, more than half 
+of the entries are non-zeros.
+Since this interaction matrix exerts noticeable correlation
+and is not relatively sparse, this should be a piece of 
+cake for MF but what if we started loosing signal, 
+literally, by randomly zeroing out non-zero entries
+and thereby increasing sparsity?
+
+![interactions_removed]
 
 Let's run a monte-carlo simulation to investigate the effect of
 increasing sparsity on this easy-to-learn interaction matrix.
-We'll report performance using standard ranking eval metrics
-against a random $80\%-20\%$ train-test split on the data.
+We'll report performance using standard ranking evaluation metrics
+against a random $80\%-20\%$ train-test split.
 
-Here's the simulation algorithm's pseudocode followed by
-a python implementation.
+Here's the simulation pseudocode followed by a python implementation.
 
 ```
-For a range of sparsities
-    For a range of trials (monte-carlo)
-        randomly sparsify interaction matrix to sparsity level
-        train and eval MF model
-        store eval metrics
+for a range of sparsities
+    for many trials (monte-carlo)
+        randomly sparsify matrix (to current sparsity)
+        split matrix into train and test sets
+        train and evaluate MF model
+        store evaluation metrics
     store trials for given sparsity
 . . . 
-Plot mean and std for every eval metric across sparsities
+plot mean and std for every eval metric for every sparsity
 ```
 
 ```python
@@ -242,3 +251,4 @@ for sparsity in sparsities:
 [square_wave]: assets/images/matrix_factorization_sparsity/square_wave.png
 [interactions]: assets/images/matrix_factorization_sparsity/interactions.png
 [sparsity_sim]: assets/images/matrix_factorization_sparsity/sparsity_sim.png
+[interactions_removed]: assets/images/matrix_factorization_sparsity/interactions_removed.png
