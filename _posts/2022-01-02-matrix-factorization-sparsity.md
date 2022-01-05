@@ -45,8 +45,9 @@ The algorithm exposes a hyperparameter that serves to expand or
 contract the dimensionality of the columns in $\mathbf{W}$ 
 and the rows in $\mathbf{H}$. It can be set so that $\mathbf{W}$ and 
 $\mathbf{H}$ become low-rank factors of $\mathbf{V}$, 
-forcing a compressed encoding that must capture the latent structure
-(import information) for approximating $\mathbf{V}$.
+**forcing a compressed encoding to capture the latent structure**
+(import information) for approximating $\mathbf{V}$
+yielding embeddings for users and items.
 
 ![mf]
 
@@ -90,7 +91,7 @@ to evaluate collaborative filtering algorithms. As such, we
 filtered the dataset in the same way as the MovieLens data
 that retained only users with at least 20 interactions (pins).
 
-## Why is it problematic?
+## Problematic
 
 ML models are only as good as the data that powers them
 and MF is no exception to that rule. To demonstrate why sparsity
@@ -145,18 +146,21 @@ highlights how helpless the model becomes with no correlational signal in the da
 ## Simulation
 
 Speaking of "signals" and "correlations", the user-item interaction matrix
-is exactly that. For whatever scenario you may find yourself in, these interactions
-follow some natural generative process. If we knew that process we wouldn't
-need any models to begin with!
+is exactly that. In practice, the interactions we observe follow some natural
+generative process. If we knew that process we wouldn't need a model.
 
-Let's drive this point accross by generating a simulated interaction matrix
-by stacking harmonics (integer multiple increasing frequencies) of a
-5Hz [square wave] sampled at 1000 Hz.
+Let's generate a synthetic interaction matrix by stacking [square waves].
+Here's what a $5$ Hz square wave sampled at $1000$ Hz looks like.
 
 ![square_wave]
 
-By clipping the stacked signals to the $[0, 1]$ range,
-we end up with a bitmap, that is our interaction matrix.
+We'll build an interaction matrix by stacking $24$ harmonics
+(integer multiple increasing frequencies) of a $1$ Hz square wave
+carelessly sampled (because we just after *some* pattern) at
+$24$ Hz to produce either a pleasant or frustrating pattern 
+induced by aliasing artifacts. By clipping the stacked signals 
+to the $[0, 1]$ range, we end up with a bitmap, that is our 
+interaction matrix.
 
 ```python
 import numpy as np
@@ -177,39 +181,23 @@ The spirals that emerge from the square waves' auto
 and harmonic correlations jump out because
 the brain is a pattern recognition (correlating)
 machine. Don't you think you could get close to drawing it
-just by looking at for a few seconds? I bet you could!
-Notice how certain rows are correlated with other rows
-and the same holds across columns? Hey, why
-draw any more attention to something the brain has 
-already and automatically "figured out" :).
+just by looking at it for a few seconds?
 The sparsity of this matrix is $48.7\%$, more than half 
-of the entries are non-zeros.
-Since this interaction matrix exerts noticeable correlation
-and is not relatively sparse, this should be a piece of 
-cake for MF but what if we started loosing signal, 
-literally, by randomly zeroing out non-zero entries
-and thereby increasing sparsity?
+of the entries are non-zeros. Since it is noticeably 
+correlated and is not relatively 
+sparse, this should be trivial for MF but what if we
+started loosing signal, literally, by randomly zeroing
+out non-zero entries and thereby increasing sparsity?
 
 ![interactions_removed]
 
 Let's run a monte-carlo simulation to investigate the effect of
-increasing sparsity on this easy-to-learn interaction matrix.
-We'll report performance using standard ranking evaluation metrics
-against a random $80\%-20\%$ train-test split.
-
-Here's the simulation pseudocode followed by a python implementation.
-
-```
-for a range of sparsities
-    for many trials (monte-carlo)
-        randomly sparsify matrix (to current sparsity)
-        split matrix into train and test sets
-        train and evaluate MF model
-        store evaluation metrics
-    store trials for given sparsity
-. . . 
-plot mean and std for every eval metric for every sparsity
-```
+increasing sparsity on this easy-to-learn interaction matrix. We'll make it
+even easier by equpping the model with more than enough parameters by
+setting `factors=24`. This means the model will factorize the square
+interaction matrix into two other square matrices instead of two
+lower-rank matrices. We'll report performance using standard ranking@10
+evaluation metrics against a random $80\%-20\%$ train-test split.
 
 ```python
 import implicit.als as mf
@@ -243,12 +231,37 @@ for sparsity in sparsities:
 
 ![sparsity_sim]
 
+Initially, when sparsity is low, the model
+performs incredibly well as the factorization
+problem is already easy (correlation and coverage).
+As sparsity decreases, the model performance
+degrades as the signal in the data that provides 
+coverage and correlation vanishes. Note that the error
+fans out as sparsity increases because the impact of
+randomness begins to obfuscate the signal in the data.
+
+Let's make this problem harder by 
+shuffling the rows of the interaction
+matrix and then rerunning the same simulation.
+
+![interactions_shuffled]
+
+![sparsity_sim_shuffled]
+
+The model doesn't perform as well when sparsity is low.
+Similar to the previous result, the error fans out as sparsity increases,
+but the bands are larger, on average. The row-wise shuffling
+not only broke correlations but also injected randomness apriori.
+
+
 [course]: https://developers.google.com/machine-learning/recommendation/collaborative/basics
 [NCF]: https://arxiv.org/pdf/1708.05031.pdf
-[square wave]: https://en.wikipedia.org/wiki/Square_wave
+[square waves]: https://en.wikipedia.org/wiki/Square_wave
 
 [mf]: assets/images/matrix_factorization_sparsity/mf.png
 [square_wave]: assets/images/matrix_factorization_sparsity/square_wave.png
 [interactions]: assets/images/matrix_factorization_sparsity/interactions.png
-[sparsity_sim]: assets/images/matrix_factorization_sparsity/sparsity_sim.png
+[interactions_shuffled]: assets/images/matrix_factorization_sparsity/interactions_shuffled.png
 [interactions_removed]: assets/images/matrix_factorization_sparsity/interactions_removed.png
+[sparsity_sim_shuffled]: assets/images/matrix_factorization_sparsity/sparsity_sim_shuffled.png
+[sparsity_sim]: assets/images/matrix_factorization_sparsity/sparsity_sim.png

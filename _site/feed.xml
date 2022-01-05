@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2022-01-04T21:22:00-06:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Deylemma</title><subtitle>An Engineering Blog
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2022-01-05T15:49:21-06:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Deylemma</title><subtitle>An Engineering Blog
 </subtitle><author><name>Daniel Deychakiwsky</name><email>d.deychak@gmail.com</email></author><entry><title type="html">Matrix Factorization Sparsity</title><link href="http://localhost:4000/matrix-factorization-sparsity" rel="alternate" type="text/html" title="Matrix Factorization Sparsity" /><published>2022-01-02T00:00:00-06:00</published><updated>2022-01-02T00:00:00-06:00</updated><id>http://localhost:4000/matrix-factorization-sparsity</id><content type="html" xml:base="http://localhost:4000/matrix-factorization-sparsity">&lt;p&gt;This post explores how implicit user-item interaction sparsity poses
 a challenge for matrix factorization (model-based) collaborative filtering
 recommender systems.&lt;/p&gt;
@@ -7,7 +7,7 @@ recommender systems.&lt;/p&gt;
   &lt;li&gt;&lt;a href=&quot;#primer&quot; id=&quot;markdown-toc-primer&quot;&gt;Primer&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;#matrix-factorization&quot; id=&quot;markdown-toc-matrix-factorization&quot;&gt;Matrix Factorization&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;#sparsity&quot; id=&quot;markdown-toc-sparsity&quot;&gt;Sparsity&lt;/a&gt;    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;#why-is-it-problematic&quot; id=&quot;markdown-toc-why-is-it-problematic&quot;&gt;Why is it problematic?&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#problematic&quot; id=&quot;markdown-toc-problematic&quot;&gt;Problematic&lt;/a&gt;&lt;/li&gt;
       &lt;li&gt;&lt;a href=&quot;#simulation&quot; id=&quot;markdown-toc-simulation&quot;&gt;Simulation&lt;/a&gt;&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
@@ -41,8 +41,9 @@ that is often reported to produce serendipitous recommendations.&lt;/p&gt;
 contract the dimensionality of the columns in $\mathbf{W}$ 
 and the rows in $\mathbf{H}$. It can be set so that $\mathbf{W}$ and 
 $\mathbf{H}$ become low-rank factors of $\mathbf{V}$, 
-forcing a compressed encoding that must capture the latent structure
-(import information) for approximating $\mathbf{V}$.&lt;/p&gt;
+&lt;strong&gt;forcing a compressed encoding to capture the latent structure&lt;/strong&gt;
+(import information) for approximating $\mathbf{V}$
+yielding embeddings for users and items.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;assets/images/matrix_factorization_sparsity/mf.png&quot; alt=&quot;mf&quot; /&gt;&lt;/p&gt;
 
@@ -86,7 +87,7 @@ filtered the dataset in the same way as the MovieLens data
 that retained only users with at least 20 interactions (pins).&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;h2 id=&quot;why-is-it-problematic&quot;&gt;Why is it problematic?&lt;/h2&gt;
+&lt;h2 id=&quot;problematic&quot;&gt;Problematic&lt;/h2&gt;
 
 &lt;p&gt;ML models are only as good as the data that powers them
 and MF is no exception to that rule. To demonstrate why sparsity
@@ -136,18 +137,21 @@ highlights how helpless the model becomes with no correlational signal in the da
 &lt;h2 id=&quot;simulation&quot;&gt;Simulation&lt;/h2&gt;
 
 &lt;p&gt;Speaking of “signals” and “correlations”, the user-item interaction matrix
-is exactly that. For whatever scenario you may find yourself in, these interactions
-follow some natural generative process. If we knew that process we wouldn’t
-need any models to begin with!&lt;/p&gt;
+is exactly that. In practice, the interactions we observe follow some natural
+generative process. If we knew that process we wouldn’t need a model.&lt;/p&gt;
 
-&lt;p&gt;Let’s drive this point accross by generating a simulated interaction matrix
-by stacking harmonics (integer multiple increasing frequencies) of a
-5Hz &lt;a href=&quot;https://en.wikipedia.org/wiki/Square_wave&quot;&gt;square wave&lt;/a&gt; sampled at 1000 Hz.&lt;/p&gt;
+&lt;p&gt;Let’s generate a synthetic interaction matrix by stacking &lt;a href=&quot;https://en.wikipedia.org/wiki/Square_wave&quot;&gt;square waves&lt;/a&gt;.
+Here’s what a $5$ Hz square wave sampled at $1000$ Hz looks like.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;assets/images/matrix_factorization_sparsity/square_wave.png&quot; alt=&quot;square_wave&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;By clipping the stacked signals to the $[0, 1]$ range,
-we end up with a bitmap, that is our interaction matrix.&lt;/p&gt;
+&lt;p&gt;We’ll build an interaction matrix by stacking $24$ harmonics
+(integer multiple increasing frequencies) of a $1$ Hz square wave
+carelessly sampled (because we just after &lt;em&gt;some&lt;/em&gt; pattern) at
+$24$ Hz to produce either a pleasant or frustrating pattern 
+induced by aliasing artifacts. By clipping the stacked signals 
+to the $[0, 1]$ range, we end up with a bitmap, that is our 
+interaction matrix.&lt;/p&gt;
 
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;numpy&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;
 &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;scipy.signal&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sl&lt;/span&gt;
@@ -167,38 +171,23 @@ we end up with a bitmap, that is our interaction matrix.&lt;/p&gt;
 and harmonic correlations jump out because
 the brain is a pattern recognition (correlating)
 machine. Don’t you think you could get close to drawing it
-just by looking at for a few seconds? I bet you could!
-Notice how certain rows are correlated with other rows
-and the same holds across columns? Hey, why
-draw any more attention to something the brain has 
-already and automatically “figured out” :).
+just by looking at it for a few seconds?
 The sparsity of this matrix is $48.7\%$, more than half 
-of the entries are non-zeros.
-Since this interaction matrix exerts noticeable correlation
-and is not relatively sparse, this should be a piece of 
-cake for MF but what if we started loosing signal, 
-literally, by randomly zeroing out non-zero entries
-and thereby increasing sparsity?&lt;/p&gt;
+of the entries are non-zeros. Since it is noticeably 
+correlated and is not relatively 
+sparse, this should be trivial for MF but what if we
+started loosing signal, literally, by randomly zeroing
+out non-zero entries and thereby increasing sparsity?&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;assets/images/matrix_factorization_sparsity/interactions_removed.png&quot; alt=&quot;interactions_removed&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Let’s run a monte-carlo simulation to investigate the effect of
-increasing sparsity on this easy-to-learn interaction matrix.
-We’ll report performance using standard ranking evaluation metrics
-against a random $80\%-20\%$ train-test split.&lt;/p&gt;
-
-&lt;p&gt;Here’s the simulation pseudocode followed by a python implementation.&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;for a range of sparsities
-    for many trials (monte-carlo)
-        randomly sparsify matrix (to current sparsity)
-        split matrix into train and test sets
-        train and evaluate MF model
-        store evaluation metrics
-    store trials for given sparsity
-. . . 
-plot mean and std for every eval metric for every sparsity
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+increasing sparsity on this easy-to-learn interaction matrix. We’ll make it
+even easier by equpping the model with more than enough parameters by
+setting &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;factors=24&lt;/code&gt;. This means the model will factorize the square
+interaction matrix into two other square matrices instead of two
+lower-rank matrices. We’ll report performance using standard ranking@10
+evaluation metrics against a random $80\%-20\%$ train-test split.&lt;/p&gt;
 
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;implicit.als&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mf&lt;/span&gt;
 &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;implicit.evaluation&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ev&lt;/span&gt;
@@ -229,7 +218,29 @@ plot mean and std for every eval metric for every sparsity
     &lt;span class=&quot;n&quot;&gt;results&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;append&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ranking_metrics&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;img src=&quot;assets/images/matrix_factorization_sparsity/sparsity_sim.png&quot; alt=&quot;sparsity_sim&quot; /&gt;&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="machine-learning" /><category term="artificial-intelligence" /><summary type="html">This post explores how implicit user-item interaction sparsity poses a challenge for matrix factorization (model-based) collaborative filtering recommender systems.</summary></entry><entry><title type="html">Low Energy Audio Segments</title><link href="http://localhost:4000/low-energy-audio-segments" rel="alternate" type="text/html" title="Low Energy Audio Segments" /><published>2021-03-21T00:00:00-05:00</published><updated>2021-03-21T00:00:00-05:00</updated><id>http://localhost:4000/low-energy-audio-segments</id><content type="html" xml:base="http://localhost:4000/low-energy-audio-segments">&lt;p&gt;This post outlines a simple algorithm for
+&lt;p&gt;&lt;img src=&quot;assets/images/matrix_factorization_sparsity/sparsity_sim.png&quot; alt=&quot;sparsity_sim&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Initially, when sparsity is low, the model
+performs incredibly well as the factorization
+problem is already easy (correlation and coverage).
+As sparsity decreases, the model performance
+degrades as the signal in the data that provides 
+coverage and correlation vanishes. Note that the error
+fans out as sparsity increases because the impact of
+randomness begins to obfuscate the signal in the data.&lt;/p&gt;
+
+&lt;p&gt;Let’s make this problem harder by 
+shuffling the rows of the interaction
+matrix and then rerunning the same simulation.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;assets/images/matrix_factorization_sparsity/interactions_shuffled.png&quot; alt=&quot;interactions_shuffled&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;assets/images/matrix_factorization_sparsity/sparsity_sim_shuffled.png&quot; alt=&quot;sparsity_sim_shuffled&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The model doesn’t perform as well when sparsity is low.
+Similar to the previous result, the error fans out as sparsity increases,
+but the bands are larger, on average. The row-wise shuffling
+not only broke correlations but also injected randomness apriori.&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="machine-learning" /><category term="artificial-intelligence" /><summary type="html">This post explores how implicit user-item interaction sparsity poses a challenge for matrix factorization (model-based) collaborative filtering recommender systems.</summary></entry><entry><title type="html">Low Energy Audio Segments</title><link href="http://localhost:4000/low-energy-audio-segments" rel="alternate" type="text/html" title="Low Energy Audio Segments" /><published>2021-03-21T00:00:00-05:00</published><updated>2021-03-21T00:00:00-05:00</updated><id>http://localhost:4000/low-energy-audio-segments</id><content type="html" xml:base="http://localhost:4000/low-energy-audio-segments">&lt;p&gt;This post outlines a simple algorithm for
 identifying low energy audio segments.
 This post assumes basic knowledge of digital 
 signal processing (DSP).&lt;/p&gt;
