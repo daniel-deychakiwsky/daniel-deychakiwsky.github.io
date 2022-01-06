@@ -91,7 +91,7 @@ to evaluate collaborative filtering algorithms. As such, we
 filtered the dataset in the same way as the MovieLens data
 that retained only users with at least 20 interactions (pins).
 
-## Problematic
+## Problematic?
 
 ML models are only as good as the data that powers them
 and MF is no exception to that rule. To demonstrate why sparsity
@@ -144,46 +144,49 @@ $\mathbf{H} \in \mathbb{R}^{24\times24}$, and $\mathbf{I}_{24}$, this degenerate
 highlights how helpless the model becomes with no correlation or interesting 
 signal in the data.
 
-## Simulation
+## Simulations
 
 Speaking of "signals" and "correlations", the user-item interaction matrix
 is exactly that. In practice, the interactions we observe follow some natural
 generative process. If we knew that process we wouldn't need a model.
 
-Let's generate a synthetic interaction matrix by stacking [square waves].
-Here's what a $5$ Hz square wave sampled at $1000$ Hz looks like.
+Let's generate a synthetic interaction matrix by stacking [sine waves].
+Here's what a $1$, $2$, and $3$ Hz sine wave sampled at $1000$ Hz look like.
 
-![square_wave]
+![sine_waves]
 
 We layer the first $24$ harmonics (integer multiple increasing frequencies)
-of a $1$ Hz square wave *intentionally undersampled* at $25$ Hz to
-produce either a pleasant or frustrating (up to you) non-random pattern
-induced by the sampled waves and their aliases.
-By clipping the amplitudes to the $[0, 1]$ range, 
-we end up with a bitmap, that is our interaction matrix.
+of a $1$ Hz sine wave *intentionally undersampled* at $25$ Hz to
+produce a non-random pattern induced by the waves and their aliases.
+
+![interactions]
+
+By quantizing the amplitudes to the $\\{0, 1\\}$, 
+we end up with a bitmap, that we'll use as our
+interaction matrix.
 
 ```python
 import numpy as np
 import scipy.signal as sl
 
 interactions = np.array([
-    sl.square(2 * np.pi * f * np.linspace(0, 1, 25, endpoint=False))
+    np.sin(2 * np.pi * f * np.linspace(0, 1, 25, endpoint=False))
     for f in range(25)
 ])
-# remove first row and col - looks better
 interactions = np.delete(interactions, 0, axis=0)
 interactions = np.delete(interactions, 0, axis=1)
-interactions[interactions == -1] = 0
+interactions[interactions >= 0.0] = 1.0
+interactions[interactions < 0.0] = 0.0
 ```
 
-![interactions]
+![interactions_bitmap]
 
 The spirals that emerge from the square waves' auto
 and harmonic correlations jump out because
 the brain is a pattern recognition (correlating)
 machine. Don't you think you could get close to drawing it
 just by looking at it for a few seconds?
-The sparsity of this matrix is $48.7\%$, more than half 
+The sparsity of this matrix is $51.3\%$, about half 
 of the entries are non-zeros. Since it is noticeably 
 correlated and not relatively 
 sparse, this will be trivial for MF - but what if we
@@ -257,11 +260,12 @@ randomness apriori.
 
 [course]: https://developers.google.com/machine-learning/recommendation/collaborative/basics
 [NCF]: https://arxiv.org/pdf/1708.05031.pdf
-[square waves]: https://en.wikipedia.org/wiki/Square_wave
+[sine waves]: https://en.wikipedia.org/wiki/Sine_wave
 
 [mf]: assets/images/matrix_factorization_sparsity/mf.png
-[square_wave]: assets/images/matrix_factorization_sparsity/square_wave.png
+[sine_waves]: assets/images/matrix_factorization_sparsity/sine_waves.png
 [interactions]: assets/images/matrix_factorization_sparsity/interactions.png
+[interactions_bitmap]: assets/images/matrix_factorization_sparsity/interactions_bitmap.png
 [interactions_shuffled]: assets/images/matrix_factorization_sparsity/interactions_shuffled.png
 [interactions_removed]: assets/images/matrix_factorization_sparsity/interactions_removed.png
 [sparsity_sim_shuffled]: assets/images/matrix_factorization_sparsity/sparsity_sim_shuffled.png

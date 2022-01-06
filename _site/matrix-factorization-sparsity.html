@@ -49,8 +49,8 @@ recommender systems.</p>
   <li><a href="#primer" id="markdown-toc-primer">Primer</a></li>
   <li><a href="#matrix-factorization" id="markdown-toc-matrix-factorization">Matrix Factorization</a></li>
   <li><a href="#sparsity" id="markdown-toc-sparsity">Sparsity</a>    <ul>
-      <li><a href="#problematic" id="markdown-toc-problematic">Problematic</a></li>
-      <li><a href="#simulation" id="markdown-toc-simulation">Simulation</a></li>
+      <li><a href="#problematic" id="markdown-toc-problematic">Problematic?</a></li>
+      <li><a href="#simulations" id="markdown-toc-simulations">Simulations</a></li>
     </ul>
   </li>
 </ul>
@@ -129,7 +129,7 @@ filtered the dataset in the same way as the MovieLens data
 that retained only users with at least 20 interactions (pins).</p>
 </blockquote>
 
-<h2 id="problematic">Problematic</h2>
+<h2 id="problematic">Problematic?</h2>
 
 <p>ML models are only as good as the data that powers them
 and MF is no exception to that rule. To demonstrate why sparsity
@@ -177,45 +177,48 @@ $\mathbf{H} \in \mathbb{R}^{24\times24}$, and $\mathbf{I}_{24}$, this degenerate
 highlights how helpless the model becomes with no correlation or interesting 
 signal in the data.</p>
 
-<h2 id="simulation">Simulation</h2>
+<h2 id="simulations">Simulations</h2>
 
 <p>Speaking of “signals” and “correlations”, the user-item interaction matrix
 is exactly that. In practice, the interactions we observe follow some natural
 generative process. If we knew that process we wouldn’t need a model.</p>
 
-<p>Let’s generate a synthetic interaction matrix by stacking <a href="https://en.wikipedia.org/wiki/Square_wave">square waves</a>.
-Here’s what a $5$ Hz square wave sampled at $1000$ Hz looks like.</p>
+<p>Let’s generate a synthetic interaction matrix by stacking <a href="https://en.wikipedia.org/wiki/Sine_wave">sine waves</a>.
+Here’s what a $1$, $2$, and $3$ Hz sine wave sampled at $1000$ Hz look like.</p>
 
-<p><img src="assets/images/matrix_factorization_sparsity/square_wave.png" alt="square_wave" /></p>
+<p><img src="assets/images/matrix_factorization_sparsity/sine_waves.png" alt="sine_waves" /></p>
 
 <p>We layer the first $24$ harmonics (integer multiple increasing frequencies)
-of a $1$ Hz square wave <em>intentionally undersampled</em> at $25$ Hz to
-produce either a pleasant or frustrating (up to you) non-random pattern
-induced by the sampled waves and their aliases.
-By clipping the amplitudes to the $[0, 1]$ range, 
-we end up with a bitmap, that is our interaction matrix.</p>
+of a $1$ Hz sine wave <em>intentionally undersampled</em> at $25$ Hz to
+produce a non-random pattern induced by the waves and their aliases.</p>
+
+<p><img src="assets/images/matrix_factorization_sparsity/interactions.png" alt="interactions" /></p>
+
+<p>By quantizing the amplitudes to the $\{0, 1\}$, 
+we end up with a bitmap, that we’ll use as our
+interaction matrix.</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
 <span class="kn">import</span> <span class="nn">scipy.signal</span> <span class="k">as</span> <span class="n">sl</span>
 
 <span class="n">interactions</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">([</span>
-    <span class="n">sl</span><span class="p">.</span><span class="n">square</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="p">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">f</span> <span class="o">*</span> <span class="n">np</span><span class="p">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="bp">False</span><span class="p">))</span>
+    <span class="n">np</span><span class="p">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="p">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">f</span> <span class="o">*</span> <span class="n">np</span><span class="p">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="bp">False</span><span class="p">))</span>
     <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">25</span><span class="p">)</span>
 <span class="p">])</span>
-<span class="c1"># remove first row and col - looks better
-</span><span class="n">interactions</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">delete</span><span class="p">(</span><span class="n">interactions</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">interactions</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">delete</span><span class="p">(</span><span class="n">interactions</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">interactions</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">delete</span><span class="p">(</span><span class="n">interactions</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">interactions</span><span class="p">[</span><span class="n">interactions</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">interactions</span><span class="p">[</span><span class="n">interactions</span> <span class="o">&gt;=</span> <span class="mf">0.0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">interactions</span><span class="p">[</span><span class="n">interactions</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
 </code></pre></div></div>
 
-<p><img src="assets/images/matrix_factorization_sparsity/interactions.png" alt="interactions" /></p>
+<p><img src="assets/images/matrix_factorization_sparsity/interactions_bitmap.png" alt="interactions_bitmap" /></p>
 
 <p>The spirals that emerge from the square waves’ auto
 and harmonic correlations jump out because
 the brain is a pattern recognition (correlating)
 machine. Don’t you think you could get close to drawing it
 just by looking at it for a few seconds?
-The sparsity of this matrix is $48.7\%$, more than half 
+The sparsity of this matrix is $51.3\%$, about half 
 of the entries are non-zeros. Since it is noticeably 
 correlated and not relatively 
 sparse, this will be trivial for MF - but what if we
