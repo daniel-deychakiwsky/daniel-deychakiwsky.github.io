@@ -188,12 +188,11 @@ Here’s what a $5$ Hz square wave sampled at $1000$ Hz looks like.</p>
 
 <p><img src="assets/images/matrix_factorization_sparsity/square_wave.png" alt="square_wave" /></p>
 
-<p>We’ll build an interaction matrix by stacking $24$ harmonics
-(integer multiple increasing frequencies) of a $1$ Hz square wave
-<em>carelessly sampled</em> at $25$ Hz to produce either a pleasant 
-or frustrating (up to you) non-random pattern induced by 
-the waves and their aliasing artifacts. 
-By clipping the stacked signals to the $[0, 1]$ range, 
+<p>We layer the first $24$ harmonics (integer multiple increasing frequencies)
+of a $1$ Hz square wave <em>intentionally undersampled</em> at $25$ Hz to
+produce either a pleasant or frustrating (up to you) non-random pattern
+induced by the sampled waves and their aliases.
+By clipping the amplitudes to the $[0, 1]$ range, 
 we end up with a bitmap, that is our interaction matrix.</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
@@ -203,7 +202,7 @@ we end up with a bitmap, that is our interaction matrix.</p>
     <span class="n">sl</span><span class="p">.</span><span class="n">square</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="p">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">f</span> <span class="o">*</span> <span class="n">np</span><span class="p">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="bp">False</span><span class="p">))</span>
     <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">25</span><span class="p">)</span>
 <span class="p">])</span>
-<span class="c1"># remove first row and col - looks better :)
+<span class="c1"># remove first row and col - looks better
 </span><span class="n">interactions</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">delete</span><span class="p">(</span><span class="n">interactions</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">interactions</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">delete</span><span class="p">(</span><span class="n">interactions</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">interactions</span><span class="p">[</span><span class="n">interactions</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>

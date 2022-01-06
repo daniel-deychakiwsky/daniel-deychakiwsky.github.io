@@ -155,12 +155,11 @@ Here's what a $5$ Hz square wave sampled at $1000$ Hz looks like.
 
 ![square_wave]
 
-We'll build an interaction matrix by stacking $24$ harmonics
-(integer multiple increasing frequencies) of a $1$ Hz square wave
-*carelessly sampled* at $25$ Hz to produce either a pleasant 
-or frustrating (up to you) non-random pattern induced by 
-the waves and their aliasing artifacts. 
-By clipping the stacked signals to the $[0, 1]$ range, 
+We layer the first $24$ harmonics (integer multiple increasing frequencies)
+of a $1$ Hz square wave *intentionally undersampled* at $25$ Hz to
+produce either a pleasant or frustrating (up to you) non-random pattern
+induced by the sampled waves and their aliases.
+By clipping the amplitudes to the $[0, 1]$ range, 
 we end up with a bitmap, that is our interaction matrix.
 
 ```python
@@ -171,7 +170,7 @@ interactions = np.array([
     sl.square(2 * np.pi * f * np.linspace(0, 1, 25, endpoint=False))
     for f in range(25)
 ])
-# remove first row and col - looks better :)
+# remove first row and col - looks better
 interactions = np.delete(interactions, 0, axis=0)
 interactions = np.delete(interactions, 0, axis=1)
 interactions[interactions == -1] = 0
