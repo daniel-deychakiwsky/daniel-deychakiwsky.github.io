@@ -96,13 +96,13 @@ that retained only users with at least 20 interactions (pins).
 ML models are only as good as the data that powers them
 and MF is no exception to that rule. To demonstrate why sparsity
 is a problem, let's consider a wild edge case that you'd likely never
-encounter - but really, more of a thought experiment.
+encounter - but that really is more of a thought experiment.
 
 Let's continue with the scenario from above, $24$ users and $24$ items, 
 but let's add an evil twist so that each user has purchased only one
 distinct item that no other user has purchased. We could reorder the
-user indices (or rows of the interaction matrix) to arrive at the 
-identity matrix, i.e., a canonical orthonormal basis $\in \mathbb{R}^{24\times24}$
+users (rows of the interaction matrix) to arrive at the 
+identity matrix, i.e., the canonical orthonormal basis $\in \mathbb{R}^{24\times24}$
 that is linearly independent by definition. In other words, there isn't
 much to learn as the unit vectors point in orthogonal directions.
 
@@ -117,7 +117,7 @@ $$
 \tag{3} \label{3}
 $$
 
-Let's get even more evil! We train the model with 24 `factors` 
+If we train the model with `factors=24` 
 (the hyperparameter discussed earlier), what do you think 
 the model learns to do? It ends up learning exactly what it's
 supposed to; its best reconstruction of the interaction (identity)
@@ -141,7 +141,8 @@ $$
 
 Although the inversion is obvious given $\mathbf{W} \in \mathbb{R}^{24\times24}$, 
 $\mathbf{H} \in \mathbb{R}^{24\times24}$, and $\mathbf{I}_{24}$, this degenerate case 
-highlights how helpless the model becomes with no correlational signal in the data.
+highlights how helpless the model becomes with no correlation or interesting 
+signal in the data.
 
 ## Simulation
 
@@ -156,11 +157,11 @@ Here's what a $5$ Hz square wave sampled at $1000$ Hz looks like.
 
 We'll build an interaction matrix by stacking $24$ harmonics
 (integer multiple increasing frequencies) of a $1$ Hz square wave
-carelessly sampled (because we just after *some* pattern) at
-$24$ Hz to produce either a pleasant or frustrating pattern 
-induced by aliasing artifacts. By clipping the stacked signals 
-to the $[0, 1]$ range, we end up with a bitmap, that is our 
-interaction matrix.
+*carelessly sampled* at $25$ Hz to produce either a pleasant 
+or frustrating (up to you) non-random pattern induced by 
+the waves and their aliasing artifacts. 
+By clipping the stacked signals to the $[0, 1]$ range, 
+we end up with a bitmap, that is our interaction matrix.
 
 ```python
 import numpy as np
@@ -170,6 +171,7 @@ interactions = np.array([
     sl.square(2 * np.pi * f * np.linspace(0, 1, 25, endpoint=False))
     for f in range(25)
 ])
+# remove first row and col - looks better :)
 interactions = np.delete(interactions, 0, axis=0)
 interactions = np.delete(interactions, 0, axis=1)
 interactions[interactions == -1] = 0
@@ -184,15 +186,14 @@ machine. Don't you think you could get close to drawing it
 just by looking at it for a few seconds?
 The sparsity of this matrix is $48.7\%$, more than half 
 of the entries are non-zeros. Since it is noticeably 
-correlated and is not relatively 
-sparse, this should be trivial for MF but what if we
+correlated and not relatively 
+sparse, this will be trivial for MF - but what if we
 started loosing signal, literally, by randomly zeroing
 out non-zero entries and thereby increasing sparsity?
 
 ![interactions_removed]
 
-Let's run a monte-carlo simulation to investigate the effect of
-increasing sparsity on this easy-to-learn interaction matrix. We'll make it
+Let's run a monte-carlo simulation to investigate. We'll make it
 even easier by equpping the model with more than enough parameters by
 setting `factors=24`. This means the model will factorize the square
 interaction matrix into two other square matrices instead of two
@@ -233,16 +234,16 @@ for sparsity in sparsities:
 
 Initially, when sparsity is low, the model
 performs incredibly well as the factorization
-problem is already easy (correlation and coverage).
+problem is easy (correlation and coverage).
 As sparsity decreases, the model performance
-degrades as the signal in the data that provides 
+degrades as the signal (literally) in the data that provides 
 coverage and correlation vanishes. Note that the error
 fans out as sparsity increases because the impact of
 randomness begins to obfuscate the signal in the data.
 
-Let's make this problem harder by 
-shuffling the rows of the interaction
-matrix and then rerunning the same simulation.
+Let's try this again but make the problem 
+harder by shuffling the rows of the interaction
+matrix that we synthesized in the previous step.
 
 ![interactions_shuffled]
 
@@ -251,7 +252,8 @@ matrix and then rerunning the same simulation.
 The model doesn't perform as well when sparsity is low.
 Similar to the previous result, the error fans out as sparsity increases,
 but the bands are larger, on average. The row-wise shuffling
-not only broke correlations but also injected randomness apriori.
+not only decorrelated that axis but also injected substantial 
+randomness apriori.
 
 
 [course]: https://developers.google.com/machine-learning/recommendation/collaborative/basics

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2022-01-05T15:49:21-06:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Deylemma</title><subtitle>An Engineering Blog
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2022-01-05T18:26:24-06:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Deylemma</title><subtitle>An Engineering Blog
 </subtitle><author><name>Daniel Deychakiwsky</name><email>d.deychak@gmail.com</email></author><entry><title type="html">Matrix Factorization Sparsity</title><link href="http://localhost:4000/matrix-factorization-sparsity" rel="alternate" type="text/html" title="Matrix Factorization Sparsity" /><published>2022-01-02T00:00:00-06:00</published><updated>2022-01-02T00:00:00-06:00</updated><id>http://localhost:4000/matrix-factorization-sparsity</id><content type="html" xml:base="http://localhost:4000/matrix-factorization-sparsity">&lt;p&gt;This post explores how implicit user-item interaction sparsity poses
 a challenge for matrix factorization (model-based) collaborative filtering
 recommender systems.&lt;/p&gt;
@@ -92,13 +92,13 @@ that retained only users with at least 20 interactions (pins).&lt;/p&gt;
 &lt;p&gt;ML models are only as good as the data that powers them
 and MF is no exception to that rule. To demonstrate why sparsity
 is a problem, let’s consider a wild edge case that you’d likely never
-encounter - but really, more of a thought experiment.&lt;/p&gt;
+encounter - but that really is more of a thought experiment.&lt;/p&gt;
 
 &lt;p&gt;Let’s continue with the scenario from above, $24$ users and $24$ items, 
 but let’s add an evil twist so that each user has purchased only one
 distinct item that no other user has purchased. We could reorder the
-user indices (or rows of the interaction matrix) to arrive at the 
-identity matrix, i.e., a canonical orthonormal basis $\in \mathbb{R}^{24\times24}$
+users (rows of the interaction matrix) to arrive at the 
+identity matrix, i.e., the canonical orthonormal basis $\in \mathbb{R}^{24\times24}$
 that is linearly independent by definition. In other words, there isn’t
 much to learn as the unit vectors point in orthogonal directions.&lt;/p&gt;
 
@@ -111,7 +111,7 @@ much to learn as the unit vectors point in orthogonal directions.&lt;/p&gt;
 \end{bmatrix}
 \tag{3} \label{3}\]
 
-&lt;p&gt;Let’s get even more evil! We train the model with 24 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;factors&lt;/code&gt; 
+&lt;p&gt;If we train the model with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;factors=24&lt;/code&gt; 
 (the hyperparameter discussed earlier), what do you think 
 the model learns to do? It ends up learning exactly what it’s
 supposed to; its best reconstruction of the interaction (identity)
@@ -132,7 +132,8 @@ matrix and it does so by &lt;strong&gt;inverting the item factor matrix&lt;/stro
 
 &lt;p&gt;Although the inversion is obvious given $\mathbf{W} \in \mathbb{R}^{24\times24}$, 
 $\mathbf{H} \in \mathbb{R}^{24\times24}$, and $\mathbf{I}_{24}$, this degenerate case 
-highlights how helpless the model becomes with no correlational signal in the data.&lt;/p&gt;
+highlights how helpless the model becomes with no correlation or interesting 
+signal in the data.&lt;/p&gt;
 
 &lt;h2 id=&quot;simulation&quot;&gt;Simulation&lt;/h2&gt;
 
@@ -147,11 +148,11 @@ Here’s what a $5$ Hz square wave sampled at $1000$ Hz looks like.&lt;/p&gt;
 
 &lt;p&gt;We’ll build an interaction matrix by stacking $24$ harmonics
 (integer multiple increasing frequencies) of a $1$ Hz square wave
-carelessly sampled (because we just after &lt;em&gt;some&lt;/em&gt; pattern) at
-$24$ Hz to produce either a pleasant or frustrating pattern 
-induced by aliasing artifacts. By clipping the stacked signals 
-to the $[0, 1]$ range, we end up with a bitmap, that is our 
-interaction matrix.&lt;/p&gt;
+&lt;em&gt;carelessly sampled&lt;/em&gt; at $25$ Hz to produce either a pleasant 
+or frustrating (up to you) non-random pattern induced by 
+the waves and their aliasing artifacts. 
+By clipping the stacked signals to the $[0, 1]$ range, 
+we end up with a bitmap, that is our interaction matrix.&lt;/p&gt;
 
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;numpy&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;
 &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;scipy.signal&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sl&lt;/span&gt;
@@ -160,7 +161,8 @@ interaction matrix.&lt;/p&gt;
     &lt;span class=&quot;n&quot;&gt;sl&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;square&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pi&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;linspace&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;25&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;endpoint&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;False&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;25&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;interactions&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;delete&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;interactions&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;axis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# remove first row and col - looks better :)
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;interactions&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;delete&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;interactions&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;axis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;interactions&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;delete&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;interactions&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;axis&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;interactions&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;interactions&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
@@ -174,15 +176,14 @@ machine. Don’t you think you could get close to drawing it
 just by looking at it for a few seconds?
 The sparsity of this matrix is $48.7\%$, more than half 
 of the entries are non-zeros. Since it is noticeably 
-correlated and is not relatively 
-sparse, this should be trivial for MF but what if we
+correlated and not relatively 
+sparse, this will be trivial for MF - but what if we
 started loosing signal, literally, by randomly zeroing
 out non-zero entries and thereby increasing sparsity?&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;assets/images/matrix_factorization_sparsity/interactions_removed.png&quot; alt=&quot;interactions_removed&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;Let’s run a monte-carlo simulation to investigate the effect of
-increasing sparsity on this easy-to-learn interaction matrix. We’ll make it
+&lt;p&gt;Let’s run a monte-carlo simulation to investigate. We’ll make it
 even easier by equpping the model with more than enough parameters by
 setting &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;factors=24&lt;/code&gt;. This means the model will factorize the square
 interaction matrix into two other square matrices instead of two
@@ -222,16 +223,16 @@ evaluation metrics against a random $80\%-20\%$ train-test split.&lt;/p&gt;
 
 &lt;p&gt;Initially, when sparsity is low, the model
 performs incredibly well as the factorization
-problem is already easy (correlation and coverage).
+problem is easy (correlation and coverage).
 As sparsity decreases, the model performance
-degrades as the signal in the data that provides 
+degrades as the signal (literally) in the data that provides 
 coverage and correlation vanishes. Note that the error
 fans out as sparsity increases because the impact of
 randomness begins to obfuscate the signal in the data.&lt;/p&gt;
 
-&lt;p&gt;Let’s make this problem harder by 
-shuffling the rows of the interaction
-matrix and then rerunning the same simulation.&lt;/p&gt;
+&lt;p&gt;Let’s try this again but make the problem 
+harder by shuffling the rows of the interaction
+matrix that we synthesized in the previous step.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;assets/images/matrix_factorization_sparsity/interactions_shuffled.png&quot; alt=&quot;interactions_shuffled&quot; /&gt;&lt;/p&gt;
 
@@ -240,7 +241,8 @@ matrix and then rerunning the same simulation.&lt;/p&gt;
 &lt;p&gt;The model doesn’t perform as well when sparsity is low.
 Similar to the previous result, the error fans out as sparsity increases,
 but the bands are larger, on average. The row-wise shuffling
-not only broke correlations but also injected randomness apriori.&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="machine-learning" /><category term="artificial-intelligence" /><summary type="html">This post explores how implicit user-item interaction sparsity poses a challenge for matrix factorization (model-based) collaborative filtering recommender systems.</summary></entry><entry><title type="html">Low Energy Audio Segments</title><link href="http://localhost:4000/low-energy-audio-segments" rel="alternate" type="text/html" title="Low Energy Audio Segments" /><published>2021-03-21T00:00:00-05:00</published><updated>2021-03-21T00:00:00-05:00</updated><id>http://localhost:4000/low-energy-audio-segments</id><content type="html" xml:base="http://localhost:4000/low-energy-audio-segments">&lt;p&gt;This post outlines a simple algorithm for
+not only decorrelated that axis but also injected substantial 
+randomness apriori.&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="machine-learning" /><category term="artificial-intelligence" /><summary type="html">This post explores how implicit user-item interaction sparsity poses a challenge for matrix factorization (model-based) collaborative filtering recommender systems.</summary></entry><entry><title type="html">Low Energy Audio Segments</title><link href="http://localhost:4000/low-energy-audio-segments" rel="alternate" type="text/html" title="Low Energy Audio Segments" /><published>2021-03-21T00:00:00-05:00</published><updated>2021-03-21T00:00:00-05:00</updated><id>http://localhost:4000/low-energy-audio-segments</id><content type="html" xml:base="http://localhost:4000/low-energy-audio-segments">&lt;p&gt;This post outlines a simple algorithm for
 identifying low energy audio segments.
 This post assumes basic knowledge of digital 
 signal processing (DSP).&lt;/p&gt;
