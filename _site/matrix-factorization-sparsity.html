@@ -196,10 +196,12 @@ produce a non-random pattern induced by the waves and their aliases.</p>
 
 <p>By quantizing the amplitudes to the $\{0, 1\}$, 
 we end up with a bitmap, that we’ll use as our
-interaction matrix.</p>
+interaction matrix. Note that entries in the 
+interaction matrix are not limited to discrete 
+values, i.e., affinity can be calculated as 
+linear combination of observed implict interactions.</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
-<span class="kn">import</span> <span class="nn">scipy.signal</span> <span class="k">as</span> <span class="n">sl</span>
 
 <span class="n">interactions</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">array</span><span class="p">([</span>
     <span class="n">np</span><span class="p">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="p">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">f</span> <span class="o">*</span> <span class="n">np</span><span class="p">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="bp">False</span><span class="p">))</span>
@@ -213,7 +215,7 @@ interaction matrix.</p>
 
 <p><img src="assets/images/matrix_factorization_sparsity/interactions_bitmap.png" alt="interactions_bitmap" /></p>
 
-<p>The spirals that emerge from the square waves’ auto
+<p>The spirals that emerge from the sine waves’ auto
 and harmonic correlations jump out because
 the brain is a pattern recognition (correlating)
 machine. Don’t you think you could get close to drawing it

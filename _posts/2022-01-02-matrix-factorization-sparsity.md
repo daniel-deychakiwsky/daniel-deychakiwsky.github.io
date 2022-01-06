@@ -163,11 +163,13 @@ produce a non-random pattern induced by the waves and their aliases.
 
 By quantizing the amplitudes to the $\\{0, 1\\}$, 
 we end up with a bitmap, that we'll use as our
-interaction matrix.
+interaction matrix. Note that entries in the 
+interaction matrix are not limited to discrete 
+values, i.e., affinity can be calculated as 
+linear combination of observed implict interactions.
 
 ```python
 import numpy as np
-import scipy.signal as sl
 
 interactions = np.array([
     np.sin(2 * np.pi * f * np.linspace(0, 1, 25, endpoint=False))
@@ -181,7 +183,7 @@ interactions[interactions < 0.0] = 0.0
 
 ![interactions_bitmap]
 
-The spirals that emerge from the square waves' auto
+The spirals that emerge from the sine waves' auto
 and harmonic correlations jump out because
 the brain is a pattern recognition (correlating)
 machine. Don't you think you could get close to drawing it
