@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2022-01-06T12:51:55-06:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Deylemma</title><subtitle>An Engineering Blog
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2022-01-06T14:41:51-06:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Deylemma</title><subtitle>An Engineering Blog
 </subtitle><author><name>Daniel Deychakiwsky</name><email>d.deychak@gmail.com</email></author><entry><title type="html">Matrix Factorization Sparsity</title><link href="http://localhost:4000/matrix-factorization-sparsity" rel="alternate" type="text/html" title="Matrix Factorization Sparsity" /><published>2022-01-02T00:00:00-06:00</published><updated>2022-01-02T00:00:00-06:00</updated><id>http://localhost:4000/matrix-factorization-sparsity</id><content type="html" xml:base="http://localhost:4000/matrix-factorization-sparsity">&lt;p&gt;This post explores how implicit user-item interaction sparsity poses
 a challenge for matrix factorization (model-based) collaborative filtering
 recommender systems.&lt;/p&gt;
@@ -139,7 +139,7 @@ signal in the data.&lt;/p&gt;
 
 &lt;p&gt;Speaking of “signals” and “correlations”, the user-item interaction matrix
 is exactly that. In practice, the interactions we observe follow some natural
-generative process. If we knew that process we wouldn’t need a model.&lt;/p&gt;
+generative process. If we knew the process we wouldn’t need the model.&lt;/p&gt;
 
 &lt;p&gt;Let’s generate a synthetic interaction matrix by stacking &lt;a href=&quot;https://en.wikipedia.org/wiki/Sine_wave&quot;&gt;sine waves&lt;/a&gt;.
 Here’s what a $1$, $2$, and $3$ Hz sine wave sampled at $1000$ Hz look like.&lt;/p&gt;
@@ -152,12 +152,13 @@ produce a non-random pattern induced by the waves and their aliases.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;assets/images/matrix_factorization_sparsity/interactions.png&quot; alt=&quot;interactions&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;By quantizing the amplitudes to the $\{0, 1\}$, 
-we end up with a bitmap, that we’ll use as our
+&lt;p&gt;By quantizing the amplitudes to $\{0, 1\}$, 
+we end up with a bitmap that we’ll use as our
 interaction matrix. Note that entries in the 
 interaction matrix are not limited to discrete 
-values, i.e., affinity can be calculated as 
-linear combination of observed implict interactions.&lt;/p&gt;
+values, i.e., user-item affinity can be calculated as 
+a function of multiple observed implicit channels 
+of interaction (view, click, purchase, etc.).&lt;/p&gt;
 
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;numpy&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;
 
@@ -188,8 +189,8 @@ out non-zero entries and thereby increasing sparsity?&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;assets/images/matrix_factorization_sparsity/interactions_removed.png&quot; alt=&quot;interactions_removed&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Let’s run a monte-carlo simulation to investigate. We’ll make it
-even easier by equpping the model with more than enough parameters by
-setting &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;factors=24&lt;/code&gt;. This means the model will factorize the square
+even easier by equipping the model with more than enough parameters by
+setting &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;factors=24&lt;/code&gt; so that the model can factorize the square
 interaction matrix into two other square matrices instead of two
 lower-rank matrices. We’ll report performance using standard ranking@10
 evaluation metrics against a random $80\%-20\%$ train-test split.&lt;/p&gt;
@@ -231,7 +232,7 @@ problem is easy (correlation and coverage).
 As sparsity decreases, the model performance
 degrades as the signal (literally) in the data that provides 
 coverage and correlation vanishes. Note that the error
-fans out as sparsity increases because the impact of
+fans out as sparsity increases because
 randomness begins to obfuscate the signal in the data.&lt;/p&gt;
 
 &lt;p&gt;Let’s try this again but make the problem 
@@ -242,11 +243,10 @@ matrix that we synthesized in the previous step.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;assets/images/matrix_factorization_sparsity/sparsity_sim_shuffled.png&quot; alt=&quot;sparsity_sim_shuffled&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;The model doesn’t perform as well when sparsity is low.
+&lt;p&gt;The model doesn’t perform nearly as well when sparsity is low.
 Similar to the previous result, the error fans out as sparsity increases,
-but the bands are larger, on average. The row-wise shuffling
-not only decorrelated that axis but also injected substantial 
-randomness apriori.&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="machine-learning" /><category term="artificial-intelligence" /><summary type="html">This post explores how implicit user-item interaction sparsity poses a challenge for matrix factorization (model-based) collaborative filtering recommender systems.</summary></entry><entry><title type="html">Low Energy Audio Segments</title><link href="http://localhost:4000/low-energy-audio-segments" rel="alternate" type="text/html" title="Low Energy Audio Segments" /><published>2021-03-21T00:00:00-05:00</published><updated>2021-03-21T00:00:00-05:00</updated><id>http://localhost:4000/low-energy-audio-segments</id><content type="html" xml:base="http://localhost:4000/low-energy-audio-segments">&lt;p&gt;This post outlines a simple algorithm for
+but the bands are larger, on average. This is because the row-wise shuffling
+operation decorrelated the data by injecting randomness apriori.&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="machine-learning" /><category term="artificial-intelligence" /><summary type="html">This post explores how implicit user-item interaction sparsity poses a challenge for matrix factorization (model-based) collaborative filtering recommender systems.</summary></entry><entry><title type="html">Low Energy Audio Segments</title><link href="http://localhost:4000/low-energy-audio-segments" rel="alternate" type="text/html" title="Low Energy Audio Segments" /><published>2021-03-21T00:00:00-05:00</published><updated>2021-03-21T00:00:00-05:00</updated><id>http://localhost:4000/low-energy-audio-segments</id><content type="html" xml:base="http://localhost:4000/low-energy-audio-segments">&lt;p&gt;This post outlines a simple algorithm for
 identifying low energy audio segments.
 This post assumes basic knowledge of digital 
 signal processing (DSP).&lt;/p&gt;

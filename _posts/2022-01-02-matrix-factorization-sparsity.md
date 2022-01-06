@@ -148,7 +148,7 @@ signal in the data.
 
 Speaking of "signals" and "correlations", the user-item interaction matrix
 is exactly that. In practice, the interactions we observe follow some natural
-generative process. If we knew that process we wouldn't need a model.
+generative process. If we knew the process we wouldn't need the model.
 
 Let's generate a synthetic interaction matrix by stacking [sine waves].
 Here's what a $1$, $2$, and $3$ Hz sine wave sampled at $1000$ Hz look like.
@@ -162,11 +162,12 @@ produce a non-random pattern induced by the waves and their aliases.
 ![interactions]
 
 By quantizing the amplitudes to $\\{0, 1\\}$, 
-we end up with a bitmap, that we'll use as our
+we end up with a bitmap that we'll use as our
 interaction matrix. Note that entries in the 
 interaction matrix are not limited to discrete 
-values, i.e., affinity can be calculated as 
-linear combination of observed implict interactions.
+values, i.e., user-item affinity can be calculated as 
+a function of multiple observed implicit channels 
+of interaction (view, click, purchase, etc.).
 
 ```python
 import numpy as np
@@ -198,8 +199,8 @@ out non-zero entries and thereby increasing sparsity?
 ![interactions_removed]
 
 Let's run a monte-carlo simulation to investigate. We'll make it
-even easier by equpping the model with more than enough parameters by
-setting `factors=24`. This means the model will factorize the square
+even easier by equipping the model with more than enough parameters by
+setting `factors=24` so that the model can factorize the square
 interaction matrix into two other square matrices instead of two
 lower-rank matrices. We'll report performance using standard ranking@10
 evaluation metrics against a random $80\%-20\%$ train-test split.
@@ -242,7 +243,7 @@ problem is easy (correlation and coverage).
 As sparsity decreases, the model performance
 degrades as the signal (literally) in the data that provides 
 coverage and correlation vanishes. Note that the error
-fans out as sparsity increases because the impact of
+fans out as sparsity increases because
 randomness begins to obfuscate the signal in the data.
 
 Let's try this again but make the problem 
@@ -253,11 +254,10 @@ matrix that we synthesized in the previous step.
 
 ![sparsity_sim_shuffled]
 
-The model doesn't perform as well when sparsity is low.
+The model doesn't perform nearly as well when sparsity is low.
 Similar to the previous result, the error fans out as sparsity increases,
-but the bands are larger, on average. The row-wise shuffling
-not only decorrelated that axis but also injected substantial 
-randomness apriori.
+but the bands are larger, on average. This is because the row-wise shuffling
+operation decorrelated the data by injecting randomness apriori.
 
 
 [course]: https://developers.google.com/machine-learning/recommendation/collaborative/basics

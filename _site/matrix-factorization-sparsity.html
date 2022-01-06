@@ -181,7 +181,7 @@ signal in the data.</p>
 
 <p>Speaking of “signals” and “correlations”, the user-item interaction matrix
 is exactly that. In practice, the interactions we observe follow some natural
-generative process. If we knew that process we wouldn’t need a model.</p>
+generative process. If we knew the process we wouldn’t need the model.</p>
 
 <p>Let’s generate a synthetic interaction matrix by stacking <a href="https://en.wikipedia.org/wiki/Sine_wave">sine waves</a>.
 Here’s what a $1$, $2$, and $3$ Hz sine wave sampled at $1000$ Hz look like.</p>
@@ -194,12 +194,13 @@ produce a non-random pattern induced by the waves and their aliases.</p>
 
 <p><img src="assets/images/matrix_factorization_sparsity/interactions.png" alt="interactions" /></p>
 
-<p>By quantizing the amplitudes to the $\{0, 1\}$, 
-we end up with a bitmap, that we’ll use as our
+<p>By quantizing the amplitudes to $\{0, 1\}$, 
+we end up with a bitmap that we’ll use as our
 interaction matrix. Note that entries in the 
 interaction matrix are not limited to discrete 
-values, i.e., affinity can be calculated as 
-linear combination of observed implict interactions.</p>
+values, i.e., user-item affinity can be calculated as 
+a function of multiple observed implicit channels 
+of interaction (view, click, purchase, etc.).</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
 
@@ -230,8 +231,8 @@ out non-zero entries and thereby increasing sparsity?</p>
 <p><img src="assets/images/matrix_factorization_sparsity/interactions_removed.png" alt="interactions_removed" /></p>
 
 <p>Let’s run a monte-carlo simulation to investigate. We’ll make it
-even easier by equpping the model with more than enough parameters by
-setting <code class="language-plaintext highlighter-rouge">factors=24</code>. This means the model will factorize the square
+even easier by equipping the model with more than enough parameters by
+setting <code class="language-plaintext highlighter-rouge">factors=24</code> so that the model can factorize the square
 interaction matrix into two other square matrices instead of two
 lower-rank matrices. We’ll report performance using standard ranking@10
 evaluation metrics against a random $80\%-20\%$ train-test split.</p>
@@ -273,7 +274,7 @@ problem is easy (correlation and coverage).
 As sparsity decreases, the model performance
 degrades as the signal (literally) in the data that provides 
 coverage and correlation vanishes. Note that the error
-fans out as sparsity increases because the impact of
+fans out as sparsity increases because
 randomness begins to obfuscate the signal in the data.</p>
 
 <p>Let’s try this again but make the problem 
@@ -284,11 +285,10 @@ matrix that we synthesized in the previous step.</p>
 
 <p><img src="assets/images/matrix_factorization_sparsity/sparsity_sim_shuffled.png" alt="sparsity_sim_shuffled" /></p>
 
-<p>The model doesn’t perform as well when sparsity is low.
+<p>The model doesn’t perform nearly as well when sparsity is low.
 Similar to the previous result, the error fans out as sparsity increases,
-but the bands are larger, on average. The row-wise shuffling
-not only decorrelated that axis but also injected substantial 
-randomness apriori.</p>
+but the bands are larger, on average. This is because the row-wise shuffling
+operation decorrelated the data by injecting randomness apriori.</p>
 
 
   </div><a class="u-url" href="/matrix-factorization-sparsity" hidden></a>
