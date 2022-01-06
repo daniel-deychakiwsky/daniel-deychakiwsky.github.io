@@ -45,7 +45,7 @@ The algorithm exposes a hyperparameter that serves to expand or
 contract the dimensionality of the columns in $\mathbf{W}$ 
 and the rows in $\mathbf{H}$. It can be set so that $\mathbf{W}$ and 
 $\mathbf{H}$ become low-rank factors of $\mathbf{V}$, 
-**forcing a compressed encoding to capture the latent structure**
+**forcing a compressed encoding that captures latent structure**
 (import information) for approximating $\mathbf{V}$
 yielding embeddings for users and items.
 
