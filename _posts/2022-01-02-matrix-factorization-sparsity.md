@@ -161,7 +161,7 @@ produce a non-random pattern induced by the waves and their aliases.
 
 ![interactions]
 
-By quantizing the amplitudes to the $\\{0, 1\\}$, 
+By quantizing the amplitudes to $\\{0, 1\\}$, 
 we end up with a bitmap, that we'll use as our
 interaction matrix. Note that entries in the 
 interaction matrix are not limited to discrete 
