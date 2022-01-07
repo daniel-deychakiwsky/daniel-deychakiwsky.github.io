@@ -153,7 +153,7 @@ Here's what a $1$, $2$, and $3$ Hz sine wave sampled at $1000$ Hz look like.
 
 We start with a $1$ Hz sine wave and layer its
 harmonics (integer multiple increasing frequencies)
-row-wise with frequencies increasing with the row index.
+row-wise with frequencies increasing along the row index.
 By *intentionally undersampling* at $25$ Hz, we
 produce a non-random pattern induced by the waves and their aliases.
 
