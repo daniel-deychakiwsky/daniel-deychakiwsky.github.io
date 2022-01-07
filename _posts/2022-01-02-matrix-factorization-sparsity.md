@@ -79,8 +79,8 @@ It's common to subsample (users and / or items) and / or collect
 multi-channel interaction data (from other implicit data 
 sources, e.g., time-on-page) in hopes of reducing sparsity. 
 Even after applying user subsampling,
-authors of the noteworthy Neural Collaborative Filtering ([NCF]) paper 
-reported a sparsity of $99.73\%$ on Pinterest data.
+authors of the noteworthy Neural Collaborative Filtering ([NCF])
+research reported a sparsity of $99.73\%$ on Pinterest data.
 
 > The original data is very large but highly sparse. 
 For example, over 20% of users have only one pin, making it difficult
