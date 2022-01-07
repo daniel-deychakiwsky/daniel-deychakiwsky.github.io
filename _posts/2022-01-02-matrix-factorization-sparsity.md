@@ -236,8 +236,8 @@ Initially, when sparsity is low, the model
 performs incredibly well as the factorization
 problem is easy (correlation and coverage).
 As sparsity decreases, the model performance
-degrades as the signal in the data that provides 
-coverage and correlation gets fragmented. Note that the error
+degrades as the signal in the data gets
+fragmented. Note that the error
 fans out as sparsity increases because
 randomness begins to obfuscate the remaining
 interactions.
