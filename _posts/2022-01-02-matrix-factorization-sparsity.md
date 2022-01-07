@@ -93,8 +93,7 @@ that retained only users with at least 20 interactions (pins).
 
 ML models are only as good as the data that powers them
 and MF is no exception to that rule. To demonstrate why sparsity
-is a problem, let's consider a wild edge case that you'd likely never
-encounter - but that really is more of a thought experiment.
+is a problem, let's consider a thought experiment.
 
 Let's continue with the scenario from above, $24$ users and $24$ items, 
 but let's add an evil twist so that each user has purchased only one
@@ -163,9 +162,7 @@ By quantizing the amplitudes to $\\{0, 1\\}$,
 we end up with a bitmap that we'll use as our
 interaction matrix. Note that entries in the 
 interaction matrix are not limited to discrete 
-values, i.e., user-item affinity can be calculated as 
-a function of multiple observed implicit channels 
-of interaction (view, click, purchase, etc.).
+values.
 
 ```python
 import numpy as np

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2022-01-06T22:54:41-06:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Deylemma</title><subtitle>An Engineering Blog
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2022-01-06T23:03:53-06:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Deylemma</title><subtitle>An Engineering Blog
 </subtitle><author><name>Daniel Deychakiwsky</name><email>d.deychak@gmail.com</email></author><entry><title type="html">Matrix Factorization Sparsity</title><link href="http://localhost:4000/matrix-factorization-sparsity" rel="alternate" type="text/html" title="Matrix Factorization Sparsity" /><published>2022-01-02T00:00:00-06:00</published><updated>2022-01-02T00:00:00-06:00</updated><id>http://localhost:4000/matrix-factorization-sparsity</id><content type="html" xml:base="http://localhost:4000/matrix-factorization-sparsity">&lt;p&gt;This post explores how implicit user-item interaction sparsity poses
 a challenge for matrix factorization (model-based) collaborative filtering
 recommender systems.&lt;/p&gt;
@@ -89,8 +89,7 @@ that retained only users with at least 20 interactions (pins).&lt;/p&gt;
 
 &lt;p&gt;ML models are only as good as the data that powers them
 and MF is no exception to that rule. To demonstrate why sparsity
-is a problem, let’s consider a wild edge case that you’d likely never
-encounter - but that really is more of a thought experiment.&lt;/p&gt;
+is a problem, let’s consider a thought experiment.&lt;/p&gt;
 
 &lt;p&gt;Let’s continue with the scenario from above, $24$ users and $24$ items, 
 but let’s add an evil twist so that each user has purchased only one
@@ -154,9 +153,7 @@ produce a non-random pattern induced by the waves and their aliases.&lt;/p&gt;
 we end up with a bitmap that we’ll use as our
 interaction matrix. Note that entries in the 
 interaction matrix are not limited to discrete 
-values, i.e., user-item affinity can be calculated as 
-a function of multiple observed implicit channels 
-of interaction (view, click, purchase, etc.).&lt;/p&gt;
+values.&lt;/p&gt;
 
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;numpy&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;
 
