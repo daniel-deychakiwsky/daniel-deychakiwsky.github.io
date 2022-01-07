@@ -237,7 +237,7 @@ performs incredibly well as the factorization
 problem is easy (correlation and coverage).
 As sparsity decreases, the model performance
 degrades as the signal (literally) in the data that provides 
-coverage and correlation vanishes. Note that the error
+coverage and correlation gets fragmented. Note that the error
 fans out as sparsity increases because
 randomness begins to obfuscate the signal in the data.
 
