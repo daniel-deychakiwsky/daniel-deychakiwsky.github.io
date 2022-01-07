@@ -95,7 +95,7 @@ and MF is no exception to that rule. To demonstrate why sparsity
 is a problem, let's consider a thought experiment.
 
 We'll continue with the scenario from above, $24$ users and $24$ items, 
-but let's add an evil twist so that each user has purchased only one
+but add an evil twist so that each user has purchased only one
 distinct item that no other user has purchased. We could reorder the
 users (rows of the interaction matrix) to arrive at the 
 identity matrix, i.e., the canonical orthonormal basis $\in \mathbb{R}^{24\times24}$
