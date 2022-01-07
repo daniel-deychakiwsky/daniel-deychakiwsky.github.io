@@ -57,8 +57,8 @@ for millions of users and items based off of sparse implicit
 interactions, e.g., purchases, streams, etc.
 
 Imagine a scenario with just $24$ unique items and $24$ unique users.
-If each user purchased 3 unique items on average,
-the number of non-zeros in this interaction matrix is $24 * 3 = 72$
+If each user purchased 3 unique items, the number of 
+non-zeros in this interaction matrix is $24 * 3 = 72$
 while the remaining $(24 ∗ 24) - 72 = 504$ entries are all zeros.
 That's a sparsity of $1 - (72 / (24 * 24)) = 0.875$. In other words, 
 $87.5\%$ of the interaction matrix entries are zeros.
@@ -74,12 +74,11 @@ $$
 $$
 
 MF models are fairly resilient 
-but extreme sparsity can become problematic. In those cases,
-researchers tend to either subsample (users
-and / or items) in such a way that some amount of coverage is
-guaranteed and / or collect multi-channel interaction
-data (presumably of lower user-item affinity) from other implicit 
-data sources, e.g., time-on-page. Even after applying user subsampling,
+but extreme cases can become problematic.
+It's common to subsample (users and / or items) and / or collect 
+multi-channel interaction data (from other implicit data 
+sources, e.g., time-on-page) in hopes of reducing sparsity. 
+Even after applying user subsampling,
 authors of the noteworthy Neural Collaborative Filtering ([NCF]) paper 
 reported a sparsity of $99.73\%$ on Pinterest data.
 

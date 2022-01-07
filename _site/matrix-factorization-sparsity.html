@@ -95,8 +95,8 @@ for millions of users and items based off of sparse implicit
 interactions, e.g., purchases, streams, etc.</p>
 
 <p>Imagine a scenario with just $24$ unique items and $24$ unique users.
-If each user purchased 3 unique items on average,
-the number of non-zeros in this interaction matrix is $24 * 3 = 72$
+If each user purchased 3 unique items, the number of 
+non-zeros in this interaction matrix is $24 * 3 = 72$
 while the remaining $(24 ∗ 24) - 72 = 504$ entries are all zeros.
 That’s a sparsity of $1 - (72 / (24 * 24)) = 0.875$. In other words, 
 $87.5\%$ of the interaction matrix entries are zeros.</p>
@@ -110,12 +110,11 @@ $87.5\%$ of the interaction matrix entries are zeros.</p>
 \tag{2} \label{2}\]
 
 <p>MF models are fairly resilient 
-but extreme sparsity can become problematic. In those cases,
-researchers tend to either subsample (users
-and / or items) in such a way that some amount of coverage is
-guaranteed and / or collect multi-channel interaction
-data (presumably of lower user-item affinity) from other implicit 
-data sources, e.g., time-on-page. Even after applying user subsampling,
+but extreme cases can become problematic.
+It’s common to subsample (users and / or items) and / or collect 
+multi-channel interaction data (from other implicit data 
+sources, e.g., time-on-page) in hopes of reducing sparsity. 
+Even after applying user subsampling,
 authors of the noteworthy Neural Collaborative Filtering (<a href="https://arxiv.org/pdf/1708.05031.pdf">NCF</a>) paper 
 reported a sparsity of $99.73\%$ on Pinterest data.</p>
 
@@ -267,10 +266,11 @@ evaluation metrics against a random $80\%-20\%$ train-test split.</p>
 performs incredibly well as the factorization
 problem is easy (correlation and coverage).
 As sparsity decreases, the model performance
-degrades as the signal (literally) in the data that provides 
-coverage and correlation vanishes. Note that the error
+degrades as the signal in the data gets
+fragmented. Note that the error
 fans out as sparsity increases because
-randomness begins to obfuscate the signal in the data.</p>
+randomness begins to obfuscate the remaining
+interactions.</p>
 
 <p>Let’s try this again but make the problem 
 harder by shuffling the rows of the interaction
@@ -282,8 +282,8 @@ matrix that we synthesized in the previous step.</p>
 
 <p>The model doesn’t perform nearly as well when sparsity is low.
 Similar to the previous result, the error fans out as sparsity increases,
-but the bands are larger, on average. This is because the row-wise shuffling
-operation decorrelated the data by injecting randomness apriori.</p>
+but the bands are larger, on average, because the shuffle 
+decorrelated the signal along that axis and injected randomness apriori.</p>
 
 
   </div><a class="u-url" href="/matrix-factorization-sparsity" hidden></a>
