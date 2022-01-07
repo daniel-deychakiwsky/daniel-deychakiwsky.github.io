@@ -252,8 +252,8 @@ matrix that we synthesized in the previous step.
 
 The model doesn't perform nearly as well when sparsity is low.
 Similar to the previous result, the error fans out as sparsity increases,
-but the bands are larger, on average, becuase the shuffle 
-decorrelated the signal and injected randomness apriori.
+but the bands are larger, on average, because the shuffle 
+decorrelated the signal along that axis and injected randomness apriori.
 
 
 [course]: https://developers.google.com/machine-learning/recommendation/collaborative/basics
