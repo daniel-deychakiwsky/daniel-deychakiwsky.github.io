@@ -236,11 +236,11 @@ Initially, when sparsity is low, the model
 performs incredibly well as the factorization
 problem is easy (correlation and coverage).
 As sparsity decreases, the model performance
-degrades as the signal (literally) in the data that provides 
+degrades as the signal in the data that provides 
 coverage and correlation gets fragmented. Note that the error
 fans out as sparsity increases because
-randomness begins to obfuscate the remainder of signal in
-the data.
+randomness begins to obfuscate the remaining
+interactions.
 
 Let's try this again but make the problem 
 harder by shuffling the rows of the interaction
