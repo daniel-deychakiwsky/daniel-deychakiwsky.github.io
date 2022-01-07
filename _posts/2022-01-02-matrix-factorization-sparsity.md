@@ -243,7 +243,7 @@ degrades as the signal in the data gets
 fragmented. Note that the error
 fans out as sparsity increases because
 randomness begins to obfuscate the model's 
-understanding of the remaining interactions.
+understanding of the patterns in the data.
 
 Let's try this again but make the problem 
 harder by shuffling the rows of the interaction
