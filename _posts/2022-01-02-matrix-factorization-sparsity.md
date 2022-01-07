@@ -239,7 +239,8 @@ As sparsity decreases, the model performance
 degrades as the signal (literally) in the data that provides 
 coverage and correlation gets fragmented. Note that the error
 fans out as sparsity increases because
-randomness begins to obfuscate the signal in the data.
+randomness begins to obfuscate the remainder of signal in
+the data.
 
 Let's try this again but make the problem 
 harder by shuffling the rows of the interaction
