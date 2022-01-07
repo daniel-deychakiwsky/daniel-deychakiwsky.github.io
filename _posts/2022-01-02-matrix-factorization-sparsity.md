@@ -73,17 +73,15 @@ $$
 \tag{2} \label{2}
 $$
 
-MF models are fairly resilient to sparsity 
-but when it spills over roughly $99.5\%$, 
-it can become problematic. In those cases,
+MF models are fairly resilient 
+but extreme sparsity can become problematic. In those cases,
 researchers tend to either subsample (users
 and / or items) in such a way that some amount of coverage is
 guaranteed and / or collect multi-channel interaction
 data (presumably of lower user-item affinity) from other implicit 
-data sources, e.g., time-on-page.
-The authors of the famous Neural Collaborative Filtering ([NCF]) model
-reported sparsity of $99.73\%$ on their Pinterest dataset,
-so they subsampled users based on interactions.
+data sources, e.g., time-on-page. Even after applying user subsampling,
+authors of the noteworthy Neural Collaborative Filtering ([NCF]) paper 
+reported a sparsity of $99.73\%$ on Pinterest data.
 
 > The original data is very large but highly sparse. 
 For example, over 20% of users have only one pin, making it difficult
