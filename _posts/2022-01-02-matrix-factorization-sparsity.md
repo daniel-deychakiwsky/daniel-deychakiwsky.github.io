@@ -94,7 +94,7 @@ ML models are only as good as the data that powers them
 and MF is no exception to that rule. To demonstrate why sparsity
 is a problem, let's consider a thought experiment.
 
-Let's continue with the scenario from above, $24$ users and $24$ items, 
+We'll continue with the scenario from above, $24$ users and $24$ items, 
 but let's add an evil twist so that each user has purchased only one
 distinct item that no other user has purchased. We could reorder the
 users (rows of the interaction matrix) to arrive at the 
