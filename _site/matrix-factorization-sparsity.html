@@ -115,8 +115,8 @@ It’s common to subsample (users and / or items) and / or collect
 multi-channel interaction data (from other implicit data 
 sources, e.g., time-on-page) in hopes of reducing sparsity. 
 Even after applying user subsampling,
-authors of the noteworthy Neural Collaborative Filtering (<a href="https://arxiv.org/pdf/1708.05031.pdf">NCF</a>) paper 
-reported a sparsity of $99.73\%$ on Pinterest data.</p>
+authors of the noteworthy Neural Collaborative Filtering (<a href="https://arxiv.org/pdf/1708.05031.pdf">NCF</a>)
+research reported a sparsity of $99.73\%$ on Pinterest data.</p>
 
 <blockquote>
   <p>The original data is very large but highly sparse. 
@@ -184,8 +184,10 @@ Here’s what a $1$, $2$, and $3$ Hz sine wave sampled at $1000$ Hz look like.</
 
 <p><img src="assets/images/matrix_factorization_sparsity/sine_waves.png" alt="sine_waves" /></p>
 
-<p>We layer the first $24$ harmonics (integer multiple increasing frequencies)
-of a $1$ Hz sine wave <em>intentionally undersampled</em> at $25$ Hz to
+<p>We start with a $1$ Hz sine wave and layer its
+harmonics (integer multiple increasing frequencies)
+row-wise with frequencies increasing along the row index.
+By <em>intentionally undersampling</em> at $25$ Hz, we
 produce a non-random pattern induced by the waves and their aliases.</p>
 
 <p><img src="assets/images/matrix_factorization_sparsity/interactions.png" alt="interactions" /></p>
@@ -202,7 +204,8 @@ values.</p>
     <span class="n">np</span><span class="p">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="p">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">f</span> <span class="o">*</span> <span class="n">np</span><span class="p">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="n">endpoint</span><span class="o">=</span><span class="bp">False</span><span class="p">))</span>
     <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">25</span><span class="p">)</span>
 <span class="p">])</span>
-<span class="n">interactions</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">delete</span><span class="p">(</span><span class="n">interactions</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="c1"># remove first row and col - looks better
+</span><span class="n">interactions</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">delete</span><span class="p">(</span><span class="n">interactions</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">interactions</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">delete</span><span class="p">(</span><span class="n">interactions</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">interactions</span><span class="p">[</span><span class="n">interactions</span> <span class="o">&gt;=</span> <span class="mf">0.0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
 <span class="n">interactions</span><span class="p">[</span><span class="n">interactions</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span>
