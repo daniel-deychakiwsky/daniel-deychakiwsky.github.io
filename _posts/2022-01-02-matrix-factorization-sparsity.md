@@ -194,7 +194,7 @@ out non-zero entries and thereby increasing sparsity?
 
 Let's run a monte-carlo simulation to investigate. We'll make it
 even easier by equipping the model with more than enough parameters by
-setting `factors=24` so that the model can factorize the square
+sticking with `factors=24` so that the model can factorize the square
 interaction matrix into two other square matrices instead of two
 lower-rank matrices. We'll report performance using standard ranking@10
 evaluation metrics against a random $80\%-20\%$ train-test split.
