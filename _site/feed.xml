@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2022-01-07T10:46:29-06:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Deylemma</title><subtitle>An Engineering Blog
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2022-01-07T11:30:03-06:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Deylemma</title><subtitle>An Engineering Blog
 </subtitle><author><name>Daniel Deychakiwsky</name><email>d.deychak@gmail.com</email></author><entry><title type="html">Matrix Factorization Sparsity</title><link href="http://localhost:4000/matrix-factorization-sparsity" rel="alternate" type="text/html" title="Matrix Factorization Sparsity" /><published>2022-01-02T00:00:00-06:00</published><updated>2022-01-02T00:00:00-06:00</updated><id>http://localhost:4000/matrix-factorization-sparsity</id><content type="html" xml:base="http://localhost:4000/matrix-factorization-sparsity">&lt;p&gt;This post explores how implicit user-item interaction sparsity poses
 a challenge for matrix factorization (model-based) collaborative filtering
 recommender systems.&lt;/p&gt;
@@ -90,8 +90,8 @@ that retained only users with at least 20 interactions (pins).&lt;/p&gt;
 and MF is no exception to that rule. To demonstrate why sparsity
 is a problem, let’s consider a thought experiment.&lt;/p&gt;
 
-&lt;p&gt;Let’s continue with the scenario from above, $24$ users and $24$ items, 
-but let’s add an evil twist so that each user has purchased only one
+&lt;p&gt;We’ll continue with the scenario from above, $24$ users and $24$ items, 
+but add an evil twist so that each user has purchased only one
 distinct item that no other user has purchased. We could reorder the
 users (rows of the interaction matrix) to arrive at the 
 identity matrix, i.e., the canonical orthonormal basis $\in \mathbb{R}^{24\times24}$
@@ -184,10 +184,11 @@ out non-zero entries and thereby increasing sparsity?&lt;/p&gt;
 
 &lt;p&gt;Let’s run a monte-carlo simulation to investigate. We’ll make it
 even easier by equipping the model with more than enough parameters by
-setting &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;factors=24&lt;/code&gt; so that the model can factorize the square
-interaction matrix into two other square matrices instead of two
-lower-rank matrices. We’ll report performance using standard ranking@10
-evaluation metrics against a random $80\%-20\%$ train-test split.&lt;/p&gt;
+sticking with &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;factors=24&lt;/code&gt; (from above) so that the model is free to
+factorize the square interaction matrix into two other square matrices 
+instead of two lower-rank matrices. We’ll report performance using 
+standard ranking@10 evaluation metrics against a random $80\%-20\%$ 
+train-test split.&lt;/p&gt;
 
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;implicit.als&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mf&lt;/span&gt;
 &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;implicit.evaluation&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ev&lt;/span&gt;
@@ -227,8 +228,8 @@ As sparsity decreases, the model performance
 degrades as the signal in the data gets
 fragmented. Note that the error
 fans out as sparsity increases because
-randomness begins to obfuscate the remaining
-interactions.&lt;/p&gt;
+randomness begins to obfuscate the model’s 
+understanding of the remaining interactions.&lt;/p&gt;
 
 &lt;p&gt;Let’s try this again but make the problem 
 harder by shuffling the rows of the interaction
@@ -240,8 +241,8 @@ matrix that we synthesized in the previous step.&lt;/p&gt;
 
 &lt;p&gt;The model doesn’t perform nearly as well when sparsity is low.
 Similar to the previous result, the error fans out as sparsity increases,
-but the bands are larger, on average, because the shuffle 
-decorrelated the signal along that axis and injected randomness apriori.&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="machine-learning" /><category term="artificial-intelligence" /><summary type="html">This post explores how implicit user-item interaction sparsity poses a challenge for matrix factorization (model-based) collaborative filtering recommender systems.</summary></entry><entry><title type="html">Low Energy Audio Segments</title><link href="http://localhost:4000/low-energy-audio-segments" rel="alternate" type="text/html" title="Low Energy Audio Segments" /><published>2021-03-21T00:00:00-05:00</published><updated>2021-03-21T00:00:00-05:00</updated><id>http://localhost:4000/low-energy-audio-segments</id><content type="html" xml:base="http://localhost:4000/low-energy-audio-segments">&lt;p&gt;This post outlines a simple algorithm for
+but the bands are all-around larger. This is because the row-wise shuffle operation 
+decorrelated the signal along that axis, injecting randomness apriori.&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="machine-learning" /><category term="artificial-intelligence" /><summary type="html">This post explores how implicit user-item interaction sparsity poses a challenge for matrix factorization (model-based) collaborative filtering recommender systems.</summary></entry><entry><title type="html">Low Energy Audio Segments</title><link href="http://localhost:4000/low-energy-audio-segments" rel="alternate" type="text/html" title="Low Energy Audio Segments" /><published>2021-03-21T00:00:00-05:00</published><updated>2021-03-21T00:00:00-05:00</updated><id>http://localhost:4000/low-energy-audio-segments</id><content type="html" xml:base="http://localhost:4000/low-energy-audio-segments">&lt;p&gt;This post outlines a simple algorithm for
 identifying low energy audio segments.
 This post assumes basic knowledge of digital 
 signal processing (DSP).&lt;/p&gt;

@@ -194,10 +194,11 @@ out non-zero entries and thereby increasing sparsity?
 
 Let's run a monte-carlo simulation to investigate. We'll make it
 even easier by equipping the model with more than enough parameters by
-sticking with `factors=24` so that the model can factorize the square
-interaction matrix into two other square matrices instead of two
-lower-rank matrices. We'll report performance using standard ranking@10
-evaluation metrics against a random $80\%-20\%$ train-test split.
+sticking with `factors=24` (from above) so that the model is free to
+factorize the square interaction matrix into two other square matrices 
+instead of two lower-rank matrices. We'll report performance using 
+standard ranking@10 evaluation metrics against a random $80\%-20\%$ 
+train-test split.
 
 ```python
 import implicit.als as mf
@@ -238,8 +239,8 @@ As sparsity decreases, the model performance
 degrades as the signal in the data gets
 fragmented. Note that the error
 fans out as sparsity increases because
-randomness begins to obfuscate the remaining
-interactions.
+randomness begins to obfuscate the model's 
+understanding of the remaining interactions.
 
 Let's try this again but make the problem 
 harder by shuffling the rows of the interaction
@@ -251,8 +252,8 @@ matrix that we synthesized in the previous step.
 
 The model doesn't perform nearly as well when sparsity is low.
 Similar to the previous result, the error fans out as sparsity increases,
-but the bands are larger, on average, because the shuffle 
-decorrelated the signal along that axis and injected randomness apriori.
+but the bands are all-around larger. This is because the row-wise shuffle operation 
+decorrelated the signal along that axis, injecting randomness apriori.
 
 
 [course]: https://developers.google.com/machine-learning/recommendation/collaborative/basics
