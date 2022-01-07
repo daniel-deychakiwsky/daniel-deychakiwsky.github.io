@@ -151,8 +151,8 @@ Here's what a $1$, $2$, and $3$ Hz sine wave sampled at $1000$ Hz look like.
 
 ![sine_waves]
 
-We layer the first $24$ harmonics (integer multiple increasing frequencies)
-of a $1$ Hz sine wave *intentionally undersampled* at $25$ Hz to
+We layer the first $23$ harmonics (integer multiple increasing frequencies)
+of a $1$ Hz sine wave (inclusive) *intentionally undersampled* at $25$ Hz to
 produce a non-random pattern induced by the waves and their aliases.
 
 ![interactions]
