@@ -253,10 +253,10 @@ matrix that we synthesized in the previous step.
 
 ![sparsity_sim_shuffled]
 
-The model doesn't perform nearly as well when sparsity is low.
+The model doesn't perform nearly as well (especially when sparsity is low) because
+the shuffle operation introduces randomness by decorrelating the data a priori.
 Similar to the previous result, the error fans out as sparsity increases,
-but the bands are all-around larger. This is because the row-wise shuffle operation 
-decorrelated the signal along that axis, injecting randomness apriori.
+but the bands are all-around larger.
 
 
 [course]: https://developers.google.com/machine-learning/recommendation/collaborative/basics
