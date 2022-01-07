@@ -75,9 +75,9 @@ $$
 
 MF models are fairly resilient to sparsity 
 but when it spills over roughly $99.5\%$, 
-it can become problematic. There are strategies
-to reduce sparsity. Researchers tend to either subsample users
-and / or items in such a way that some amount of coverage is
+it can become problematic. In those cases,
+researchers tend to either subsample (users
+and / or items) in such a way that some amount of coverage is
 guaranteed and / or collect multi-channel interaction
 data (presumably of lower user-item affinity) from other implicit 
 data sources, e.g., time-on-page.
