@@ -73,7 +73,7 @@ $$
 \tag{2} \label{2}
 $$
 
-MF models are fairly resilient to sparse data 
+MF models are fairly resilient to sparsity 
 but when it spills over roughly $99.5\%$, 
 it can become problematic. There are strategies
 to reduce sparsity. Researchers tend to either subsample users
