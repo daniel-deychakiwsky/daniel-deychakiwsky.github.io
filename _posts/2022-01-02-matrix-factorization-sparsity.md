@@ -215,7 +215,6 @@ n_factors = 24
 n_sim = 24
 n_el = n_users * n_items
 results = []
-shuffle = False
 sparsities = np.arange(0.0, 0.91, 0.01)
 
 for sparsity in sparsities:
