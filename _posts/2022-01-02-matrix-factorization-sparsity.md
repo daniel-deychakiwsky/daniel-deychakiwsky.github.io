@@ -156,7 +156,7 @@ harmonics (integer multiple increasing frequencies)
 along the row index. By holding the sampling rate 
 constant at $25$ Hz, we intentionally undersample 
 the harmonics above the Nyquist frequency 
-producing a non-random a symmetric pattern 
+producing a non-random symmetric pattern 
 induced by the waves and their aliases.
 
 ![interactions]
