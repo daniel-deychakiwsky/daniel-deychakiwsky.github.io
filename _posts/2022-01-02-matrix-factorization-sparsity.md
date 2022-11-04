@@ -147,15 +147,17 @@ is exactly that. In practice, the interactions we observe follow some natural
 generative process. If we knew the process we wouldn't need the model.
 
 Let's generate a synthetic interaction matrix by stacking [sine waves].
-Here's what a $1$, $2$, and $3$ Hz sine wave sampled at $1000$ Hz look like.
+Here's what a $1$, $2$, and $3$ Hz sine wave sampled at $1$ kHz look like.
 
 ![sine_waves]
 
 We start with a $1$ Hz sine wave and layer its
 harmonics (integer multiple increasing frequencies)
-row-wise with frequencies increasing along the row index.
-By *intentionally undersampling* at $25$ Hz, we
-produce a non-random pattern induced by the waves and their aliases.
+along the row index. By holding the sampling rate 
+constant at $25$ Hz, we intentionally undersample 
+the harmonics above the Nyquist frequency 
+producing a non-random a symmetric pattern 
+induced by the waves and their aliases.
 
 ![interactions]
 
