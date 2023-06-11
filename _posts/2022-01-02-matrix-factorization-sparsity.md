@@ -256,7 +256,7 @@ matrix that we synthesized in the previous step.
 
 The model doesn't perform nearly as well (especially when sparsity is low) because
 the shuffle operation introduces randomness by decorrelating the data a priori.
-THe result is similar to the previous but with an increase in overall variability.
+The result is similar to the previous but with an increase in overall variability.
 
 
 [course]: https://developers.google.com/machine-learning/recommendation/collaborative/basics
