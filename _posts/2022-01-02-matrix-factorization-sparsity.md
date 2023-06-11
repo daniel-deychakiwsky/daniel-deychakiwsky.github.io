@@ -241,9 +241,9 @@ performs incredibly well as the factorization
 problem is easy (correlation and coverage).
 As sparsity decreases, the model performance
 degrades as the signal in the data gets
-fragmented. Note that the error
-fans out as sparsity increases because
-randomness begins to obfuscate the model's 
+fragmented. The variability of 
+the metric value increases as sparsity increases 
+because randomness begins to obfuscate the model's 
 understanding of the patterns in the data.
 
 Let's try this again but make the problem 
@@ -256,8 +256,7 @@ matrix that we synthesized in the previous step.
 
 The model doesn't perform nearly as well (especially when sparsity is low) because
 the shuffle operation introduces randomness by decorrelating the data a priori.
-Similar to the previous result, the error fans out as sparsity increases,
-but the bands are all-around larger.
+THe result is similar to the previous but with an increase in overall variability.
 
 
 [course]: https://developers.google.com/machine-learning/recommendation/collaborative/basics
