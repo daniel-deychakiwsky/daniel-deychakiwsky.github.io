@@ -237,9 +237,8 @@ for sparsity in sparsities:
 ![sparsity_sim]
 
 Initially, the model performs well as the factorization
-problem is less complex (correlation and coverage)
-and the matrix is dense. As sparsity increases and 
-the signal in the data gets fragmented, the
+problem is less complex and the matrix is dense. As sparsity increases and 
+the signal in the data is corrupted, the
 average performance decreases with increasing variability.
 
 Let's try this again but make the problem 
@@ -250,9 +249,9 @@ matrix that we synthesized in the previous step.
 
 ![sparsity_sim_shuffled]
 
-The model doesn't perform nearly as well (even when the matrix is dense) because
+Initially, the model doesn't perform as well when the matrix is dense because
 the shuffle operation decorrelates the data a priori.
-The result is similar to the previous but with an increase in overall variability.
+The remaining trend is similar to the previous but with an increase in overall variability.
 
 
 [course]: https://developers.google.com/machine-learning/recommendation/collaborative/basics
