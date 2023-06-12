@@ -236,15 +236,11 @@ for sparsity in sparsities:
 
 ![sparsity_sim]
 
-Initially, when sparsity is low, the model
-performs incredibly well as the factorization
-problem is easy (correlation and coverage).
-As sparsity decreases, the model performance
-degrades as the signal in the data gets
-fragmented. The variability of 
-the metric value increases as sparsity increases 
-because randomness begins to obfuscate the model's 
-understanding of the patterns in the data.
+Initially, the model performs well as the factorization
+problem is less complex (correlation and coverage)
+and the matrix is dense. As sparsity increases and 
+the signal in the data gets fragmented, the
+average performance decreases with increasing variability.
 
 Let's try this again but make the problem 
 harder by shuffling the rows of the interaction
@@ -254,8 +250,8 @@ matrix that we synthesized in the previous step.
 
 ![sparsity_sim_shuffled]
 
-The model doesn't perform nearly as well (especially when sparsity is low) because
-the shuffle operation introduces randomness by decorrelating the data a priori.
+The model doesn't perform nearly as well (even when the matrix is dense) because
+the shuffle operation decorrelates the data a priori.
 The result is similar to the previous but with an increase in overall variability.
 
 
