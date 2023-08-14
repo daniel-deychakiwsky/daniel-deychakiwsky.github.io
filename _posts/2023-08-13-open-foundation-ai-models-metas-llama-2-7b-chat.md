@@ -118,7 +118,6 @@ _offload_folder_, and _device_map_. Most of those offer a bit of control over me
 The _device_map_ parameter can be used alongside HF [Accelerate]
 to optimally and automatically make use of underlying visible hardware. This is handy for
 multi GPU settings and when a given model can't fit into a single GPU.
-
 Let's proceed to manually move the model to the GPU.
 
 ```python
