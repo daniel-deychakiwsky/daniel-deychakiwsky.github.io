@@ -8,8 +8,7 @@ mathjax: true
 permalink: /:title
 ---
 
-This post outlines experimentally deploying 
-and prompting Meta's 
+This post shares practical experimentation with Meta's
 Llama-2-7B-Chat LLM via HuggingFace APIs
 quantized to FP16 on a 16 CPU CORE, 60GB CPU MEM, and 
 16GB GPU MEM hardware instance.
@@ -30,7 +29,7 @@ Yann LeCun, had a lot to do with it! Apart from his fascinating recent
 publications on self-supervised world models, he's been publicly pushing
 for opening AI to the masses.
 
-# Deployment
+# Learnings
 
 ## Background
 
