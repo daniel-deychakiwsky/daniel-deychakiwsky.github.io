@@ -24,7 +24,7 @@ was built on top of open source software (OSS) technologies, e.g.,
 Linux, HTTP server, Nginx, Kubernetes, Hadoop, Postgres, 
 etc. The fourth and current industrial revolution of 
 artificial intelligence (AI) is of no exception. Meta's initiative
-to open its latest suite of large language models (LLMs), aliased Llama 2,
+to open its latest suite of large language models (LLMs), branded as Llama 2,
 was a push in the right direction. I suspect their current head of AI, 
 Yann LeCun, had a lot to do with it! Apart from his fascinating recent
 publications on self-supervised world models, he's been publicly pushing
@@ -61,9 +61,8 @@ read each clause carefully.
 
 ## HuggingFace Variations
 
-To keep my experimental costs floored, I choose to experiment with the smallest
-chat fine-tuned HF wrapped variation made available 
-through their model [hub].
+To keep my costs floored, I chose to experiment with the smallest
+chat fine-tuned variation made available through the HF model [hub].
 
 ## Hardware
 
