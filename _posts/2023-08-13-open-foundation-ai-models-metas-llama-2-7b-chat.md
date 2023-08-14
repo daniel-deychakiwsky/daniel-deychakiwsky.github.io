@@ -384,7 +384,7 @@ the ice and establish a friendly tone for the conversation."]
 '''
 ```
 
-A careful inspector of the output would notice the model parroted back
+A careful inspector of the output would notice that the model parroted back
 the input prompt within its response. I learned that the community handles this 
 by applying a _repetition_penalty_ or by truncating the input from the output
 as seen in HF's text-generation pipeline [implementation]. I felt that penalizing the model
