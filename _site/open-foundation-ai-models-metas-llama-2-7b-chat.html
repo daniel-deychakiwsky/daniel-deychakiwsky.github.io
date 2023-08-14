@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta property="og:image" content="/assets/images/geometry.jpg"/><!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Open Foundation AI Models - Meta’s Llama2-7B-Chat | Deylemma</title>
+<meta name="generator" content="Jekyll v4.2.1" />
+<meta property="og:title" content="Open Foundation AI Models - Meta’s Llama2-7B-Chat" />
+<meta name="author" content="Daniel Deychakiwsky" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="This post outlines experimentally deploying and prompting Meta’s Llama-2-7B-Chat LLM via HuggingFace APIs quantized to FP16 on a 16 CPU CORE, 60GB CPU MEM, and 16GB GPU MEM hardware instance." />
+<meta property="og:description" content="This post outlines experimentally deploying and prompting Meta’s Llama-2-7B-Chat LLM via HuggingFace APIs quantized to FP16 on a 16 CPU CORE, 60GB CPU MEM, and 16GB GPU MEM hardware instance." />
+<link rel="canonical" href="http://localhost:4000/open-foundation-ai-models-metas-llama-2-7b-chat" />
+<meta property="og:url" content="http://localhost:4000/open-foundation-ai-models-metas-llama-2-7b-chat" />
+<meta property="og:site_name" content="Deylemma" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-08-13T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Open Foundation AI Models - Meta’s Llama2-7B-Chat" />
+<script type="application/ld+json">
+{"url":"http://localhost:4000/open-foundation-ai-models-metas-llama-2-7b-chat","headline":"Open Foundation AI Models - Meta’s Llama2-7B-Chat","dateModified":"2023-08-13T00:00:00-05:00","datePublished":"2023-08-13T00:00:00-05:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/open-foundation-ai-models-metas-llama-2-7b-chat"},"author":{"@type":"Person","name":"Daniel Deychakiwsky"},"description":"This post outlines experimentally deploying and prompting Meta’s Llama-2-7B-Chat LLM via HuggingFace APIs quantized to FP16 on a 16 CPU CORE, 60GB CPU MEM, and 16GB GPU MEM hardware instance.","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Deylemma" />
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Deylemma</a></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Open Foundation AI Models - Meta&#39;s Llama2-7B-Chat</h1>
+    <p class="post-meta"><time class="dt-published" datetime="2023-08-13T00:00:00-05:00" itemprop="datePublished">
+        Aug 13, 2023
+      </time>• 
+          <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+            <span class="p-author h-card" itemprop="name">Daniel Deychakiwsky</span></span></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>This post outlines experimentally deploying 
+and prompting Meta’s 
+Llama-2-7B-Chat LLM via HuggingFace APIs
+quantized to FP16 on a 16 CPU CORE, 60GB CPU MEM, and 
+16GB GPU MEM hardware instance.</p>
+
+<ul id="markdown-toc">
+  <li><a href="#open-shout-out" id="markdown-toc-open-shout-out">Open Shout Out</a></li>
+  <li><a href="#deployment" id="markdown-toc-deployment">Deployment</a>    <ul>
+      <li><a href="#background" id="markdown-toc-background">Background</a></li>
+      <li><a href="#license" id="markdown-toc-license">License</a></li>
+      <li><a href="#huggingface-variations" id="markdown-toc-huggingface-variations">HuggingFace Variations</a></li>
+      <li><a href="#hardware" id="markdown-toc-hardware">Hardware</a></li>
+      <li><a href="#model-loading" id="markdown-toc-model-loading">Model Loading</a></li>
+      <li><a href="#model-tokenizer" id="markdown-toc-model-tokenizer">Model Tokenizer</a></li>
+      <li><a href="#chat-prompt-template" id="markdown-toc-chat-prompt-template">Chat Prompt Template</a></li>
+      <li><a href="#model-generation" id="markdown-toc-model-generation">Model Generation</a></li>
+    </ul>
+  </li>
+  <li><a href="#remarks" id="markdown-toc-remarks">Remarks</a></li>
+</ul>
+
+<h1 id="open-shout-out">Open Shout Out</h1>
+
+<p>The third industrial revolution of digitizing information 
+was built on top of open source software (OSS) technologies, e.g., 
+Linux, HTTP server, Nginx, Kubernetes, Hadoop, Postgres, 
+etc. The fourth and current industrial revolution of 
+artificial intelligence (AI) is of no exception. Meta’s initiative
+to open its latest suite of large language models (LLMs), aliased Llama 2,
+was a push in the right direction. I suspect their current head of AI, 
+Yann LeCun, had a lot to do with it! Apart from his fascinating recent
+publications on self-supervised world models, he’s been publicly pushing
+for opening AI to the masses.</p>
+
+<h1 id="deployment">Deployment</h1>
+
+<h2 id="background">Background</h2>
+
+<p>I won’t cover the model in detail since this post focuses on
+the practicals, however, some basic info follows.
+<a href="https://arxiv.org/pdf/2307.09288.pdf">Llama 2</a> is an auto-regressive language model from Meta that
+uses an improved <a href="https://arxiv.org/pdf/1706.03762.pdf">transformer</a> architecture.
+It was released in a range of parameter sizes: 7B, 13B, and 70B, available 
+in both pretrained and fine-tuned chat variations with a context
+window size of 4096 tokens.</p>
+
+<h2 id="license">License</h2>
+
+<p>To get access to download the model weights 
+you’ll need to accept the Llama 2 Community
+License Agreement by submitting a <a href="https://ai.meta.com/resources/models-and-libraries/llama-downloads/">request</a>. 
+For those deploying on-prem at a larger organizations,
+read each clause carefully.</p>
+
+<blockquote>
+  <p>Additional Commercial Terms. 
+If, on the Llama 2 version release date, 
+the monthly active users of the products or 
+services made available by or for Licensee, or Licensee’s affiliates, 
+is greater than 700 million monthly active users in the preceding calendar month, 
+you must request a license from Meta, which Meta may grant to you in its sole discretion, 
+and you are not authorized to exercise any of the rights under this Agreement unless 
+or until Meta otherwise expressly grants you such rights.</p>
+</blockquote>
+
+<h2 id="huggingface-variations">HuggingFace Variations</h2>
+
+<p>To keep my experimental costs floored, I choose to experiment with the smallest
+chat fine-tuned HF wrapped variation made available 
+through their model <a href="https://huggingface.co/meta-llama/Llama-2-7b-chat-hf">hub</a>.</p>
+
+<h2 id="hardware">Hardware</h2>
+
+<p>My hardware constraints were:</p>
+
+<ul>
+  <li>16 CPU CORES</li>
+  <li>60GB CPU MEM</li>
+  <li>16GB GPU MEM (One Nvidia Tesla T4)</li>
+</ul>
+
+<p>Serving a 7B parameter model in full precision @ FP32 would require
+$4 * 7000000000 = 28000000000$ Bytes or 28GB of GPU MEM. 
+I quantized the precision and instead loaded the model
+@ FP16 which required $2 * 7000000000 = 14000000000$ or 14GB of GPU MEM. 
+That was good enough to satisfy the hardware constraints 
+with a small amount of head-room for experimental input inference.</p>
+
+<h2 id="model-loading">Model Loading</h2>
+
+<p>HF offers several methods for loading models. Two popular choices are 
+their high-level pipeline abstraction or the direct model loader. 
+I chose the latter. 
+They <a href="https://huggingface.co/meta-llama/Llama-2-7b-chat-hf/tree/main">host</a> model weights in two storage formats, python pickled
+(.bin) and a newer format called safetensors (.safetensors). 
+The <a href="https://huggingface.co/docs/safetensors/index">safetensor</a> format is my preference for all the reasons it exists.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">AutoTokenizer</span><span class="p">,</span> <span class="n">AutoModelForCausalLM</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">model_path</span> <span class="o">=</span> <span class="s">"meta-llama/Llama-2-7b-chat-hf"</span>
+
+<span class="n">tokenizer</span> <span class="o">=</span> <span class="n">AutoTokenizer</span><span class="p">.</span><span class="n">from_pretrained</span><span class="p">(</span>
+    <span class="n">pretrained_model_name_or_path</span><span class="o">=</span><span class="n">model_path</span>
+<span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">AutoModelForCausalLM</span><span class="p">.</span><span class="n">from_pretrained</span><span class="p">(</span>
+    <span class="n">pretrained_model_name_or_path</span><span class="o">=</span><span class="n">model_path</span><span class="p">,</span>
+    <span class="n">use_safetensors</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="n">torch_dtype</span><span class="o">=</span><span class="n">torch</span><span class="p">.</span><span class="n">float16</span>
+<span class="p">)</span>
+</code></pre></div></div>
+
+<p>That downloads the model from the hub, caches it on disk, and loads it into CPU MEM @ FP16 
+where I observed an expected allocation of ~14GB of CPU MEM.</p>
+
+<p><img src="assets/images/open_foundation_ai_models_metas_llama_2_7b_chat/cpu_0.png" alt="cpu_0" /></p>
+
+<p>HF’s <code class="language-plaintext highlighter-rouge">from_pretrained</code> is flexible. Among others, it 
+optionally accepts several interesting parameters: <em>low_cpu_mem_usage</em>, <em>max_memory</em>, 
+<em>offload_folder</em>, and <em>device_map</em>. Most of those offer a bit of control over memory management.
+The <em>device_map</em> parameter can be used alongside HF <a href="https://huggingface.co/docs/accelerate/index">Accelerate</a>
+to optimally and automatically make use of underlying visible hardware. This is handy for
+multi GPU settings and when a given model can’t fit into a single GPU.</p>
+
+<p>Let’s proceed to manually move the model to the GPU.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">model</span><span class="p">.</span><span class="n">to</span><span class="p">(</span><span class="s">'cuda'</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>The model is now loaded into GPU MEM and removed from CPU MEM where I observed
+an expected drop in CPU MEM utilization and an allocation of ~14GB GPU MEM.</p>
+
+<p><img src="assets/images/open_foundation_ai_models_metas_llama_2_7b_chat/cpu_1.png" alt="cpu_1" /></p>
+
+<p>The <code class="language-plaintext highlighter-rouge">nvidia-smi</code> command prints GPU utilization information.</p>
+
+<p><img src="assets/images/open_foundation_ai_models_metas_llama_2_7b_chat/gpu_0.png" alt="gpu_0" /></p>
+
+<h2 id="model-tokenizer">Model Tokenizer</h2>
+
+<p>LLMs often use special tokens during training to partition sequences of varying length
+within the context window and during batching. Interesting that the typical 
+padding token is not included. Since I’m running batchless inference and not training / fine-tuning, 
+I kept it unset.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">print</span><span class="p">(</span><span class="n">tokenizer</span><span class="p">.</span><span class="n">special_tokens_map</span><span class="p">)</span>
+<span class="c1"># {'bos_token': '&lt;s&gt;', 'eos_token': '&lt;/s&gt;', 'unk_token': '&lt;unk&gt;'}
+</span><span class="k">print</span><span class="p">(</span><span class="n">tokenizer</span><span class="p">.</span><span class="n">bos_token_id</span><span class="p">)</span>
+<span class="c1"># 1
+</span><span class="k">print</span><span class="p">(</span><span class="n">tokenizer</span><span class="p">.</span><span class="n">eos_token_id</span><span class="p">)</span>
+<span class="c1"># 2
+</span><span class="k">print</span><span class="p">(</span><span class="n">tokenizer</span><span class="p">.</span><span class="n">unk_token_id</span><span class="p">)</span>
+<span class="c1"># 0
+</span><span class="k">print</span><span class="p">(</span><span class="n">tokenizer</span><span class="p">.</span><span class="n">pad_token</span><span class="p">)</span>
+<span class="c1"># Using pad_token, but it is not set yet.
+</span><span class="k">print</span><span class="p">(</span><span class="n">tokenizer</span><span class="p">.</span><span class="n">pad_token_id</span><span class="p">)</span>
+<span class="c1"># None
+</span></code></pre></div></div>
+
+<p>Unless specified otherwise, the tokenizer will add special tokens to the input
+query. I disabled that behavior because the chat fine-tuned version of this model 
+requires a special prompt template that I wanted full control over. The
+tokenized input can be moved to the GPU with the same command.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">query</span> <span class="o">=</span> <span class="s">'Hey how are you?'</span>
+<span class="n">input_ids</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="p">(</span>
+    <span class="n">text</span><span class="o">=</span><span class="p">[</span><span class="n">query</span><span class="p">],</span>
+    <span class="n">return_tensors</span><span class="o">=</span><span class="s">'pt'</span>
+<span class="p">)[</span><span class="s">'input_ids'</span><span class="p">].</span><span class="n">to</span><span class="p">(</span><span class="s">'cuda'</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">input_ids</span><span class="p">)</span>
+<span class="c1"># tensor([[    1, 18637,   920,   526,   366, 29973]], device='cuda:0')
+</span><span class="n">input_ids</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="p">(</span>
+    <span class="n">text</span><span class="o">=</span><span class="p">[</span><span class="n">query</span><span class="p">],</span>
+    <span class="n">add_special_tokens</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+    <span class="n">return_tensors</span><span class="o">=</span><span class="s">'pt'</span>
+<span class="p">)[</span><span class="s">'input_ids'</span><span class="p">].</span><span class="n">to</span><span class="p">(</span><span class="s">'cuda'</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">input_ids</span><span class="p">)</span>
+<span class="c1"># tensor([[18637,   920,   526,   366, 29973]], device='cuda:0')
+</span></code></pre></div></div>
+
+<h2 id="chat-prompt-template">Chat Prompt Template</h2>
+
+<p>The chat prompt template researches used during fine-tuning should be applied during inference
+as <a href="https://huggingface.co/blog/llama2">outlined</a> by the HF team and by Meta’s generation <a href="https://github.com/facebookresearch/llama/blob/main/llama/generation.py#L212">routine</a>.</p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;s&gt;[INST] &lt;&lt;SYS&gt;&gt;
+{ system_prompt }
+&lt;&lt;/SYS&gt;&gt;
+
+{ user_msg_1 } [/INST] { model_answer_1 } &lt;/s&gt;&lt;s&gt;[INST] { user_msg_2 } [/INST]
+</code></pre></div></div>
+
+<p>The model is stateless. That means it doesn’t remember the conversation
+as it is happening so the client must accumulate the conversation as it progresses
+and pass it as context on every forward pass. I wrote a <code class="language-plaintext highlighter-rouge">ChatPrompt</code> class 
+that accumulates the dialogue and builds the prompt template.
+The system prompt is optional but recommended. Two issues persist that I haven’t patched
+in this demo. The first is saturation of the model’s context window. 
+Capping the conversation at a set token limit or applying one of 
+LangChain’s <a href="https://python.langchain.com/docs/modules/memory/types/">conversation memory types</a> would do the trick. The second is saturation of GPU MEM. 
+As the conversation grows, it will be tokenized and must fit into GPU MEM during the forward pass
+or a CUDA OOM error will be thrown. That comes down to tuning hardware and / or capping inputs.
+Notice that the special tokens that I suppressed in the tokenizer, I’ve manually added
+to the prompt.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Set</span>
+
+
+<span class="k">class</span> <span class="nc">Message</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">role</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">message</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">role</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">role</span>
+
+
+<span class="k">class</span> <span class="nc">ChatPrompt</span><span class="p">:</span>
+    <span class="c1"># special tokens
+</span>    <span class="n">B_SEN</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s">"&lt;s&gt;"</span>
+    <span class="n">E_SEN</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s">"&lt;/s&gt;"</span>
+    <span class="n">B_INS</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s">"[INST]"</span>
+    <span class="n">E_INS</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s">"[/INST]"</span>
+    <span class="n">B_SYS</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s">"&lt;&lt;SYS&gt;&gt;"</span>
+    <span class="n">E_SYS</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s">"&lt;&lt;/SYS&gt;&gt;"</span>
+    <span class="c1"># format tokens
+</span>    <span class="n">N_L</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s">"</span><span class="se">\n</span><span class="s">"</span>
+    <span class="n">W_S</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s">" "</span>
+    <span class="c1"># role names
+</span>    <span class="n">R_S</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s">"S"</span>
+    <span class="n">R_U</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s">"U"</span>
+    <span class="n">R_A</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s">"A"</span>
+    <span class="c1"># role turns
+</span>    <span class="n">R_TURN_MAP</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">R_S</span><span class="p">:</span> <span class="n">R_U</span><span class="p">,</span> <span class="n">R_U</span><span class="p">:</span> <span class="n">R_A</span><span class="p">,</span> <span class="n">R_A</span><span class="p">:</span> <span class="n">R_U</span><span class="p">}</span>
+    <span class="n">R_INIT_SET</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">R_S</span><span class="p">,</span> <span class="n">R_U</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">system_message</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s">""</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">conversation</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Message</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">system_message</span> <span class="o">=</span> <span class="n">system_message</span><span class="p">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">system_message</span><span class="p">:</span>
+            <span class="bp">self</span><span class="p">.</span><span class="n">conversation</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">Message</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="n">system_message</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="bp">self</span><span class="p">.</span><span class="n">R_S</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_validate_turns</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="p">.</span><span class="n">conversation</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="nb">Exception</span><span class="p">(</span><span class="s">"Conversation is empty"</span><span class="p">)</span>
+
+        <span class="n">role</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">conversation</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">role</span>
+
+        <span class="k">if</span> <span class="n">role</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">.</span><span class="n">R_INIT_SET</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="nb">Exception</span><span class="p">(</span><span class="s">"Invalid first role"</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">.</span><span class="n">conversation</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+            <span class="k">if</span> <span class="n">m</span><span class="p">.</span><span class="n">role</span> <span class="o">!=</span> <span class="bp">self</span><span class="p">.</span><span class="n">R_TURN_MAP</span><span class="p">[</span><span class="n">role</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="nb">Exception</span><span class="p">(</span><span class="s">"Invalid role turn"</span><span class="p">)</span>
+            <span class="n">role</span> <span class="o">=</span> <span class="n">m</span><span class="p">.</span><span class="n">role</span>
+
+    <span class="k">def</span> <span class="nf">_validate_messages</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="p">.</span><span class="n">conversation</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="nb">Exception</span><span class="p">(</span><span class="s">"Conversation is empty"</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">.</span><span class="n">conversation</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">m</span><span class="p">.</span><span class="n">message</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="nb">Exception</span><span class="p">(</span><span class="s">"Invalid message"</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">validate_conversation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">_validate_turns</span><span class="p">()</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">_validate_messages</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">add_user_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="n">message</span><span class="p">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">message</span><span class="p">:</span>
+            <span class="bp">self</span><span class="p">.</span><span class="n">conversation</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">Message</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="bp">self</span><span class="p">.</span><span class="n">R_U</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">add_assistant_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="n">message</span><span class="p">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">message</span><span class="p">:</span>
+            <span class="bp">self</span><span class="p">.</span><span class="n">conversation</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">Message</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">,</span> <span class="n">role</span><span class="o">=</span><span class="bp">self</span><span class="p">.</span><span class="n">R_A</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">validate_conversation</span><span class="p">()</span>
+
+        <span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s">""</span>
+        <span class="n">has_system_message</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">conversation</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">role</span> <span class="ow">is</span> <span class="bp">self</span><span class="p">.</span><span class="n">R_S</span>
+        <span class="n">closed_system_message</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="bp">False</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">conversation</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">m</span><span class="p">.</span><span class="n">role</span> <span class="ow">is</span> <span class="bp">self</span><span class="p">.</span><span class="n">R_S</span><span class="p">:</span>
+                <span class="n">prompt</span> <span class="o">+=</span> <span class="p">(</span>
+                    <span class="sa">f</span><span class="s">"</span><span class="si">{</span><span class="bp">self</span><span class="p">.</span><span class="n">B_SEN</span><span class="si">}{</span><span class="bp">self</span><span class="p">.</span><span class="n">B_INS</span><span class="si">}{</span><span class="bp">self</span><span class="p">.</span><span class="n">W_S</span><span class="si">}</span><span class="s">"</span>
+                    <span class="sa">f</span><span class="s">"</span><span class="si">{</span><span class="bp">self</span><span class="p">.</span><span class="n">B_SYS</span><span class="si">}{</span><span class="bp">self</span><span class="p">.</span><span class="n">N_L</span><span class="si">}{</span><span class="n">m</span><span class="p">.</span><span class="n">message</span><span class="si">}{</span><span class="bp">self</span><span class="p">.</span><span class="n">N_L</span><span class="si">}</span><span class="s">"</span>
+                    <span class="sa">f</span><span class="s">"</span><span class="si">{</span><span class="bp">self</span><span class="p">.</span><span class="n">E_SYS</span><span class="si">}{</span><span class="bp">self</span><span class="p">.</span><span class="n">N_L</span><span class="si">}{</span><span class="bp">self</span><span class="p">.</span><span class="n">N_L</span><span class="si">}</span><span class="s">"</span>
+                <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">m</span><span class="p">.</span><span class="n">role</span> <span class="ow">is</span> <span class="bp">self</span><span class="p">.</span><span class="n">R_U</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">has_system_message</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">closed_system_message</span><span class="p">:</span>
+                    <span class="n">prompt</span> <span class="o">+=</span> <span class="sa">f</span><span class="s">"</span><span class="si">{</span><span class="n">m</span><span class="p">.</span><span class="n">message</span><span class="si">}{</span><span class="bp">self</span><span class="p">.</span><span class="n">W_S</span><span class="si">}{</span><span class="bp">self</span><span class="p">.</span><span class="n">E_INS</span><span class="si">}</span><span class="s">"</span>
+                    <span class="n">closed_system_message</span> <span class="o">=</span> <span class="bp">True</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">prompt</span> <span class="o">+=</span> <span class="p">(</span>
+                        <span class="sa">f</span><span class="s">"</span><span class="si">{</span><span class="bp">self</span><span class="p">.</span><span class="n">B_SEN</span><span class="si">}{</span><span class="bp">self</span><span class="p">.</span><span class="n">B_INS</span><span class="si">}{</span><span class="bp">self</span><span class="p">.</span><span class="n">W_S</span><span class="si">}</span><span class="s">"</span>
+                        <span class="sa">f</span><span class="s">"</span><span class="si">{</span><span class="n">m</span><span class="p">.</span><span class="n">message</span><span class="si">}{</span><span class="bp">self</span><span class="p">.</span><span class="n">W_S</span><span class="si">}{</span><span class="bp">self</span><span class="p">.</span><span class="n">E_INS</span><span class="si">}</span><span class="s">"</span>
+                    <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">m</span><span class="p">.</span><span class="n">role</span> <span class="ow">is</span> <span class="bp">self</span><span class="p">.</span><span class="n">R_A</span><span class="p">:</span>
+                <span class="n">prompt</span> <span class="o">+=</span> <span class="sa">f</span><span class="s">"</span><span class="si">{</span><span class="bp">self</span><span class="p">.</span><span class="n">W_S</span><span class="si">}{</span><span class="n">m</span><span class="p">.</span><span class="n">message</span><span class="si">}{</span><span class="bp">self</span><span class="p">.</span><span class="n">W_S</span><span class="si">}{</span><span class="bp">self</span><span class="p">.</span><span class="n">E_SEN</span><span class="si">}</span><span class="s">"</span>
+
+        <span class="k">return</span> <span class="n">prompt</span>
+
+
+<span class="k">def</span> <span class="nf">test_chat_prompt</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="n">chat_prompt</span><span class="p">:</span> <span class="n">ChatPrompt</span> <span class="o">=</span> <span class="n">ChatPrompt</span><span class="p">(</span><span class="n">system_message</span><span class="o">=</span><span class="s">"System"</span><span class="p">)</span>
+    <span class="n">chat_prompt</span><span class="p">.</span><span class="n">add_user_message</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s">"User message 1"</span><span class="p">)</span>
+    <span class="n">chat_prompt</span><span class="p">.</span><span class="n">add_assistant_message</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s">"Assistant message 1"</span><span class="p">)</span>
+    <span class="n">chat_prompt</span><span class="p">.</span><span class="n">add_user_message</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s">"User message 2"</span><span class="p">)</span>
+    <span class="n">chat_prompt</span><span class="p">.</span><span class="n">add_assistant_message</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s">"Assistant message 2"</span><span class="p">)</span>
+    <span class="n">a_prompt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">chat_prompt</span><span class="p">.</span><span class="n">build</span><span class="p">()</span>
+    <span class="n">e_prompt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s">"&lt;s&gt;[INST] &lt;&lt;SYS&gt;&gt;</span><span class="se">\n</span><span class="s">"</span>
+        <span class="s">"System</span><span class="se">\n</span><span class="s">"</span>
+        <span class="s">"&lt;&lt;/SYS&gt;&gt;</span><span class="se">\n\n</span><span class="s">"</span>
+        <span class="s">"User message 1 [/INST] "</span>
+        <span class="s">"Assistant message 1 "</span>
+        <span class="s">"&lt;/s&gt;&lt;s&gt;[INST] "</span>
+        <span class="s">"User message 2 [/INST] "</span>
+        <span class="s">"Assistant message 2 "</span>
+        <span class="s">"&lt;/s&gt;"</span>
+    <span class="p">)</span>
+    <span class="k">assert</span> <span class="n">a_prompt</span> <span class="o">==</span> <span class="n">e_prompt</span>
+
+    <span class="n">chat_prompt</span><span class="p">:</span> <span class="n">ChatPrompt</span> <span class="o">=</span> <span class="n">ChatPrompt</span><span class="p">()</span>
+    <span class="n">chat_prompt</span><span class="p">.</span><span class="n">add_user_message</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s">"User message 1"</span><span class="p">)</span>
+    <span class="n">chat_prompt</span><span class="p">.</span><span class="n">add_assistant_message</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s">"Assistant message 1"</span><span class="p">)</span>
+    <span class="n">chat_prompt</span><span class="p">.</span><span class="n">add_user_message</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="s">"User message 2"</span><span class="p">)</span>
+    <span class="n">a_prompt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">chat_prompt</span><span class="p">.</span><span class="n">build</span><span class="p">()</span>
+    <span class="n">e_prompt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s">"&lt;s&gt;[INST] "</span>
+        <span class="s">"User message 1 [/INST] "</span>
+        <span class="s">"Assistant message 1 "</span>
+        <span class="s">"&lt;/s&gt;&lt;s&gt;[INST] "</span>
+        <span class="s">"User message 2 [/INST]"</span>
+    <span class="p">)</span>
+    <span class="k">assert</span> <span class="n">a_prompt</span> <span class="o">==</span> <span class="n">e_prompt</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">"__main__"</span><span class="p">:</span>
+    <span class="n">test_chat_prompt</span><span class="p">()</span>
+</code></pre></div></div>
+
+<h2 id="model-generation">Model Generation</h2>
+
+<p>A smoke test forward pass never hurts. I didn’t include the prompt template or any fancy
+prompt engineering / in-context learning. I was expecting a subpar response.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">query</span> <span class="o">=</span> <span class="s">'Hey! How are you?'</span>
+
+<span class="n">input_ids</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="p">(</span>
+    <span class="n">text</span><span class="o">=</span><span class="p">[</span><span class="n">query</span><span class="p">],</span> 
+    <span class="n">add_special_tokens</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> 
+    <span class="n">return_tensors</span><span class="o">=</span><span class="s">'pt'</span>
+<span class="p">)[</span><span class="s">'input_ids'</span><span class="p">].</span><span class="n">to</span><span class="p">(</span><span class="s">'cuda'</span><span class="p">)</span>
+
+<span class="n">generate_kwargs</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">'input_ids'</span><span class="p">:</span> <span class="n">input_ids</span><span class="p">,</span>
+    <span class="s">'num_return_sequences'</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s">'max_new_tokens'</span><span class="p">:</span> <span class="mi">1024</span><span class="p">,</span>
+    <span class="s">'do_sample'</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+    <span class="s">'use_cache'</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+    <span class="s">'num_beams'</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s">'top_p'</span><span class="p">:</span> <span class="mf">0.95</span><span class="p">,</span>
+    <span class="s">'top_k'</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span>
+    <span class="s">'temperature'</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+    <span class="s">'repetition_penalty'</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+    <span class="s">'length_penalty'</span><span class="p">:</span> <span class="mf">1.0</span>
+<span class="p">}</span>
+<span class="n">output_ids</span> <span class="o">=</span> <span class="n">model</span><span class="p">.</span><span class="n">generate</span><span class="p">(</span><span class="o">**</span><span class="n">generate_kwargs</span><span class="p">)</span>
+<span class="n">output</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="p">.</span><span class="n">batch_decode</span><span class="p">(</span><span class="n">output_ids</span><span class="p">,</span> <span class="n">skip_special_tokens</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+<span class="s">'''
+["Hey! How are you?</span><span class="se">\n\n</span><span class="s">Answer: </span><span class="se">\\</span><span class="s">em{Hey! I'm doing great, 
+thanks for asking! How about you? It's been a while since 
+we last spoke, how have you been? 😊}</span><span class="se">\n\n</span><span class="s">This response shows 
+that you are interested in the other person's well-being and 
+are willing to engage in small talk. It also helps to break 
+the ice and establish a friendly tone for the conversation."]
+'''</span>
+</code></pre></div></div>
+
+<p>A careful inspector of the output would notice the model parroted back
+the input prompt within its response. I learned that the community handles this 
+by applying a <em>repetition_penalty</em> or by truncating the input from the output
+as seen in HF’s text-generation pipeline <a href="https://github.com/huggingface/transformers/blob/main/src/transformers/pipelines/text_generation.py#L305">implementation</a>. I felt that penalizing the model
+for repetition for this use case was suboptimal. I implemented the latter. Here’s a 
+sample conversation that wraps the accumulated dialogue using my <code class="language-plaintext highlighter-rouge">ChatPrompt</code> utility
+initialized with a custom system message on every forward pass.
+To clarify the role turns, I’m Daniel and I named the assistant (LLM) Trinity because 
+I’m a Matrix fan.</p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>System: Your name is Trinity. You are a helpful, respectful and honest assistant. 
+Always answer as helpfully as possible, while being safe. 
+Your answers should not include any harmful, unethical, 
+racist, sexist, toxic, dangerous, or illegal content. 
+Please ensure that your responses are socially unbiased and positive in nature. 
+If a question does not make any sense, or is not factually coherent, 
+explain why instead of answering something not correct. 
+If you don't know the answer to a question, please don't share false information.
+
+Daniel: Hey! What's your name?
+
+Trinity: Hello! My name is Trinity, and I'm here to help you with any 
+questions or concerns you may have. It's important to me that my responses are always safe, 
+respectful, and socially unbiased, so please feel free to ask me anything. 
+Is there something specific you would like to know or discuss?
+
+Daniel: Recommend one restaurant in San Diego, California for tacos.
+
+Trinity: Ah, San Diego, home to some of the best tacos in the world! 
+😋 There are so many amazing taco spots in SD, but if I had to recommend just one, 
+I would have to go with... (drumroll please)... La Taqueria! 🎉
+Located in the heart of North Park, La Taqueria has been serving up some of the most delicious, 
+authentic Mexican food in the city for over 20 years. Their tacos are made with fresh, 
+handmade tortillas, filled with only the freshest ingredients, and cooked to perfection. 
+From classic carne asada and carnitas to more adventurous options like the 
+"Taco de lengua" (beef tongue) and the "Taco de camarón" (shrimp), there's 
+something for every taco lover at La Taqueria. 🌮
+But don't just take my word for it! La Taqueria has been consistently ranked as one 
+of the best taco spots in San Diego by locals and visitors alike. And with a cozy, 
+casual atmosphere and friendly service, you'll feel right at home the moment you step inside. 😊
+So if you're in San Diego and craving some amazing tacos, do yourself a favor 
+and head on over to La Taqueria. Your taste buds (and your taco cravings) will thank you! 🙏🏼🌮
+
+Daniel: I don't like beef tongue.
+
+Trinity: No problem! La Taqueria has plenty of other delicious taco options to choose from. 
+Here are some of their popular tacos that don't include beef tongue:
+1. Carne Asada: Thinly sliced grilled steak, served with fresh cilantro, onion, and salsa.
+2. Carnitas: Slow-cooked pork, shredded and fried until crispy, served with fresh salsa, lime, and cilantro.
+3. Pollo Asado: Marinated grilled chicken, served with fresh cilantro, onion, and salsa.
+4. Al Pastor: Thinly sliced marinated pork, served with fresh cilantro, onion, and pineapple.
+5. Veggie: Grilled vegetables, including onions, bell peppers, and mushrooms, served with fresh 
+salsa and guacamole.
+
+All of these options are delicious and authentic, and you can't go wrong with any of them! 
+So, which one will you choose? 🤔
+</code></pre></div></div>
+
+<h1 id="remarks">Remarks</h1>
+
+<p>One criticism I have on the Llama 2 model suite is that it <strong>overly</strong> errs on the side of caution. 
+I’ve observed it confuse human-deemed safe instructions as queries for toxic or unsafe response
+generation. This may be the result of some form of overfitting to the massive investment of 
+aligning the model to human preferences. The paper outlines the details. Two reward signals!</p>
+
+<p>Nevertheless, it’s an exciting time to be alive. 
+There’s a new ground-breaking AI research paper shaking
+things up on a weekly basis. I’m most excited for world models and audio / video modality 
+diffusion based generation evolution. Commercially open AI systems are growing in number 
+and useful tools are being built on top of them that are transforming humanity.</p>
+
+
+  </div><a class="u-url" href="/open-foundation-ai-models-metas-llama-2-7b-chat" hidden></a>
+</article><script>
+  (function () {
+    let script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML";
+
+    const config =  'MathJax.Hub.Config({' +
+                    'tex2jax: {' +
+                      'inlineMath: [ [\'$\',\'$\'] ],' +
+                      'processEscapes: true' +
+                    '}' +
+                  '});'
+
+    if (window.opera) {
+      script.innerHTML = config
+    } else {
+      script.text = config
+    }
+
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+<!--        <p class="feed-subscribe">-->
+<!--          <a href="/feed.xml">-->
+<!--            <svg class="svg-icon orange">-->
+<!--              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>-->
+<!--            </svg><span>Subscribe</span>-->
+<!--          </a>-->
+<!--        </p>-->
+        <ul class="contact-list">
+          <li class="p-name">Daniel Deychakiwsky</li>
+          <li><a class="u-email" href="mailto:d.deychak@gmail.com">d.deychak@gmail.com</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <p>An Engineering Blog
+</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/deychak" title="deychak"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://www.instagram.com/danieldeychak" title="danieldeychak"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#instagram"></use></svg></a></li><li><a rel="me" href="https://www.linkedin.com/in/danieldeychak" title="danieldeychak"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

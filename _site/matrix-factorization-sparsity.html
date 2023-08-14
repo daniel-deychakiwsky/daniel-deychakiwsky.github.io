@@ -19,7 +19,7 @@
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="Matrix Factorization Sparsity" />
 <script type="application/ld+json">
-{"headline":"Matrix Factorization Sparsity","url":"http://localhost:4000/matrix-factorization-sparsity","dateModified":"2022-01-02T00:00:00-06:00","datePublished":"2022-01-02T00:00:00-06:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/matrix-factorization-sparsity"},"author":{"@type":"Person","name":"Daniel Deychakiwsky"},"description":"This post explores how implicit user-item interaction sparsity poses a challenge for matrix factorization (model-based) collaborative filtering recommender systems.","@type":"BlogPosting","@context":"https://schema.org"}</script>
+{"url":"http://localhost:4000/matrix-factorization-sparsity","headline":"Matrix Factorization Sparsity","dateModified":"2022-01-02T00:00:00-06:00","datePublished":"2022-01-02T00:00:00-06:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/matrix-factorization-sparsity"},"author":{"@type":"Person","name":"Daniel Deychakiwsky"},"description":"This post explores how implicit user-item interaction sparsity poses a challenge for matrix factorization (model-based) collaborative filtering recommender systems.","@type":"BlogPosting","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Deylemma" />
 </head>
@@ -180,15 +180,17 @@ is exactly that. In practice, the interactions we observe follow some natural
 generative process. If we knew the process we wouldn’t need the model.</p>
 
 <p>Let’s generate a synthetic interaction matrix by stacking <a href="https://en.wikipedia.org/wiki/Sine_wave">sine waves</a>.
-Here’s what a $1$, $2$, and $3$ Hz sine wave sampled at $1000$ Hz look like.</p>
+Here’s what a $1$, $2$, and $3$ Hz sine wave sampled at $1$ kHz look like.</p>
 
 <p><img src="assets/images/matrix_factorization_sparsity/sine_waves.png" alt="sine_waves" /></p>
 
 <p>We start with a $1$ Hz sine wave and layer its
 harmonics (integer multiple increasing frequencies)
-row-wise with frequencies increasing along the row index.
-By <em>intentionally undersampling</em> at $25$ Hz, we
-produce a non-random pattern induced by the waves and their aliases.</p>
+along the row index. By holding the sampling rate 
+constant at $25$ Hz, we intentionally undersample 
+the harmonics above the Nyquist frequency 
+producing a non-random symmetric pattern 
+induced by the waves and their aliases.</p>
 
 <p><img src="assets/images/matrix_factorization_sparsity/interactions.png" alt="interactions" /></p>
 
@@ -246,7 +248,6 @@ train-test split.</p>
 <span class="n">n_sim</span> <span class="o">=</span> <span class="mi">24</span>
 <span class="n">n_el</span> <span class="o">=</span> <span class="n">n_users</span> <span class="o">*</span> <span class="n">n_items</span>
 <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="n">shuffle</span> <span class="o">=</span> <span class="bp">False</span>
 <span class="n">sparsities</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.91</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">sparsity</span> <span class="ow">in</span> <span class="n">sparsities</span><span class="p">:</span>
@@ -266,15 +267,10 @@ train-test split.</p>
 
 <p><img src="assets/images/matrix_factorization_sparsity/sparsity_sim.png" alt="sparsity_sim" /></p>
 
-<p>Initially, when sparsity is low, the model
-performs incredibly well as the factorization
-problem is easy (correlation and coverage).
-As sparsity decreases, the model performance
-degrades as the signal in the data gets
-fragmented. Note that the error
-fans out as sparsity increases because
-randomness begins to obfuscate the model’s 
-understanding of the remaining interactions.</p>
+<p>Initially, the model performs well as the factorization
+problem is less complex and the matrix is dense. As sparsity increases and 
+the signal in the data is corrupted, the
+average performance decreases with increasing variability.</p>
 
 <p>Let’s try this again but make the problem 
 harder by shuffling the rows of the interaction
@@ -284,10 +280,9 @@ matrix that we synthesized in the previous step.</p>
 
 <p><img src="assets/images/matrix_factorization_sparsity/sparsity_sim_shuffled.png" alt="sparsity_sim_shuffled" /></p>
 
-<p>The model doesn’t perform nearly as well when sparsity is low.
-Similar to the previous result, the error fans out as sparsity increases,
-but the bands are all-around larger. This is because the row-wise shuffle operation 
-decorrelated the signal along that axis, injecting randomness apriori.</p>
+<p>Initially, the model doesn’t perform as well when the matrix is dense because
+the shuffle operation decorrelates the data a priori.
+The remaining trend is similar to the previous but with an increase in overall variability.</p>
 
 
   </div><a class="u-url" href="/matrix-factorization-sparsity" hidden></a>
