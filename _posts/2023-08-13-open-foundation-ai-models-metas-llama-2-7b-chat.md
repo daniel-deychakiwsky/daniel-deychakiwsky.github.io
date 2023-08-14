@@ -8,7 +8,8 @@ mathjax: true
 permalink: /:title
 ---
 
-This post shares practical experimentation with Meta's
+This post shares practical learnings
+from experimenting with Meta's
 Llama-2-7B-Chat LLM via HuggingFace APIs
 quantized to FP16 on a 16 CPU CORE, 60GB CPU MEM, and 
 16GB GPU MEM hardware instance.
