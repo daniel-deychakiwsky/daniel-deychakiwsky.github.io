@@ -39,7 +39,7 @@ the practicals, however, some basic info follows.
 [Llama 2] is an auto-regressive language model from Meta that
 uses an improved [transformer] architecture.
 It was released in a range of parameter sizes: 7B, 13B, and 70B, available 
-in both pretrained and fine-tuned chat variations with a context
+in both pretrained and chat fine-tuned variations with a context
 window size of 4096 tokens.
 
 ## License
