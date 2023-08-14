@@ -389,7 +389,7 @@ the input prompt within its response. I learned that the community handles this
 by applying a _repetition_penalty_ or by truncating the input from the output
 as seen in HF's text-generation pipeline [implementation]. I felt that penalizing the model
 for repetition for this use case was suboptimal. I implemented the latter. Here's a 
-sample conversation that wraps the accumulated dialogue using my `ChatPrompt` utility
+sample conversation applying my `ChatPrompt` utility to build the accumulated prompt
 initialized with a custom system message on every forward pass.
 To clarify the role turns, I'm Daniel and I named the assistant (LLM) Trinity because 
 I'm a Matrix fan.
