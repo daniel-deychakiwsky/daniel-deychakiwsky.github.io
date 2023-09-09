@@ -1,13 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2023-08-13T22:55:25-05:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Deylemma</title><subtitle>An Engineering Blog
-</subtitle><author><name>Daniel Deychakiwsky</name><email>d.deychak@gmail.com</email></author><entry><title type="html">Open Foundation AI Models - Meta’s Llama2-7B-Chat</title><link href="http://localhost:4000/open-foundation-ai-models-metas-llama-2-7b-chat" rel="alternate" type="text/html" title="Open Foundation AI Models - Meta’s Llama2-7B-Chat" /><published>2023-08-13T00:00:00-05:00</published><updated>2023-08-13T00:00:00-05:00</updated><id>http://localhost:4000/open-foundation-ai-models-metas-llama-2-7b-chat</id><content type="html" xml:base="http://localhost:4000/open-foundation-ai-models-metas-llama-2-7b-chat">&lt;p&gt;This post outlines experimentally deploying 
-and prompting Meta’s 
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2023-09-09T14:46:45-05:00</updated><id>/feed.xml</id><title type="html">Deylemma</title><subtitle>An Engineering Blog
+</subtitle><author><name>Daniel Deychakiwsky</name><email>d.deychak@gmail.com</email></author><entry><title type="html">Open Foundation AI Models - Meta’s Llama2-7B-Chat</title><link href="/open-foundation-ai-models-metas-llama-2-7b-chat" rel="alternate" type="text/html" title="Open Foundation AI Models - Meta’s Llama2-7B-Chat" /><published>2023-08-13T00:00:00-05:00</published><updated>2023-08-13T00:00:00-05:00</updated><id>/open-foundation-ai-models-metas-llama-2-7b-chat</id><content type="html" xml:base="/open-foundation-ai-models-metas-llama-2-7b-chat">&lt;p&gt;This post shares practical learnings
+from experimenting with Meta’s
 Llama-2-7B-Chat LLM via HuggingFace APIs
 quantized to FP16 on a 16 CPU CORE, 60GB CPU MEM, and 
 16GB GPU MEM hardware instance.&lt;/p&gt;
 
 &lt;ul id=&quot;markdown-toc&quot;&gt;
   &lt;li&gt;&lt;a href=&quot;#open-shout-out&quot; id=&quot;markdown-toc-open-shout-out&quot;&gt;Open Shout Out&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;#deployment&quot; id=&quot;markdown-toc-deployment&quot;&gt;Deployment&lt;/a&gt;    &lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;#learnings&quot; id=&quot;markdown-toc-learnings&quot;&gt;Learnings&lt;/a&gt;    &lt;ul&gt;
       &lt;li&gt;&lt;a href=&quot;#background&quot; id=&quot;markdown-toc-background&quot;&gt;Background&lt;/a&gt;&lt;/li&gt;
       &lt;li&gt;&lt;a href=&quot;#license&quot; id=&quot;markdown-toc-license&quot;&gt;License&lt;/a&gt;&lt;/li&gt;
       &lt;li&gt;&lt;a href=&quot;#huggingface-variations&quot; id=&quot;markdown-toc-huggingface-variations&quot;&gt;HuggingFace Variations&lt;/a&gt;&lt;/li&gt;
@@ -28,13 +28,13 @@ was built on top of open source software (OSS) technologies, e.g.,
 Linux, HTTP server, Nginx, Kubernetes, Hadoop, Postgres, 
 etc. The fourth and current industrial revolution of 
 artificial intelligence (AI) is of no exception. Meta’s initiative
-to open its latest suite of large language models (LLMs), aliased Llama 2,
+to open its latest suite of large language models (LLMs), branded as Llama 2,
 was a push in the right direction. I suspect their current head of AI, 
 Yann LeCun, had a lot to do with it! Apart from his fascinating recent
 publications on self-supervised world models, he’s been publicly pushing
 for opening AI to the masses.&lt;/p&gt;
 
-&lt;h1 id=&quot;deployment&quot;&gt;Deployment&lt;/h1&gt;
+&lt;h1 id=&quot;learnings&quot;&gt;Learnings&lt;/h1&gt;
 
 &lt;h2 id=&quot;background&quot;&gt;Background&lt;/h2&gt;
 
@@ -43,7 +43,7 @@ the practicals, however, some basic info follows.
 &lt;a href=&quot;https://arxiv.org/pdf/2307.09288.pdf&quot;&gt;Llama 2&lt;/a&gt; is an auto-regressive language model from Meta that
 uses an improved &lt;a href=&quot;https://arxiv.org/pdf/1706.03762.pdf&quot;&gt;transformer&lt;/a&gt; architecture.
 It was released in a range of parameter sizes: 7B, 13B, and 70B, available 
-in both pretrained and fine-tuned chat variations with a context
+in both pretrained and chat fine-tuned variations with a context
 window size of 4096 tokens.&lt;/p&gt;
 
 &lt;h2 id=&quot;license&quot;&gt;License&lt;/h2&gt;
@@ -67,9 +67,8 @@ or until Meta otherwise expressly grants you such rights.&lt;/p&gt;
 
 &lt;h2 id=&quot;huggingface-variations&quot;&gt;HuggingFace Variations&lt;/h2&gt;
 
-&lt;p&gt;To keep my experimental costs floored, I choose to experiment with the smallest
-chat fine-tuned HF wrapped variation made available 
-through their model &lt;a href=&quot;https://huggingface.co/meta-llama/Llama-2-7b-chat-hf&quot;&gt;hub&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;To keep my costs floored, I chose to experiment with the smallest
+chat fine-tuned variation made available through the HF model &lt;a href=&quot;https://huggingface.co/meta-llama/Llama-2-7b-chat-hf&quot;&gt;hub&lt;/a&gt;.&lt;/p&gt;
 
 &lt;h2 id=&quot;hardware&quot;&gt;Hardware&lt;/h2&gt;
 
@@ -124,9 +123,8 @@ optionally accepts several interesting parameters: &lt;em&gt;low_cpu_mem_usage&l
 &lt;em&gt;offload_folder&lt;/em&gt;, and &lt;em&gt;device_map&lt;/em&gt;. Most of those offer a bit of control over memory management.
 The &lt;em&gt;device_map&lt;/em&gt; parameter can be used alongside HF &lt;a href=&quot;https://huggingface.co/docs/accelerate/index&quot;&gt;Accelerate&lt;/a&gt;
 to optimally and automatically make use of underlying visible hardware. This is handy for
-multi GPU settings and when a given model can’t fit into a single GPU.&lt;/p&gt;
-
-&lt;p&gt;Let’s proceed to manually move the model to the GPU.&lt;/p&gt;
+multi GPU settings and when a given model can’t fit into a single GPU.
+Let’s proceed to manually move the model to the GPU.&lt;/p&gt;
 
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;to&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'cuda'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
@@ -386,12 +384,12 @@ the ice and establish a friendly tone for the conversation.&quot;]
 '''&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;A careful inspector of the output would notice the model parroted back
+&lt;p&gt;A careful inspector of the output would notice that the model parroted back
 the input prompt within its response. I learned that the community handles this 
 by applying a &lt;em&gt;repetition_penalty&lt;/em&gt; or by truncating the input from the output
 as seen in HF’s text-generation pipeline &lt;a href=&quot;https://github.com/huggingface/transformers/blob/main/src/transformers/pipelines/text_generation.py#L305&quot;&gt;implementation&lt;/a&gt;. I felt that penalizing the model
 for repetition for this use case was suboptimal. I implemented the latter. Here’s a 
-sample conversation that wraps the accumulated dialogue using my &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ChatPrompt&lt;/code&gt; utility
+sample conversation applying my &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ChatPrompt&lt;/code&gt; utility to build the accumulated prompt
 initialized with a custom system message on every forward pass.
 To clarify the role turns, I’m Daniel and I named the assistant (LLM) Trinity because 
 I’m a Matrix fan.&lt;/p&gt;
@@ -455,7 +453,7 @@ aligning the model to human preferences. The paper outlines the details. Two rew
 There’s a new ground-breaking AI research paper shaking
 things up on a weekly basis. I’m most excited for world models and audio / video modality 
 diffusion based generation evolution. Commercially open AI systems are growing in number 
-and useful tools are being built on top of them that are transforming humanity.&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="machine-learning" /><category term="artificial-intelligence" /><summary type="html">This post outlines experimentally deploying and prompting Meta’s Llama-2-7B-Chat LLM via HuggingFace APIs quantized to FP16 on a 16 CPU CORE, 60GB CPU MEM, and 16GB GPU MEM hardware instance.</summary></entry><entry><title type="html">Matrix Factorization Sparsity</title><link href="http://localhost:4000/matrix-factorization-sparsity" rel="alternate" type="text/html" title="Matrix Factorization Sparsity" /><published>2022-01-02T00:00:00-06:00</published><updated>2022-01-02T00:00:00-06:00</updated><id>http://localhost:4000/matrix-factorization-sparsity</id><content type="html" xml:base="http://localhost:4000/matrix-factorization-sparsity">&lt;p&gt;This post explores how implicit user-item interaction sparsity poses
+and useful tools are being built on top of them that are transforming humanity.&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="machine-learning" /><category term="artificial-intelligence" /><summary type="html">This post shares practical learnings from experimenting with Meta’s Llama-2-7B-Chat LLM via HuggingFace APIs quantized to FP16 on a 16 CPU CORE, 60GB CPU MEM, and 16GB GPU MEM hardware instance.</summary></entry><entry><title type="html">Matrix Factorization Sparsity</title><link href="/matrix-factorization-sparsity" rel="alternate" type="text/html" title="Matrix Factorization Sparsity" /><published>2022-01-02T00:00:00-06:00</published><updated>2022-01-02T00:00:00-06:00</updated><id>/matrix-factorization-sparsity</id><content type="html" xml:base="/matrix-factorization-sparsity">&lt;p&gt;This post explores how implicit user-item interaction sparsity poses
 a challenge for matrix factorization (model-based) collaborative filtering
 recommender systems.&lt;/p&gt;
 
@@ -696,7 +694,7 @@ matrix that we synthesized in the previous step.&lt;/p&gt;
 
 &lt;p&gt;Initially, the model doesn’t perform as well when the matrix is dense because
 the shuffle operation decorrelates the data a priori.
-The remaining trend is similar to the previous but with an increase in overall variability.&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="machine-learning" /><category term="artificial-intelligence" /><summary type="html">This post explores how implicit user-item interaction sparsity poses a challenge for matrix factorization (model-based) collaborative filtering recommender systems.</summary></entry><entry><title type="html">Low Energy Audio Segments</title><link href="http://localhost:4000/low-energy-audio-segments" rel="alternate" type="text/html" title="Low Energy Audio Segments" /><published>2021-03-21T00:00:00-05:00</published><updated>2021-03-21T00:00:00-05:00</updated><id>http://localhost:4000/low-energy-audio-segments</id><content type="html" xml:base="http://localhost:4000/low-energy-audio-segments">&lt;p&gt;This post outlines a simple algorithm for
+The remaining trend is similar to the previous but with an increase in overall variability.&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="machine-learning" /><category term="artificial-intelligence" /><summary type="html">This post explores how implicit user-item interaction sparsity poses a challenge for matrix factorization (model-based) collaborative filtering recommender systems.</summary></entry><entry><title type="html">Low Energy Audio Segments</title><link href="/low-energy-audio-segments" rel="alternate" type="text/html" title="Low Energy Audio Segments" /><published>2021-03-21T00:00:00-05:00</published><updated>2021-03-21T00:00:00-05:00</updated><id>/low-energy-audio-segments</id><content type="html" xml:base="/low-energy-audio-segments">&lt;p&gt;This post outlines a simple algorithm for
 identifying low energy audio segments.
 This post assumes basic knowledge of digital 
 signal processing (DSP).&lt;/p&gt;
@@ -813,7 +811,7 @@ to hand-engineer additional information, e.g., human &lt;a href=&quot;https://en
 In other cases, manually engineering features will have less-of, if any effect at all
 (think background music). I believe the more robust solutions will result from applied 
 ML / AI / RL algorithms that are able to generalize to a broader spectrum of audio, 
-of course, requiring larger amounts quality data.&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="digital-signal-processing" /><summary type="html">This post outlines a simple algorithm for identifying low energy audio segments. This post assumes basic knowledge of digital signal processing (DSP).</summary></entry><entry><title type="html">Ordinary Least Squares is Orthogonal Projection</title><link href="http://localhost:4000/linear-regression-is-orthogonal-projection" rel="alternate" type="text/html" title="Ordinary Least Squares is Orthogonal Projection" /><published>2020-12-08T00:00:00-06:00</published><updated>2020-12-08T00:00:00-06:00</updated><id>http://localhost:4000/linear-regression-is-orthogonal-projection</id><content type="html" xml:base="http://localhost:4000/linear-regression-is-orthogonal-projection">&lt;p&gt;This post visualizes the equivalence of two perspectives
+of course, requiring larger amounts quality data.&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="digital-signal-processing" /><summary type="html">This post outlines a simple algorithm for identifying low energy audio segments. This post assumes basic knowledge of digital signal processing (DSP).</summary></entry><entry><title type="html">Ordinary Least Squares is Orthogonal Projection</title><link href="/linear-regression-is-orthogonal-projection" rel="alternate" type="text/html" title="Ordinary Least Squares is Orthogonal Projection" /><published>2020-12-08T00:00:00-06:00</published><updated>2020-12-08T00:00:00-06:00</updated><id>/linear-regression-is-orthogonal-projection</id><content type="html" xml:base="/linear-regression-is-orthogonal-projection">&lt;p&gt;This post visualizes the equivalence of two perspectives
 on estimating the unknown parameters in a simple linear
 regression model, ordinary least squares (OLS) and
 orthogonal projection (OP).&lt;/p&gt;
@@ -1090,7 +1088,7 @@ elegant visualization.&lt;/p&gt;
 
 &lt;p&gt;I built the visualizations for this post with &lt;a href=&quot;https://www.desmos.com/&quot;&gt;Desmos&lt;/a&gt;,
 an incredible graphing web application that enables
-users to visualize, study, and learn mathematics.&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="machine-learning" /><category term="artificial-intelligence" /><summary type="html">This post visualizes the equivalence of two perspectives on estimating the unknown parameters in a simple linear regression model, ordinary least squares (OLS) and orthogonal projection (OP).</summary></entry><entry><title type="html">Normalized Cross-Entropy</title><link href="http://localhost:4000/normalized-cross-entropy" rel="alternate" type="text/html" title="Normalized Cross-Entropy" /><published>2020-05-29T00:00:00-05:00</published><updated>2020-05-29T00:00:00-05:00</updated><id>http://localhost:4000/normalized-cross-entropy</id><content type="html" xml:base="http://localhost:4000/normalized-cross-entropy">&lt;p&gt;This post explores a normalized version of binary cross-entropy loss in attempt to 
+users to visualize, study, and learn mathematics.&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="machine-learning" /><category term="artificial-intelligence" /><summary type="html">This post visualizes the equivalence of two perspectives on estimating the unknown parameters in a simple linear regression model, ordinary least squares (OLS) and orthogonal projection (OP).</summary></entry><entry><title type="html">Normalized Cross-Entropy</title><link href="/normalized-cross-entropy" rel="alternate" type="text/html" title="Normalized Cross-Entropy" /><published>2020-05-29T00:00:00-05:00</published><updated>2020-05-29T00:00:00-05:00</updated><id>/normalized-cross-entropy</id><content type="html" xml:base="/normalized-cross-entropy">&lt;p&gt;This post explores a normalized version of binary cross-entropy loss in attempt to 
 remove the effect of the prior (class imbalance within the dataset) on the resulting value.&lt;/p&gt;
 
 &lt;ul id=&quot;markdown-toc&quot;&gt;
@@ -1837,9 +1835,9 @@ offers support for three-dimensional rendering.&lt;/p&gt;
 
 &lt;p&gt;[12] https://scikit-learn.org/stable/modules/model_evaluation.html#dummy-estimators&lt;/p&gt;
 
-&lt;p&gt;[13] https://github.com/deychak/notebooks/blob/master/experiments/cross_entropy_log_likelihood.ipynb&lt;/p&gt;
+&lt;p&gt;[13] https://github.com/daniel-deychakiwsky/notebooks/blob/master/experiments/cross_entropy_log_likelihood.ipynb&lt;/p&gt;
 
-&lt;p&gt;[14] https://github.com/deychak/notebooks/blob/master/simulations/prior_cross_entropy_convergence_sim.ipynb&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="machine-learning" /><category term="artificial-intelligence" /><summary type="html">This post explores a normalized version of binary cross-entropy loss in attempt to remove the effect of the prior (class imbalance within the dataset) on the resulting value.</summary></entry><entry><title type="html">About Me</title><link href="http://localhost:4000/about-me" rel="alternate" type="text/html" title="About Me" /><published>2020-05-28T00:00:00-05:00</published><updated>2020-05-28T00:00:00-05:00</updated><id>http://localhost:4000/about-me</id><content type="html" xml:base="http://localhost:4000/about-me">&lt;p&gt;This is my first post. Here’s a bit about who I am and why I started this blog :).&lt;/p&gt;
+&lt;p&gt;[14] https://github.com/daniel-deychakiwsky/notebooks/blob/master/simulations/prior_cross_entropy_convergence_sim.ipynb&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="machine-learning" /><category term="artificial-intelligence" /><summary type="html">This post explores a normalized version of binary cross-entropy loss in attempt to remove the effect of the prior (class imbalance within the dataset) on the resulting value.</summary></entry><entry><title type="html">About Me</title><link href="/about-me" rel="alternate" type="text/html" title="About Me" /><published>2020-05-28T00:00:00-05:00</published><updated>2020-05-28T00:00:00-05:00</updated><id>/about-me</id><content type="html" xml:base="/about-me">&lt;p&gt;This is my first post. Here’s a bit about who I am and why I started this blog :).&lt;/p&gt;
 
 &lt;ul id=&quot;markdown-toc&quot;&gt;
   &lt;li&gt;&lt;a href=&quot;#who-am-i&quot; id=&quot;markdown-toc-who-am-i&quot;&gt;Who am I?&lt;/a&gt;&lt;/li&gt;
@@ -1850,9 +1848,9 @@ offers support for three-dimensional rendering.&lt;/p&gt;
 
 &lt;h2 id=&quot;who-am-i&quot;&gt;Who am I?&lt;/h2&gt;
 
-&lt;p&gt;&lt;img src=&quot;/assets/images/acadia.jpg&quot; alt=&quot;acadia-portrait&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/images/chucks.png&quot; alt=&quot;chucks&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;My name is &lt;a href=&quot;https://www.linkedin.com/in/danieldeychak/&quot;&gt;Daniel Deychakiwsky&lt;/a&gt; 
+&lt;p&gt;My name is Daniel Deychakiwsky 
 (pronounced “day-check-eve-ski”). 
 The long last name is Ukrainian. Hello! Привіт! 
 Professionally by day, I’m a senior machine learning engineer.

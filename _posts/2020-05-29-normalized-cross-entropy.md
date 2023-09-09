@@ -728,9 +728,9 @@ offers support for three-dimensional rendering.
      
 [12] https://scikit-learn.org/stable/modules/model_evaluation.html#dummy-estimators
 
-[13] https://github.com/deychak/notebooks/blob/master/experiments/cross_entropy_log_likelihood.ipynb
+[13] https://github.com/daniel-deychakiwsky/notebooks/blob/master/experiments/cross_entropy_log_likelihood.ipynb
 
-[14] https://github.com/deychak/notebooks/blob/master/simulations/prior_cross_entropy_convergence_sim.ipynb
+[14] https://github.com/daniel-deychakiwsky/notebooks/blob/master/simulations/prior_cross_entropy_convergence_sim.ipynb
 
 [Chris Chudzicki]: https://www.linkedin.com/in/cchudzicki/
 [Math3D]: https://www.math3d.org/
