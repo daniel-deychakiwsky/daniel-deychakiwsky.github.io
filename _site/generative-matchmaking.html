@@ -51,10 +51,20 @@ an AI-native open-source vector database.</p>
 
 <ul id="markdown-toc">
   <li><a href="#elevator-pitch" id="markdown-toc-elevator-pitch">Elevator Pitch</a></li>
-  <li><a href="#matchmaking-simulation" id="markdown-toc-matchmaking-simulation">Matchmaking Simulation</a>    <ul>
+  <li><a href="#simulation" id="markdown-toc-simulation">Simulation</a>    <ul>
       <li><a href="#generating-synthetic-user-profiles" id="markdown-toc-generating-synthetic-user-profiles">Generating Synthetic User Profiles</a></li>
       <li><a href="#generating-synthetic-user-profile-images" id="markdown-toc-generating-synthetic-user-profile-images">Generating Synthetic User Profile Images</a></li>
-      <li><a href="#matchmaking" id="markdown-toc-matchmaking">Matchmaking</a></li>
+      <li><a href="#matchmaking" id="markdown-toc-matchmaking">Matchmaking</a>        <ul>
+          <li><a href="#recommender-system" id="markdown-toc-recommender-system">Recommender System</a>            <ul>
+              <li><a href="#chroma-vector-database" id="markdown-toc-chroma-vector-database">Chroma Vector Database</a>                <ul>
+                  <li><a href="#retrieval" id="markdown-toc-retrieval">Retrieval</a></li>
+                  <li><a href="#ranking" id="markdown-toc-ranking">Ranking</a></li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
       <li><a href="#repository" id="markdown-toc-repository">Repository</a></li>
     </ul>
   </li>
@@ -90,7 +100,7 @@ and minimize swipe time.</p>
 
 <p>🧑 → 🤖💬 → ❤️ ← 💬🤖 ← 🧑</p>
 
-<h1 id="matchmaking-simulation">Matchmaking Simulation</h1>
+<h1 id="simulation">Simulation</h1>
 
 <h2 id="generating-synthetic-user-profiles">Generating Synthetic User Profiles</h2>
 
@@ -323,7 +333,64 @@ Here are 28 examples, the overall quality varies.</p>
 
 <h2 id="matchmaking">Matchmaking</h2>
 
-<p>// TODO</p>
+<h3 id="recommender-system">Recommender System</h3>
+
+<p>Mainstream dating apps with an abundance of users and data 
+train hybrid recommender systems that model content-based
+distributions and collaborative filtering effects based on a robust set of features
+and explicit / implicit user interactions, e.g., swiping and time-on-page.
+Researchers have shown that LLMs can be used as zero-shot shot recommenders but,
+through ablation studies, that they’re primarily content-based.
+Since our study lacked human feedback, we framed matchmaking as a LLM zero-shot
+content-based recommender powered by vector search and a bit of graph theory.</p>
+
+<h4 id="chroma-vector-database">Chroma Vector Database</h4>
+
+<p><a href="https://www.trychroma.com/">Chroma</a> is an AI-native open-source vector database.
+We spun up a local and persistent version. By default, 
+Chroma uses the Sentence Transformers <code class="language-plaintext highlighter-rouge">all-MiniLM-L6-v2</code> 
+model to create embeddings. This embedding model can create sentence and 
+document embeddings that can be used for a wide variety of tasks. 
+This embedding function runs locally, downloading and caching the model files.
+We loaded every user’s <strong>profile summary</strong>, as a document, 
+into a Chroma <em>collection</em> and tagged each entry with two pieces
+of metadata, the user’s gender and sexuality.</p>
+
+<h5 id="retrieval">Retrieval</h5>
+
+<p>Recall that we created two summaries for each user profile.
+We summarized, <em>mutually exclusively</em>, each user’s profile and their partner preferences.
+To compute a set of candidates for a given user, we query the Chroma collection
+with the user’s <strong>partner preference summary</strong> and specify a filter based 
+on the user’s partner preference gender and sexuality. Under the hood, Chroma
+executes a similarity / distance lookup on the embedded query text and returns the
+closest <code class="language-plaintext highlighter-rouge">n_results</code> with an associated scalar distance value. Choosing a value
+for <code class="language-plaintext highlighter-rouge">n_results</code> is a hyperparameter for this algorithm which can be tuned to 
+the use case. We set it to 25.</p>
+
+<h5 id="ranking">Ranking</h5>
+
+<p>Researchers have found that LLMs struggle with non-trivial 
+ranking tasks which may be connected to their inherent positional 
+bias. While bootstrapping the ranking task is reported to aid in 
+reducing variance and stabilizing rankings, we chose to implement 
+a graph inspired heuristic leveraging vector search.</p>
+
+<p>The retrieved set of the closest user profiles
+to a given user’s partner preferences can naively be surfaced
+as prospects for human feedback. However, borrowing from graph theory,
+if users are nodes, this represents a set of unidirectional edges connecting the query user
+to every retrieved candidate user. In our case, we define compatibility as a bidirectional
+edge (or two unique directed edges connecting two nodes) indicating that a given retrieved
+user would also link back to the query user. We implemented 
+the retrieval mechanism for every candidate user from the query user’s resultant set
+and inspect the candidate resultant sets for the query user, indicating a
+bidirectional connection. The candidates that point back to query user are 
+ranked higher than those that do not. This can be thought of as one level
+of breadth-first search. To illustrate, user 3 and 4 are the only users 
+considered to be compatible in the diagram that follows.</p>
+
+<p><img src="/assets/images/generative_matchmaking/graph.png" alt="graph" /></p>
 
 <h2 id="repository">Repository</h2>
 

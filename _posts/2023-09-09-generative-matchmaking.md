@@ -47,7 +47,7 @@ and minimize swipe time.
 
 🧑 → 🤖💬 → ❤️ ← 💬🤖 ← 🧑
 
-# Matchmaking Simulation
+# Simulation
 
 ## Generating Synthetic User Profiles
 
@@ -282,7 +282,65 @@ Here are 28 examples, the overall quality varies.
 
 ## Matchmaking
 
-// TODO
+### Recommender System
+
+Mainstream dating apps with an abundance of users and data 
+train hybrid recommender systems that model content-based
+distributions and collaborative filtering effects based on a robust set of features
+and explicit / implicit user interactions, e.g., swiping and time-on-page.
+Researchers have shown that LLMs can be used as zero-shot shot recommenders but,
+through ablation studies, that they're primarily content-based.
+Since our study lacked human feedback, we framed matchmaking as a LLM zero-shot
+content-based recommender powered by vector search and a bit of graph theory.
+
+#### Chroma Vector Database
+
+[Chroma] is an AI-native open-source vector database.
+We spun up a local and persistent version. By default, 
+Chroma uses the Sentence Transformers `all-MiniLM-L6-v2` 
+model to create embeddings. This embedding model can create sentence and 
+document embeddings that can be used for a wide variety of tasks. 
+This embedding function runs locally, downloading and caching the model files.
+We loaded every user's **profile summary**, as a document, 
+into a Chroma _collection_ and tagged each entry with two pieces
+of metadata, the user's gender and sexuality.
+
+##### Retrieval
+
+Recall that we created two summaries for each user profile.
+We summarized, _mutually exclusively_, each user's profile and their partner preferences.
+To compute a set of candidates for a given user, we query the Chroma collection
+with the user's **partner preference summary** and specify a filter based 
+on the user's partner preference gender and sexuality. Under the hood, Chroma
+executes a similarity / distance lookup on the embedded query text and returns the
+closest `n_results` with an associated scalar distance value. Choosing a value
+for `n_results` is a hyperparameter for this algorithm which can be tuned to 
+the use case. We set it to 25. 
+
+##### Ranking
+
+Researchers have found that LLMs struggle with non-trivial 
+ranking tasks which may be connected to their inherent positional 
+bias. While bootstrapping the ranking task is reported to aid in 
+reducing variance and stabilizing rankings, we chose to implement 
+a graph inspired heuristic leveraging vector search.
+
+The retrieved set of the closest user profiles
+to a given user's partner preferences can naively be surfaced
+as prospects for human feedback. However, borrowing from graph theory,
+if users are nodes, this represents a set of unidirectional edges connecting the query user
+to every retrieved candidate user. In our case, we define compatibility as a bidirectional
+edge (or two unique directed edges connecting two nodes) indicating that a given retrieved
+user would also link back to the query user. We implemented 
+the retrieval mechanism for every candidate user from the query user's resultant set
+and inspect the candidate resultant sets for the query user, indicating a
+bidirectional connection. The candidates that point back to query user are 
+ranked higher than those that do not. This can be thought of as one level
+of breadth-first search. To illustrate, user 3 and 4 are the only users 
+considered to be compatible in the diagram that follows.
+
+![graph]
+
 
 ## Repository
 
@@ -304,6 +362,7 @@ Github [repository](https://github.com/daniel-deychakiwsky/generative-matchmakin
 
 [schema]: https://github.com/daniel-deychakiwsky/generative-matchmaking/blob/master/src/generative_matchmaking/llm/oai_function_schemas.py
 [profiles]: https://github.com/daniel-deychakiwsky/generative-matchmaking/tree/master/profiles
+[chroma]: https://www.trychroma.com/
 
 [img_0]: /assets/images/generative_matchmaking/profile_0.png
 [img_1]: /assets/images/generative_matchmaking/profile_1.png
@@ -333,4 +392,4 @@ Github [repository](https://github.com/daniel-deychakiwsky/generative-matchmakin
 [img_25]: /assets/images/generative_matchmaking/profile_25.png
 [img_26]: /assets/images/generative_matchmaking/profile_26.png
 [img_27]: /assets/images/generative_matchmaking/profile_27.png
-
+[graph]: /assets/images/generative_matchmaking/graph.png
