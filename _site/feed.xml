@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2023-09-12T01:30:33-05:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Deylemma</title><subtitle>An Engineering Blog
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2023-09-12T13:29:06-05:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Deylemma</title><subtitle>An Engineering Blog
 </subtitle><author><name>Daniel Deychakiwsky</name><email>d.deychak@gmail.com</email></author><entry><title type="html">Generative Matchmaking</title><link href="http://localhost:4000/generative-matchmaking" rel="alternate" type="text/html" title="Generative Matchmaking" /><published>2023-09-09T00:00:00-05:00</published><updated>2023-09-09T00:00:00-05:00</updated><id>http://localhost:4000/generative-matchmaking</id><content type="html" xml:base="http://localhost:4000/generative-matchmaking">&lt;p&gt;This post details an experimental simulation of an AI-driven 
 matchmaking system that combines retrieval-augmented 
 generation with semantic search. It aims to 
@@ -10,8 +10,11 @@ an AI-native open-source vector database.&lt;/p&gt;
 &lt;ul id=&quot;markdown-toc&quot;&gt;
   &lt;li&gt;&lt;a href=&quot;#elevator-pitch&quot; id=&quot;markdown-toc-elevator-pitch&quot;&gt;Elevator Pitch&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;#simulation&quot; id=&quot;markdown-toc-simulation&quot;&gt;Simulation&lt;/a&gt;    &lt;ul&gt;
-      &lt;li&gt;&lt;a href=&quot;#generating-synthetic-user-profiles&quot; id=&quot;markdown-toc-generating-synthetic-user-profiles&quot;&gt;Generating Synthetic User Profiles&lt;/a&gt;&lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;#generating-synthetic-user-profile-images&quot; id=&quot;markdown-toc-generating-synthetic-user-profile-images&quot;&gt;Generating Synthetic User Profile Images&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#generating-synthetic-users&quot; id=&quot;markdown-toc-generating-synthetic-users&quot;&gt;Generating Synthetic Users&lt;/a&gt;        &lt;ul&gt;
+          &lt;li&gt;&lt;a href=&quot;#profiles&quot; id=&quot;markdown-toc-profiles&quot;&gt;Profiles&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#images&quot; id=&quot;markdown-toc-images&quot;&gt;Images&lt;/a&gt;&lt;/li&gt;
+        &lt;/ul&gt;
+      &lt;/li&gt;
       &lt;li&gt;&lt;a href=&quot;#matchmaking&quot; id=&quot;markdown-toc-matchmaking&quot;&gt;Matchmaking&lt;/a&gt;        &lt;ul&gt;
           &lt;li&gt;&lt;a href=&quot;#recommender-system&quot; id=&quot;markdown-toc-recommender-system&quot;&gt;Recommender System&lt;/a&gt;            &lt;ul&gt;
               &lt;li&gt;&lt;a href=&quot;#chroma-vector-database&quot; id=&quot;markdown-toc-chroma-vector-database&quot;&gt;Chroma Vector Database&lt;/a&gt;                &lt;ul&gt;
@@ -21,9 +24,10 @@ an AI-native open-source vector database.&lt;/p&gt;
               &lt;/li&gt;
             &lt;/ul&gt;
           &lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#visualizing-matches&quot; id=&quot;markdown-toc-visualizing-matches&quot;&gt;Visualizing Matches&lt;/a&gt;&lt;/li&gt;
+          &lt;li&gt;&lt;a href=&quot;#date-itineraries&quot; id=&quot;markdown-toc-date-itineraries&quot;&gt;Date Itineraries&lt;/a&gt;&lt;/li&gt;
         &lt;/ul&gt;
       &lt;/li&gt;
-      &lt;li&gt;&lt;a href=&quot;#repository&quot; id=&quot;markdown-toc-repository&quot;&gt;Repository&lt;/a&gt;&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;#literature-review&quot; id=&quot;markdown-toc-literature-review&quot;&gt;Literature Review&lt;/a&gt;&lt;/li&gt;
@@ -50,8 +54,8 @@ Meeting in person right away would allow us to gauge our compatibility and save 
 we present an innovative experience where each user is paired 
 with a personalized AI matchmaking assistant where 
 the user may occasionally reinforce their assistant with 
-feedback for alignment to any changes in preference. These assistants 
-are designed to engage with one another, with the goal of 
+feedback for alignment to any changes in preference. These 
+assistants are designed to engage with one another, with the goal of 
 creating harmonious matches and carefully curated date plans. 
 We posit that this approach will eliminate tedious small talk 
 and minimize swipe time.&lt;/p&gt;
@@ -60,7 +64,12 @@ and minimize swipe time.&lt;/p&gt;
 
 &lt;h1 id=&quot;simulation&quot;&gt;Simulation&lt;/h1&gt;
 
-&lt;h2 id=&quot;generating-synthetic-user-profiles&quot;&gt;Generating Synthetic User Profiles&lt;/h2&gt;
+&lt;p&gt;The implementation is available in a public
+Github &lt;a href=&quot;https://github.com/daniel-deychakiwsky/generative-matchmaking&quot;&gt;repository&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;generating-synthetic-users&quot;&gt;Generating Synthetic Users&lt;/h2&gt;
+
+&lt;h3 id=&quot;profiles&quot;&gt;Profiles&lt;/h3&gt;
 
 &lt;p&gt;We sequentially generated 250 synthetic dating user profiles using OpenAI’s chat 
 completion endpoint with the following configuration settings: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;model=&quot;gpt-4-0613&quot;&lt;/code&gt;, 
@@ -236,7 +245,7 @@ for Responsibility, Family, Ambition, and shares interests in cooking, hiking an
 Potential partners should have at least an undergraduate level of education
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;h2 id=&quot;generating-synthetic-user-profile-images&quot;&gt;Generating Synthetic User Profile Images&lt;/h2&gt;
+&lt;h3 id=&quot;images&quot;&gt;Images&lt;/h3&gt;
 
 &lt;p&gt;We generated a user profile picture for every user by invoking OpenAI’s DALL·E-2 
 text-to-image model. We constructed the prompt by interpolating the following
@@ -293,11 +302,10 @@ Here are 28 examples, the overall quality varies.&lt;/p&gt;
 
 &lt;h3 id=&quot;recommender-system&quot;&gt;Recommender System&lt;/h3&gt;
 
-&lt;p&gt;Mainstream dating apps with an abundance of users and data 
-train hybrid recommender systems that model content-based
-distributions and collaborative filtering effects based on a robust set of features
-and explicit / implicit user interactions, e.g., swiping and time-on-page.
-Researchers have shown that LLMs can be used as zero-shot shot recommenders but,
+&lt;p&gt;Mainstream dating apps train hybrid recommender systems that model content-based
+and collaborative filtering effects based on a robust set of features
+and explicit / implicit user interactions, e.g., swiping, time-on-page, etc.
+Researchers have shown that LLMs generalize as zero-shot shot recommenders but,
 through ablation studies, that they’re primarily content-based.
 Since our study lacked human feedback, we framed matchmaking as a LLM zero-shot
 content-based recommender powered by vector search and a bit of graph theory.&lt;/p&gt;
@@ -322,38 +330,46 @@ To compute a set of candidates for a given user, we query the Chroma collection
 with the user’s &lt;strong&gt;partner preference summary&lt;/strong&gt; and specify a filter based 
 on the user’s partner preference gender and sexuality. Under the hood, Chroma
 executes a similarity / distance lookup on the embedded query text and returns the
-closest &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;n_results&lt;/code&gt; with an associated scalar distance value. Choosing a value
-for &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;n_results&lt;/code&gt; is a hyperparameter for this algorithm which can be tuned to 
-the use case. We set it to 25.&lt;/p&gt;
+closest &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;n_results&lt;/code&gt; sorted by ascending distance. Choosing an appropriate value 
+is a hyperparameter which can be tuned to the use case. We set it to 25.&lt;/p&gt;
 
 &lt;h5 id=&quot;ranking&quot;&gt;Ranking&lt;/h5&gt;
 
-&lt;p&gt;Researchers have found that LLMs struggle with non-trivial 
+&lt;p&gt;Researchers found that LLMs struggle with non-trivial 
 ranking tasks which may be connected to their inherent positional 
 bias. While bootstrapping the ranking task is reported to aid in 
 reducing variance and stabilizing rankings, we chose to implement 
-a graph inspired heuristic leveraging vector search.&lt;/p&gt;
+a graph inspired heuristic leveraging vector search as observing
+subpar results when prompting to rank.&lt;/p&gt;
 
-&lt;p&gt;The retrieved set of the closest user profiles
-to a given user’s partner preferences can naively be surfaced
-as prospects for human feedback. However, borrowing from graph theory,
-if users are nodes, this represents a set of unidirectional edges connecting the query user
-to every retrieved candidate user. In our case, we define compatibility as a bidirectional
-edge (or two unique directed edges connecting two nodes) indicating that a given retrieved
-user would also link back to the query user. We implemented 
-the retrieval mechanism for every candidate user from the query user’s resultant set
-and inspect the candidate resultant sets for the query user, indicating a
-bidirectional connection. The candidates that point back to query user are 
-ranked higher than those that do not. This can be thought of as one level
-of breadth-first search. To illustrate, user 3 and 4 are the only users 
-considered to be compatible in the diagram that follows.&lt;/p&gt;
+&lt;p&gt;The retrieved set of user profiles from a given query user’s partner preferences can 
+naively be surfaced as candidate matches for human feedback but some of those
+candidates may be better matches than others. Borrowing from graph theory, we define 
+users as nodes and directed weighted edges as affinity 
+between them. We build the graph by adding retrieval-distance weighted edges&lt;br /&gt;
+for every user-candidate pair of nodes.&lt;/p&gt;
+
+&lt;p&gt;We defined compatibility as a bidirectional connection where a retrieved 
+candidate user’s retrieved set of candidates includes the query user. 
+These candidates, that point back to query user, are ranked higher than those that don’t. 
+This can be thought of as one level of breadth-first search.
+To illustrate, user M is compatible with the ordered set of users C, B, and P 
+in diagram that follows.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/assets/images/generative_matchmaking/graph.png&quot; alt=&quot;graph&quot; /&gt;&lt;/p&gt;
 
-&lt;h2 id=&quot;repository&quot;&gt;Repository&lt;/h2&gt;
+&lt;h3 id=&quot;visualizing-matches&quot;&gt;Visualizing Matches&lt;/h3&gt;
 
-&lt;p&gt;The implementation is available in a public 
-Github &lt;a href=&quot;https://github.com/daniel-deychakiwsky/generative-matchmaking&quot;&gt;repository&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Computed matches for all users can be inspected in the output &lt;a href=&quot;https://github.com/daniel-deychakiwsky/generative-matchmaking/tree/master/profiles&quot;&gt;profiles&lt;/a&gt; directory
+but to make them easier to visualize, we hacked together a user interface with directions
+outlined in the repo’s &lt;a href=&quot;https://github.com/daniel-deychakiwsky/generative-matchmaking/blob/master/README.md&quot;&gt;readme&lt;/a&gt;. A screenshot follows. The asterisks by the names 
+of the matches indicate compatibility.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/generative_matchmaking/ui.png&quot; alt=&quot;screenshot&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;date-itineraries&quot;&gt;Date Itineraries&lt;/h3&gt;
+
+&lt;p&gt;// TODO&lt;/p&gt;
 
 &lt;h1 id=&quot;literature-review&quot;&gt;Literature Review&lt;/h1&gt;
 

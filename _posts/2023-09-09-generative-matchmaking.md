@@ -16,7 +16,6 @@ for a dating service by leveraging the capabilities
 of OpenAI's GPT-4, OpenAI's DALL·E-2, and Chroma, 
 an AI-native open-source vector database.
 
-
 * TOC
 {:toc}
 
@@ -39,8 +38,8 @@ Inspired by the emergence of human-like behavior of modern AI,
 we present an innovative experience where each user is paired 
 with a personalized AI matchmaking assistant where 
 the user may occasionally reinforce their assistant with 
-feedback for alignment to any changes in preference. These assistants 
-are designed to engage with one another, with the goal of 
+feedback for alignment to any changes in preference. These 
+assistants are designed to engage with one another, with the goal of 
 creating harmonious matches and carefully curated date plans. 
 We posit that this approach will eliminate tedious small talk 
 and minimize swipe time.
@@ -49,7 +48,12 @@ and minimize swipe time.
 
 # Simulation
 
-## Generating Synthetic User Profiles
+The implementation is available in a public
+Github [repository](https://github.com/daniel-deychakiwsky/generative-matchmaking).
+
+## Generating Synthetic Users
+
+### Profiles
 
 We sequentially generated 250 synthetic dating user profiles using OpenAI's chat 
 completion endpoint with the following configuration settings: `model="gpt-4-0613"`, 
@@ -226,7 +230,7 @@ for Responsibility, Family, Ambition, and shares interests in cooking, hiking an
 Potential partners should have at least an undergraduate level of education
 ```
 
-## Generating Synthetic User Profile Images
+### Images
 
 We generated a user profile picture for every user by invoking OpenAI's DALL·E-2 
 text-to-image model. We constructed the prompt by interpolating the following
@@ -284,11 +288,10 @@ Here are 28 examples, the overall quality varies.
 
 ### Recommender System
 
-Mainstream dating apps with an abundance of users and data 
-train hybrid recommender systems that model content-based
-distributions and collaborative filtering effects based on a robust set of features
-and explicit / implicit user interactions, e.g., swiping and time-on-page.
-Researchers have shown that LLMs can be used as zero-shot shot recommenders but,
+Mainstream dating apps train hybrid recommender systems that model content-based
+and collaborative filtering effects based on a robust set of features
+and explicit / implicit user interactions, e.g., swiping, time-on-page, etc.
+Researchers have shown that LLMs generalize as zero-shot shot recommenders but,
 through ablation studies, that they're primarily content-based.
 Since our study lacked human feedback, we framed matchmaking as a LLM zero-shot
 content-based recommender powered by vector search and a bit of graph theory.
@@ -313,39 +316,46 @@ To compute a set of candidates for a given user, we query the Chroma collection
 with the user's **partner preference summary** and specify a filter based 
 on the user's partner preference gender and sexuality. Under the hood, Chroma
 executes a similarity / distance lookup on the embedded query text and returns the
-closest `n_results` with an associated scalar distance value. Choosing a value
-for `n_results` is a hyperparameter for this algorithm which can be tuned to 
-the use case. We set it to 25. 
+closest `n_results` sorted by ascending distance. Choosing an appropriate value 
+is a hyperparameter which can be tuned to the use case. We set it to 25.
 
 ##### Ranking
 
-Researchers have found that LLMs struggle with non-trivial 
+Researchers found that LLMs struggle with non-trivial 
 ranking tasks which may be connected to their inherent positional 
 bias. While bootstrapping the ranking task is reported to aid in 
 reducing variance and stabilizing rankings, we chose to implement 
-a graph inspired heuristic leveraging vector search.
+a graph inspired heuristic leveraging vector search as observing
+subpar results when prompting to rank. 
 
-The retrieved set of the closest user profiles
-to a given user's partner preferences can naively be surfaced
-as prospects for human feedback. However, borrowing from graph theory,
-if users are nodes, this represents a set of unidirectional edges connecting the query user
-to every retrieved candidate user. In our case, we define compatibility as a bidirectional
-edge (or two unique directed edges connecting two nodes) indicating that a given retrieved
-user would also link back to the query user. We implemented 
-the retrieval mechanism for every candidate user from the query user's resultant set
-and inspect the candidate resultant sets for the query user, indicating a
-bidirectional connection. The candidates that point back to query user are 
-ranked higher than those that do not. This can be thought of as one level
-of breadth-first search. To illustrate, user 3 and 4 are the only users 
-considered to be compatible in the diagram that follows.
+The retrieved set of user profiles from a given query user's partner preferences can 
+naively be surfaced as candidate matches for human feedback but some of those
+candidates may be better matches than others. Borrowing from graph theory, we define 
+users as nodes and directed weighted edges as affinity 
+between them. We build the graph by adding retrieval-distance weighted edges  
+for every user-candidate pair of nodes.
+
+We defined compatibility as a bidirectional connection where a retrieved 
+candidate user's retrieved set of candidates includes the query user. 
+These candidates, that point back to query user, are ranked higher than those that don't. 
+This can be thought of as one level of breadth-first search.
+To illustrate, user M is compatible with the ordered set of users C, B, and P 
+in diagram that follows.
 
 ![graph]
 
+### Visualizing Matches
 
-## Repository
+Computed matches for all users can be inspected in the output [profiles] directory
+but to make them easier to visualize, we hacked together a user interface with directions
+outlined in the repo's [readme]. A screenshot follows. The asterisks by the names 
+of the matches indicate compatibility.
 
-The implementation is available in a public 
-Github [repository](https://github.com/daniel-deychakiwsky/generative-matchmaking).
+![screenshot]
+
+### Date Itineraries
+
+// TODO
 
 # Literature Review
 
@@ -363,6 +373,7 @@ Github [repository](https://github.com/daniel-deychakiwsky/generative-matchmakin
 [schema]: https://github.com/daniel-deychakiwsky/generative-matchmaking/blob/master/src/generative_matchmaking/llm/oai_function_schemas.py
 [profiles]: https://github.com/daniel-deychakiwsky/generative-matchmaking/tree/master/profiles
 [chroma]: https://www.trychroma.com/
+[readme]: https://github.com/daniel-deychakiwsky/generative-matchmaking/blob/master/README.md
 
 [img_0]: /assets/images/generative_matchmaking/profile_0.png
 [img_1]: /assets/images/generative_matchmaking/profile_1.png
@@ -393,3 +404,4 @@ Github [repository](https://github.com/daniel-deychakiwsky/generative-matchmakin
 [img_26]: /assets/images/generative_matchmaking/profile_26.png
 [img_27]: /assets/images/generative_matchmaking/profile_27.png
 [graph]: /assets/images/generative_matchmaking/graph.png
+[screenshot]: /assets/images/generative_matchmaking/ui.png
