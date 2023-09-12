@@ -1,5 +1,307 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="/feed.xml" rel="self" type="application/atom+xml" /><link href="/" rel="alternate" type="text/html" /><updated>2023-09-09T14:46:45-05:00</updated><id>/feed.xml</id><title type="html">Deylemma</title><subtitle>An Engineering Blog
-</subtitle><author><name>Daniel Deychakiwsky</name><email>d.deychak@gmail.com</email></author><entry><title type="html">Open Foundation AI Models - Meta’s Llama2-7B-Chat</title><link href="/open-foundation-ai-models-metas-llama-2-7b-chat" rel="alternate" type="text/html" title="Open Foundation AI Models - Meta’s Llama2-7B-Chat" /><published>2023-08-13T00:00:00-05:00</published><updated>2023-08-13T00:00:00-05:00</updated><id>/open-foundation-ai-models-metas-llama-2-7b-chat</id><content type="html" xml:base="/open-foundation-ai-models-metas-llama-2-7b-chat">&lt;p&gt;This post shares practical learnings
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2023-09-11T23:29:07-05:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Deylemma</title><subtitle>An Engineering Blog
+</subtitle><author><name>Daniel Deychakiwsky</name><email>d.deychak@gmail.com</email></author><entry><title type="html">Generative Matchmaking</title><link href="http://localhost:4000/generative-matchmaking" rel="alternate" type="text/html" title="Generative Matchmaking" /><published>2023-09-09T00:00:00-05:00</published><updated>2023-09-09T00:00:00-05:00</updated><id>http://localhost:4000/generative-matchmaking</id><content type="html" xml:base="http://localhost:4000/generative-matchmaking">&lt;p&gt;This post details an experimental simulation of an AI-driven 
+matchmaking system that combines retrieval-augmented 
+generation with semantic search. It aims to 
+generate user-to-user compatibility recommendations 
+for a dating service by leveraging the capabilities 
+of OpenAI’s GPT-4, OpenAI’s DALL·E-2, and Chroma, 
+an AI-native open-source vector database.&lt;/p&gt;
+
+&lt;ul id=&quot;markdown-toc&quot;&gt;
+  &lt;li&gt;&lt;a href=&quot;#elevator-pitch&quot; id=&quot;markdown-toc-elevator-pitch&quot;&gt;Elevator Pitch&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#matchmaking-simulation&quot; id=&quot;markdown-toc-matchmaking-simulation&quot;&gt;Matchmaking Simulation&lt;/a&gt;    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;#generating-synthetic-user-profiles&quot; id=&quot;markdown-toc-generating-synthetic-user-profiles&quot;&gt;Generating Synthetic User Profiles&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#generating-synthetic-user-profile-images&quot; id=&quot;markdown-toc-generating-synthetic-user-profile-images&quot;&gt;Generating Synthetic User Profile Images&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#matchmaking&quot; id=&quot;markdown-toc-matchmaking&quot;&gt;Matchmaking&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#repository&quot; id=&quot;markdown-toc-repository&quot;&gt;Repository&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#literature-review&quot; id=&quot;markdown-toc-literature-review&quot;&gt;Literature Review&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;elevator-pitch&quot;&gt;Elevator Pitch&lt;/h1&gt;
+
+&lt;p&gt;Popular dating services have converged to an experience
+where users must swipe, match, chat, and plan to meet. 
+For many users, this results in too much time spent swiping 
+followed by repetitive small talk.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;I’m looking for a connection where I can simply ask, 
+“Would you like to meet up for drinks later?” 
+I wish online dating could solely serve the purpose 
+of arranging dates, eliminating the need for aimless small talk. 
+Repeating the same text-based conversations that lead nowhere gets tiresome. 
+Meeting in person right away would allow us to gauge our compatibility and save time. 
+– &lt;cite&gt;I’m a 27-year-old female.&lt;/cite&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Inspired by the emergence of human-like behavior of modern AI, 
+we present an innovative experience where each user is paired 
+with a personalized AI matchmaking assistant where 
+the user may occasionally reinforce their assistant with 
+feedback for alignment to any changes in preference. These assistants 
+are designed to engage with one another, with the goal of 
+creating harmonious matches and carefully curated date plans. 
+We posit that this approach will eliminate tedious small talk 
+and minimize swipe time.&lt;/p&gt;
+
+&lt;p&gt;🧑 → 🤖💬 → ❤️ ← 💬🤖 ← 🧑&lt;/p&gt;
+
+&lt;h1 id=&quot;matchmaking-simulation&quot;&gt;Matchmaking Simulation&lt;/h1&gt;
+
+&lt;h2 id=&quot;generating-synthetic-user-profiles&quot;&gt;Generating Synthetic User Profiles&lt;/h2&gt;
+
+&lt;p&gt;We sequentially generated 250 synthetic dating user profiles using OpenAI’s chat 
+completion endpoint with the following configuration settings: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;model=&quot;gpt-4-0613&quot;&lt;/code&gt;, 
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;max_tokens=5000&lt;/code&gt;, and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;temperature=1.05&lt;/code&gt;. Initially, our attempt to generate numerous dating 
+profiles in a single inference pass, allowing the model to consider previously generated 
+profiles for uniqueness and diversity, was hindered by output token limit constraints. 
+To address this, we adopted an alternative approach: we chatted with the model
+to generate a collection of names and subsequently instructed model sample from this pool.&lt;/p&gt;
+
+&lt;p&gt;Our starting point was the default system prompt: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&quot;You are a helpful assistant.&quot;&lt;/code&gt;. 
+Within this conversation, we provided the instruction: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&quot;Generate 10 unique first and 
+last names, ensuring a balanced diversity.&quot;&lt;/code&gt; Following this, we issued a follow-up directive: 
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&quot;Select a name randomly and create a dating profile for the chosen name.&quot;&lt;/code&gt;. It’s worth noting 
+that the sampling process may not have been uniform over the names due to the positional 
+biases inherent in language models. Nevertheless, this strategy proved effective.&lt;/p&gt;
+
+&lt;p&gt;For the generation of the dating profile, we utilized OpenAI’s function calling API, which 
+produced a structured JSON response based on our dating profile &lt;a href=&quot;https://github.com/daniel-deychakiwsky/generative-matchmaking/blob/master/src/generative_matchmaking/llm/oai_function_schemas.py&quot;&gt;schema&lt;/a&gt; where 
+we hardcoded the dating location to Los Angeles, California for all users. Note that
+although our schema is basic, it can be updated to include other pieces of information
+about a user or the user’s preferences.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Developers can now describe functions to gpt-4-0613 and gpt-3.5-turbo-0613, 
+and have the model intelligently choose to output a JSON object containing 
+arguments to call those functions. 
+This is a new way to more reliably connect GPT’s capabilities with external tools and APIs.
+These models have been fine-tuned to both detect when a function needs to be 
+called (depending on the user’s input) and to respond with JSON that 
+adheres to the function signature. Function calling allows developers 
+to more reliably get structured data back from the model. – &lt;cite&gt;OpenAI docs.&lt;/cite&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Once the dating profile was generated we instructed to
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&quot;Summarize the user's dating profile. 
+Include all fields other than partner_preferences. Output a concise paragraph.&quot;&lt;/code&gt;
+and finally instructed to 
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&quot;Summarize the user's dating partner_preferences. 
+Include partner_preferences fields only and nothing else. Output a concise paragraph.&quot;&lt;/code&gt;
+We did not include the user’s name in the summarization instructions to maintain generality
+across users.
+An example synthetic dating profile follows (output &lt;a href=&quot;https://github.com/daniel-deychakiwsky/generative-matchmaking/tree/master/profiles&quot;&gt;profiles&lt;/a&gt; directory).&lt;/p&gt;
+
+&lt;div class=&quot;language-json highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;name&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Mia Wong&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;age&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;29&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;height&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;5'6&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;school&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;University of California, Berkeley&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;job_industry&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Technology&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;job_title&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Software Engineer&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;hometown_location&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;San Francisco, California&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;dating_location&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Los Angeles, California&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;languages_spoken&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;English&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Mandarin&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;values&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Responsibility&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Family&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Ambition&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;interests&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Cooking&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Hiking&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Traveling&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;education_level&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Graduate&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;religious_beliefs&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Atheist&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;politics&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Liberal&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;dating_intentions&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Long term, open to short&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;relationship_type&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Monogamy&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;gender&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Woman&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;pronouns&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;She/Her/Hers&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;sexuality&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Straight&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;ethnicity&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;East Asian&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;has_children&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;want_children&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;pets&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Cat&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;zodiac_sign&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Sagittarius&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;mbti_personality_type&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;INTJ&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;drinking&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Sometimes&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;smoking&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;No&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;marijuana&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;No&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;drugs&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;No&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;exercise&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Active&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;partner_preferences&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;minimum_age&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;28&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;maximum_age&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;35&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;minimum_height&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;5'6&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;maximum_height&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;6'2&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\&quot;&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;has_children&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;want_children&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;sexuality&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Straight&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;drinking&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Sometimes&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;smoking&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;No&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;marijuana&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;No&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;drugs&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;No&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;exercise&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Active&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;gender&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Man&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;dating_intentions&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Long term, open to short&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;relationship_type&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Monogamy&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;ethnicities&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Black African Descent&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;East Asian&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Middle Eastern&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Native American&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Pacific Islander&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;South Asian&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Southeast Asian&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;White Caucasian&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;politics&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Liberal&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Not political&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;job_industry&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Technology&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Finance&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Consulting&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;languages_spoken&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;English&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;values&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Responsibility&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Family&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Ambition&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;interests&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Cooking&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Hiking&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Traveling&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;education_level&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Undergraduate&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+            &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;Graduate&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+        &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;profile_summary&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;see below&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;preferences_summary&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;see below&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+    &lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;&quot;user_id&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;fce07a22-133b-46b9-b187-ca1ae5c0b70e&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Profile Summary&lt;/p&gt;
+
+&lt;div class=&quot;language-text highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;The user is a 29-year-old woman who identifies as straight. She uses she/her pronouns and is of 
+East Asian ethnicity. She graduated from the University of California, Berkeley and now works 
+as a Software Engineer in the technology industry. Originally from San Francisco, California, 
+she is now looking to date in Los Angeles, California. She is an atheistic liberal who values 
+responsibility, family, and ambition. She enjoys cooking, hiking, and traveling. Despite her 
+busy schedule, she maintains an active lifestyle. She speaks both English and Mandarin fluently. 
+She owns a cat and wishes to have children although she doesn't have any yet. She is a 
+Sagittarius with an INTJ Myers-Briggs Type Indicator. An occasional drinker, she 
+doesn't smoke or use marijuana or other drugs. Her intention is to be in a monogamous 
+relationship, open to both long term commitments and causal dating.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Preferences Summary&lt;/p&gt;
+
+&lt;div class=&quot;language-text highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;The user is a woman who is interested in dating a man who is between the ages of 28 and 35, 
+and between 5'6&quot; and 6'2&quot; in height. Her preferred partner would be someone who does not 
+have children but is open to having some in the future. The partner should be straight, 
+drinks occasionally, doesn't smoke or involve in marijuana or drugs. She prefers a man who 
+is active and practices monogamy. Ethnicity- wise, her interests include a range of ethnic 
+groups, from Black African Descent, East Asian, Middle Eastern, Native American, Pacific 
+Islander, South Asian, Southeast Asian to White Caucasian. She prefers partners who identify 
+as Liberal or are not political. The ideal match for her would work in the Technology, Finance, 
+or Consulting industries. The primary language should be English. In terms of values, she looks 
+for Responsibility, Family, Ambition, and shares interests in cooking, hiking and traveling. 
+Potential partners should have at least an undergraduate level of education
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;generating-synthetic-user-profile-images&quot;&gt;Generating Synthetic User Profile Images&lt;/h2&gt;
+
+&lt;p&gt;We generated a user profile picture for every user by invoking OpenAI’s DALL·E-2 
+text-to-image model. We constructed the prompt by interpolating the following
+template with several fields from the user dating profile. Originally, we also used
+first and last name as two of the fields but OpenAI, rightly-so, flagged it as unsafe,
+so we removed it. Note that the prompt for this model must stay under a shorter
+character limit.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;prompt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;sa&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Dating profile picture of a &quot;&lt;/span&gt;
+    &lt;span class=&quot;sa&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_profile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_profile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ethnicity&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_profile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;age&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; &quot;&lt;/span&gt;
+    &lt;span class=&quot;sa&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;year old &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_profile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;gender&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; (&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_profile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pronouns&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;) &quot;&lt;/span&gt;
+    &lt;span class=&quot;sa&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;with an &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_profile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;exercise&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; physique who works as a &quot;&lt;/span&gt;
+    &lt;span class=&quot;sa&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_profile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;job_industry&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; professional &quot;&lt;/span&gt;
+    &lt;span class=&quot;sa&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;that values &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;' and '&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_profile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;values&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; &quot;&lt;/span&gt;
+    &lt;span class=&quot;sa&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;who enjoys &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;' and '&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_profile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;interests&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; who &quot;&lt;/span&gt;
+    &lt;span class=&quot;sa&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;identifies as &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_profile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;religious_beliefs&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;.&quot;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;All the generated profile pictures can be inspected in the output &lt;a href=&quot;https://github.com/daniel-deychakiwsky/generative-matchmaking/tree/master/profiles&quot;&gt;profiles&lt;/a&gt; directory.
+Here are 28 examples, the overall quality varies.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/generative_matchmaking/profile_0.png&quot; alt=&quot;img_0&quot; /&gt;
+&lt;img src=&quot;/assets/images/generative_matchmaking/profile_1.png&quot; alt=&quot;img_1&quot; /&gt;
+&lt;img src=&quot;/assets/images/generative_matchmaking/profile_2.png&quot; alt=&quot;img_2&quot; /&gt;
+&lt;img src=&quot;/assets/images/generative_matchmaking/profile_3.png&quot; alt=&quot;img_3&quot; /&gt;
+&lt;img src=&quot;/assets/images/generative_matchmaking/profile_4.png&quot; alt=&quot;img_4&quot; /&gt;
+&lt;img src=&quot;/assets/images/generative_matchmaking/profile_5.png&quot; alt=&quot;img_5&quot; /&gt;
+&lt;img src=&quot;/assets/images/generative_matchmaking/profile_6.png&quot; alt=&quot;img_6&quot; /&gt;
+&lt;img src=&quot;/assets/images/generative_matchmaking/profile_7.png&quot; alt=&quot;img_7&quot; /&gt;
+&lt;img src=&quot;/assets/images/generative_matchmaking/profile_8.png&quot; alt=&quot;img_8&quot; /&gt;
+&lt;img src=&quot;/assets/images/generative_matchmaking/profile_9.png&quot; alt=&quot;img_9&quot; /&gt;
+&lt;img src=&quot;/assets/images/generative_matchmaking/profile_10.png&quot; alt=&quot;img_10&quot; /&gt;
+&lt;img src=&quot;/assets/images/generative_matchmaking/profile_11.png&quot; alt=&quot;img_11&quot; /&gt;
+&lt;img src=&quot;/assets/images/generative_matchmaking/profile_12.png&quot; alt=&quot;img_12&quot; /&gt;
+&lt;img src=&quot;/assets/images/generative_matchmaking/profile_13.png&quot; alt=&quot;img_13&quot; /&gt;
+&lt;img src=&quot;/assets/images/generative_matchmaking/profile_14.png&quot; alt=&quot;img_14&quot; /&gt;
+&lt;img src=&quot;/assets/images/generative_matchmaking/profile_15.png&quot; alt=&quot;img_15&quot; /&gt;
+&lt;img src=&quot;/assets/images/generative_matchmaking/profile_16.png&quot; alt=&quot;img_16&quot; /&gt;
+&lt;img src=&quot;/assets/images/generative_matchmaking/profile_17.png&quot; alt=&quot;img_17&quot; /&gt;
+&lt;img src=&quot;/assets/images/generative_matchmaking/profile_18.png&quot; alt=&quot;img_18&quot; /&gt;
+&lt;img src=&quot;/assets/images/generative_matchmaking/profile_19.png&quot; alt=&quot;img_19&quot; /&gt;
+&lt;img src=&quot;/assets/images/generative_matchmaking/profile_20.png&quot; alt=&quot;img_20&quot; /&gt;
+&lt;img src=&quot;/assets/images/generative_matchmaking/profile_21.png&quot; alt=&quot;img_21&quot; /&gt;
+&lt;img src=&quot;/assets/images/generative_matchmaking/profile_22.png&quot; alt=&quot;img_22&quot; /&gt;
+&lt;img src=&quot;/assets/images/generative_matchmaking/profile_23.png&quot; alt=&quot;img_23&quot; /&gt;
+&lt;img src=&quot;/assets/images/generative_matchmaking/profile_24.png&quot; alt=&quot;img_24&quot; /&gt;
+&lt;img src=&quot;/assets/images/generative_matchmaking/profile_25.png&quot; alt=&quot;img_25&quot; /&gt;
+&lt;img src=&quot;/assets/images/generative_matchmaking/profile_26.png&quot; alt=&quot;img_26&quot; /&gt;
+&lt;img src=&quot;/assets/images/generative_matchmaking/profile_27.png&quot; alt=&quot;img_27&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;matchmaking&quot;&gt;Matchmaking&lt;/h2&gt;
+
+&lt;p&gt;// TODO&lt;/p&gt;
+
+&lt;h2 id=&quot;repository&quot;&gt;Repository&lt;/h2&gt;
+
+&lt;p&gt;The implementation is available in a public 
+Github &lt;a href=&quot;https://github.com/daniel-deychakiwsky/generative-matchmaking&quot;&gt;repository&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h1 id=&quot;literature-review&quot;&gt;Literature Review&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://arxiv.org/pdf/2203.02155.pdf&quot;&gt;https://arxiv.org/pdf/2203.02155.pdf&lt;/a&gt; (OpenAI)&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://arxiv.org/pdf/2304.03442.pdf&quot;&gt;https://arxiv.org/pdf/2304.03442.pdf&lt;/a&gt; (Stanford)&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://arxiv.org/pdf/2306.02707.pdf&quot;&gt;https://arxiv.org/pdf/2306.02707.pdf&lt;/a&gt; (Microsoft)&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://arxiv.org/pdf/2305.10601.pdf&quot;&gt;https://arxiv.org/pdf/2305.10601.pdf&lt;/a&gt; (Google)&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://arxiv.org/pdf/2201.11903.pdf&quot;&gt;https://arxiv.org/pdf/2201.11903.pdf&lt;/a&gt; (Google)&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://arxiv.org/pdf/2308.10053.pdf&quot;&gt;https://arxiv.org/pdf/2308.10053.pdf&lt;/a&gt; (Netflix)&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://arxiv.org/pdf/2305.08845.pdf&quot;&gt;https://arxiv.org/pdf/2305.08845.pdf&lt;/a&gt; (Netflix)&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://arxiv.org/pdf/2305.07622.pdf&quot;&gt;https://arxiv.org/pdf/2305.07622.pdf&lt;/a&gt; (Amazon)&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://arxiv.org/pdf/2005.11401v4.pdf&quot;&gt;https://arxiv.org/pdf/2005.11401v4.pdf&lt;/a&gt; (Meta)&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://arxiv.org/pdf/2303.11366.pdf&quot;&gt;https://arxiv.org/pdf/2303.11366.pdf&lt;/a&gt; (MIT)&lt;/li&gt;
+&lt;/ul&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="machine-learning" /><category term="artificial-intelligence" /><summary type="html">This post details an experimental simulation of an AI-driven matchmaking system that combines retrieval-augmented generation with semantic search. It aims to generate user-to-user compatibility recommendations for a dating service by leveraging the capabilities of OpenAI’s GPT-4, OpenAI’s DALL·E-2, and Chroma, an AI-native open-source vector database.</summary></entry><entry><title type="html">Open Foundation AI Models - Meta’s Llama2-7B-Chat</title><link href="http://localhost:4000/open-foundation-ai-models-metas-llama-2-7b-chat" rel="alternate" type="text/html" title="Open Foundation AI Models - Meta’s Llama2-7B-Chat" /><published>2023-08-13T00:00:00-05:00</published><updated>2023-08-13T00:00:00-05:00</updated><id>http://localhost:4000/open-foundation-ai-models-metas-llama-2-7b-chat</id><content type="html" xml:base="http://localhost:4000/open-foundation-ai-models-metas-llama-2-7b-chat">&lt;p&gt;This post shares practical learnings
 from experimenting with Meta’s
 Llama-2-7B-Chat LLM via HuggingFace APIs
 quantized to FP16 on a 16 CPU CORE, 60GB CPU MEM, and 
@@ -453,7 +755,7 @@ aligning the model to human preferences. The paper outlines the details. Two rew
 There’s a new ground-breaking AI research paper shaking
 things up on a weekly basis. I’m most excited for world models and audio / video modality 
 diffusion based generation evolution. Commercially open AI systems are growing in number 
-and useful tools are being built on top of them that are transforming humanity.&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="machine-learning" /><category term="artificial-intelligence" /><summary type="html">This post shares practical learnings from experimenting with Meta’s Llama-2-7B-Chat LLM via HuggingFace APIs quantized to FP16 on a 16 CPU CORE, 60GB CPU MEM, and 16GB GPU MEM hardware instance.</summary></entry><entry><title type="html">Matrix Factorization Sparsity</title><link href="/matrix-factorization-sparsity" rel="alternate" type="text/html" title="Matrix Factorization Sparsity" /><published>2022-01-02T00:00:00-06:00</published><updated>2022-01-02T00:00:00-06:00</updated><id>/matrix-factorization-sparsity</id><content type="html" xml:base="/matrix-factorization-sparsity">&lt;p&gt;This post explores how implicit user-item interaction sparsity poses
+and useful tools are being built on top of them that are transforming humanity.&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="machine-learning" /><category term="artificial-intelligence" /><summary type="html">This post shares practical learnings from experimenting with Meta’s Llama-2-7B-Chat LLM via HuggingFace APIs quantized to FP16 on a 16 CPU CORE, 60GB CPU MEM, and 16GB GPU MEM hardware instance.</summary></entry><entry><title type="html">Matrix Factorization Sparsity</title><link href="http://localhost:4000/matrix-factorization-sparsity" rel="alternate" type="text/html" title="Matrix Factorization Sparsity" /><published>2022-01-02T00:00:00-06:00</published><updated>2022-01-02T00:00:00-06:00</updated><id>http://localhost:4000/matrix-factorization-sparsity</id><content type="html" xml:base="http://localhost:4000/matrix-factorization-sparsity">&lt;p&gt;This post explores how implicit user-item interaction sparsity poses
 a challenge for matrix factorization (model-based) collaborative filtering
 recommender systems.&lt;/p&gt;
 
@@ -694,7 +996,7 @@ matrix that we synthesized in the previous step.&lt;/p&gt;
 
 &lt;p&gt;Initially, the model doesn’t perform as well when the matrix is dense because
 the shuffle operation decorrelates the data a priori.
-The remaining trend is similar to the previous but with an increase in overall variability.&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="machine-learning" /><category term="artificial-intelligence" /><summary type="html">This post explores how implicit user-item interaction sparsity poses a challenge for matrix factorization (model-based) collaborative filtering recommender systems.</summary></entry><entry><title type="html">Low Energy Audio Segments</title><link href="/low-energy-audio-segments" rel="alternate" type="text/html" title="Low Energy Audio Segments" /><published>2021-03-21T00:00:00-05:00</published><updated>2021-03-21T00:00:00-05:00</updated><id>/low-energy-audio-segments</id><content type="html" xml:base="/low-energy-audio-segments">&lt;p&gt;This post outlines a simple algorithm for
+The remaining trend is similar to the previous but with an increase in overall variability.&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="machine-learning" /><category term="artificial-intelligence" /><summary type="html">This post explores how implicit user-item interaction sparsity poses a challenge for matrix factorization (model-based) collaborative filtering recommender systems.</summary></entry><entry><title type="html">Low Energy Audio Segments</title><link href="http://localhost:4000/low-energy-audio-segments" rel="alternate" type="text/html" title="Low Energy Audio Segments" /><published>2021-03-21T00:00:00-05:00</published><updated>2021-03-21T00:00:00-05:00</updated><id>http://localhost:4000/low-energy-audio-segments</id><content type="html" xml:base="http://localhost:4000/low-energy-audio-segments">&lt;p&gt;This post outlines a simple algorithm for
 identifying low energy audio segments.
 This post assumes basic knowledge of digital 
 signal processing (DSP).&lt;/p&gt;
@@ -811,7 +1113,7 @@ to hand-engineer additional information, e.g., human &lt;a href=&quot;https://en
 In other cases, manually engineering features will have less-of, if any effect at all
 (think background music). I believe the more robust solutions will result from applied 
 ML / AI / RL algorithms that are able to generalize to a broader spectrum of audio, 
-of course, requiring larger amounts quality data.&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="digital-signal-processing" /><summary type="html">This post outlines a simple algorithm for identifying low energy audio segments. This post assumes basic knowledge of digital signal processing (DSP).</summary></entry><entry><title type="html">Ordinary Least Squares is Orthogonal Projection</title><link href="/linear-regression-is-orthogonal-projection" rel="alternate" type="text/html" title="Ordinary Least Squares is Orthogonal Projection" /><published>2020-12-08T00:00:00-06:00</published><updated>2020-12-08T00:00:00-06:00</updated><id>/linear-regression-is-orthogonal-projection</id><content type="html" xml:base="/linear-regression-is-orthogonal-projection">&lt;p&gt;This post visualizes the equivalence of two perspectives
+of course, requiring larger amounts quality data.&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="digital-signal-processing" /><summary type="html">This post outlines a simple algorithm for identifying low energy audio segments. This post assumes basic knowledge of digital signal processing (DSP).</summary></entry><entry><title type="html">Ordinary Least Squares is Orthogonal Projection</title><link href="http://localhost:4000/linear-regression-is-orthogonal-projection" rel="alternate" type="text/html" title="Ordinary Least Squares is Orthogonal Projection" /><published>2020-12-08T00:00:00-06:00</published><updated>2020-12-08T00:00:00-06:00</updated><id>http://localhost:4000/linear-regression-is-orthogonal-projection</id><content type="html" xml:base="http://localhost:4000/linear-regression-is-orthogonal-projection">&lt;p&gt;This post visualizes the equivalence of two perspectives
 on estimating the unknown parameters in a simple linear
 regression model, ordinary least squares (OLS) and
 orthogonal projection (OP).&lt;/p&gt;
@@ -1088,7 +1390,7 @@ elegant visualization.&lt;/p&gt;
 
 &lt;p&gt;I built the visualizations for this post with &lt;a href=&quot;https://www.desmos.com/&quot;&gt;Desmos&lt;/a&gt;,
 an incredible graphing web application that enables
-users to visualize, study, and learn mathematics.&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="machine-learning" /><category term="artificial-intelligence" /><summary type="html">This post visualizes the equivalence of two perspectives on estimating the unknown parameters in a simple linear regression model, ordinary least squares (OLS) and orthogonal projection (OP).</summary></entry><entry><title type="html">Normalized Cross-Entropy</title><link href="/normalized-cross-entropy" rel="alternate" type="text/html" title="Normalized Cross-Entropy" /><published>2020-05-29T00:00:00-05:00</published><updated>2020-05-29T00:00:00-05:00</updated><id>/normalized-cross-entropy</id><content type="html" xml:base="/normalized-cross-entropy">&lt;p&gt;This post explores a normalized version of binary cross-entropy loss in attempt to 
+users to visualize, study, and learn mathematics.&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="machine-learning" /><category term="artificial-intelligence" /><summary type="html">This post visualizes the equivalence of two perspectives on estimating the unknown parameters in a simple linear regression model, ordinary least squares (OLS) and orthogonal projection (OP).</summary></entry><entry><title type="html">Normalized Cross-Entropy</title><link href="http://localhost:4000/normalized-cross-entropy" rel="alternate" type="text/html" title="Normalized Cross-Entropy" /><published>2020-05-29T00:00:00-05:00</published><updated>2020-05-29T00:00:00-05:00</updated><id>http://localhost:4000/normalized-cross-entropy</id><content type="html" xml:base="http://localhost:4000/normalized-cross-entropy">&lt;p&gt;This post explores a normalized version of binary cross-entropy loss in attempt to 
 remove the effect of the prior (class imbalance within the dataset) on the resulting value.&lt;/p&gt;
 
 &lt;ul id=&quot;markdown-toc&quot;&gt;
@@ -1837,7 +2139,7 @@ offers support for three-dimensional rendering.&lt;/p&gt;
 
 &lt;p&gt;[13] https://github.com/daniel-deychakiwsky/notebooks/blob/master/experiments/cross_entropy_log_likelihood.ipynb&lt;/p&gt;
 
-&lt;p&gt;[14] https://github.com/daniel-deychakiwsky/notebooks/blob/master/simulations/prior_cross_entropy_convergence_sim.ipynb&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="machine-learning" /><category term="artificial-intelligence" /><summary type="html">This post explores a normalized version of binary cross-entropy loss in attempt to remove the effect of the prior (class imbalance within the dataset) on the resulting value.</summary></entry><entry><title type="html">About Me</title><link href="/about-me" rel="alternate" type="text/html" title="About Me" /><published>2020-05-28T00:00:00-05:00</published><updated>2020-05-28T00:00:00-05:00</updated><id>/about-me</id><content type="html" xml:base="/about-me">&lt;p&gt;This is my first post. Here’s a bit about who I am and why I started this blog :).&lt;/p&gt;
+&lt;p&gt;[14] https://github.com/daniel-deychakiwsky/notebooks/blob/master/simulations/prior_cross_entropy_convergence_sim.ipynb&lt;/p&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="machine-learning" /><category term="artificial-intelligence" /><summary type="html">This post explores a normalized version of binary cross-entropy loss in attempt to remove the effect of the prior (class imbalance within the dataset) on the resulting value.</summary></entry><entry><title type="html">About Me</title><link href="http://localhost:4000/about-me" rel="alternate" type="text/html" title="About Me" /><published>2020-05-28T00:00:00-05:00</published><updated>2020-05-28T00:00:00-05:00</updated><id>http://localhost:4000/about-me</id><content type="html" xml:base="http://localhost:4000/about-me">&lt;p&gt;This is my first post. Here’s a bit about who I am and why I started this blog :).&lt;/p&gt;
 
 &lt;ul id=&quot;markdown-toc&quot;&gt;
   &lt;li&gt;&lt;a href=&quot;#who-am-i&quot; id=&quot;markdown-toc-who-am-i&quot;&gt;Who am I?&lt;/a&gt;&lt;/li&gt;
