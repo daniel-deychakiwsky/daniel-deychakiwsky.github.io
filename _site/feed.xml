@@ -1,9 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2023-09-13T20:05:51-05:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Deylemma</title><subtitle>An Engineering Blog
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2023-09-14T00:41:06-05:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Deylemma</title><subtitle>An Engineering Blog
 </subtitle><author><name>Daniel Deychakiwsky</name><email>d.deychak@gmail.com</email></author><entry><title type="html">Generative Matchmaking</title><link href="http://localhost:4000/generative-matchmaking" rel="alternate" type="text/html" title="Generative Matchmaking" /><published>2023-09-09T00:00:00-05:00</published><updated>2023-09-09T00:00:00-05:00</updated><id>http://localhost:4000/generative-matchmaking</id><content type="html" xml:base="http://localhost:4000/generative-matchmaking">&lt;p&gt;This post details an AI-based matchmaking simulation
 leveraging vector based semantic search for user 
 compatibility recommendations and retrieval-augmented 
-generation for co-personalized first-date itinerary 
-planning using OpenAI’s GPT-4, OpenAI’s DALL·E-2, and Chroma, 
+generation for co-personalized first-date ideation 
+using OpenAI’s GPT-4, OpenAI’s DALL·E-2, and Chroma, 
 an AI-native open-source vector database.&lt;/p&gt;
 
 &lt;ul id=&quot;markdown-toc&quot;&gt;
@@ -24,11 +24,12 @@ an AI-native open-source vector database.&lt;/p&gt;
             &lt;/ul&gt;
           &lt;/li&gt;
           &lt;li&gt;&lt;a href=&quot;#visualizing-matches&quot; id=&quot;markdown-toc-visualizing-matches&quot;&gt;Visualizing Matches&lt;/a&gt;&lt;/li&gt;
-          &lt;li&gt;&lt;a href=&quot;#planning-dates&quot; id=&quot;markdown-toc-planning-dates&quot;&gt;Planning Dates&lt;/a&gt;&lt;/li&gt;
         &lt;/ul&gt;
       &lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;#date-ideas&quot; id=&quot;markdown-toc-date-ideas&quot;&gt;Date Ideas&lt;/a&gt;&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;#cost&quot; id=&quot;markdown-toc-cost&quot;&gt;Cost&lt;/a&gt;&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;#literature-review&quot; id=&quot;markdown-toc-literature-review&quot;&gt;Literature Review&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
@@ -97,7 +98,8 @@ across all users.&lt;/p&gt;
 produced a structured JSON response based on our dating profile &lt;a href=&quot;https://github.com/daniel-deychakiwsky/generative-matchmaking/blob/master/src/generative_matchmaking/llm/oai_function_schemas.py&quot;&gt;schema&lt;/a&gt; where 
 we hardcoded the dating location to Los Angeles, California for all users. Note that
 although our schema is basic, it can be updated to include other pieces of static or dynamic
-information.&lt;/p&gt;
+information along with the concept of “dealbreakers” which effectively translates
+to a hard filter on specified partner preference attributes.&lt;/p&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;Developers can now describe functions to gpt-4-0613 and gpt-3.5-turbo-0613, 
@@ -340,14 +342,15 @@ document embeddings that can be used for a wide variety of tasks.
 This embedding function runs locally, downloading and caching the model files.
 We loaded every user’s &lt;strong&gt;profile summary&lt;/strong&gt;, as a document, 
 into a &lt;em&gt;collection&lt;/em&gt; and tagged each entry with the user’s gender
-and sexuality as &lt;em&gt;metadata&lt;/em&gt;.&lt;/p&gt;
+and sexuality as &lt;em&gt;metadata&lt;/em&gt; for which we manually enforce as
+“dealbreakers” or hard filters.&lt;/p&gt;
 
 &lt;h5 id=&quot;retrieval&quot;&gt;Retrieval&lt;/h5&gt;
 
 &lt;p&gt;Recall that we created two summaries for each user profile where we
 summarized, &lt;em&gt;mutually exclusively&lt;/em&gt;, each user’s profile and their partner preferences.
 To compute an initial set of candidates for a given user, we query the Chroma &lt;em&gt;collection&lt;/em&gt;
-with a given user’s &lt;strong&gt;partner preference summary&lt;/strong&gt; and specify a filter based 
+with a given user’s &lt;strong&gt;partner preference summary&lt;/strong&gt; and specify the hard filter based 
 on the user’s partner preference gender and sexuality &lt;em&gt;metadata&lt;/em&gt;. Under the hood, Chroma
 executes a similarity / distance lookup on the embedded query text and returns the
 closest &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;n_results&lt;/code&gt; or neighbors sorted by ascending distance. Choosing a distance metric and an
@@ -377,14 +380,20 @@ $\{C, B, P\}$ in diagram that follows.&lt;/p&gt;
 &lt;h3 id=&quot;visualizing-matches&quot;&gt;Visualizing Matches&lt;/h3&gt;
 
 &lt;p&gt;To visualize matches, we hacked together a user interface with directions
-outlined in the repo’s &lt;a href=&quot;https://github.com/daniel-deychakiwsky/generative-matchmaking/blob/master/README.md&quot;&gt;readme&lt;/a&gt;. A screenshot of Theodore Heath’s matches,
+on how to run it outlined in the repo’s &lt;a href=&quot;https://github.com/daniel-deychakiwsky/generative-matchmaking/blob/master/README.md&quot;&gt;readme&lt;/a&gt;. A screenshot of Theodore Heath’s matches,
 ranked from left-to-right, follows. The presence of an asterisk by the name of a 
-match indicates bidirectional connection or compatibility which are always
-ranked higher.&lt;/p&gt;
+match indicates bidirectional connection or compatibility.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/assets/images/generative_matchmaking/ui.png&quot; alt=&quot;screenshot&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;The most compatible match recommended for Theodore Heath is Olivia Windsor.
+Theodore and Olivia being marked as a compatible match means that
+Theodore’s &lt;strong&gt;partner preference summary&lt;/strong&gt; is semantically similar to Olivia’s
+&lt;strong&gt;profile summary&lt;/strong&gt; and that Olivia’s &lt;strong&gt;partner preference summary&lt;/strong&gt; is semantically
+similar to Theodore’s &lt;strong&gt;profile summary&lt;/strong&gt; within the embedding geometry.
+In other words, Theodore is looking for someone like Olivia and
+Olivia is looking for someone like Theodore based on the information
+available to us.
 We can inspect Theodore and Olivia’s profile and partner preference 
 summaries to qualitatively evaluate the match.&lt;/p&gt;
 
@@ -418,7 +427,7 @@ an undergraduate degree or higher. He is looking for a long-term relationship th
 
 &lt;p&gt;&lt;strong&gt;Olivia’s Profile Summary&lt;/strong&gt;&lt;/p&gt;
 
-&lt;div class=&quot;language-text highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;This user is a 28 year-old woman standing at 5'6\&quot;. She is a UX Designer working in the tech 
+&lt;div class=&quot;language-text highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;This user is a 28 year-old woman standing at 5'6&quot;. She is a UX Designer working in the tech 
 industry and is a graduate of Stanford University. She identifies as straight and is interested 
 in a monogamous, long-term relationship. Originally from New York, New York, she is currently 
 dating in Los Angeles, California. She fluently speaks English and Spanish, and identifies her 
@@ -442,7 +451,11 @@ His interests should include hiking, photography, and travelling. The user prefe
 has at least an undergraduate level of education.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;h3 id=&quot;planning-dates&quot;&gt;Planning Dates&lt;/h3&gt;
+&lt;h2 id=&quot;date-ideas&quot;&gt;Date Ideas&lt;/h2&gt;
+
+&lt;p&gt;// TODO&lt;/p&gt;
+
+&lt;h1 id=&quot;cost&quot;&gt;Cost&lt;/h1&gt;
 
 &lt;p&gt;// TODO&lt;/p&gt;
 
@@ -459,7 +472,7 @@ has at least an undergraduate level of education.
   &lt;li&gt;&lt;a href=&quot;https://arxiv.org/pdf/2305.07622.pdf&quot;&gt;https://arxiv.org/pdf/2305.07622.pdf&lt;/a&gt; (Amazon)&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;https://arxiv.org/pdf/2005.11401v4.pdf&quot;&gt;https://arxiv.org/pdf/2005.11401v4.pdf&lt;/a&gt; (Meta)&lt;/li&gt;
   &lt;li&gt;&lt;a href=&quot;https://arxiv.org/pdf/2303.11366.pdf&quot;&gt;https://arxiv.org/pdf/2303.11366.pdf&lt;/a&gt; (MIT)&lt;/li&gt;
-&lt;/ul&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="machine-learning" /><category term="artificial-intelligence" /><summary type="html">This post details an AI-based matchmaking simulation leveraging vector based semantic search for user compatibility recommendations and retrieval-augmented generation for co-personalized first-date itinerary planning using OpenAI’s GPT-4, OpenAI’s DALL·E-2, and Chroma, an AI-native open-source vector database.</summary></entry><entry><title type="html">Open Foundation AI Models - Meta’s Llama2-7B-Chat</title><link href="http://localhost:4000/open-foundation-ai-models-metas-llama-2-7b-chat" rel="alternate" type="text/html" title="Open Foundation AI Models - Meta’s Llama2-7B-Chat" /><published>2023-08-13T00:00:00-05:00</published><updated>2023-08-13T00:00:00-05:00</updated><id>http://localhost:4000/open-foundation-ai-models-metas-llama-2-7b-chat</id><content type="html" xml:base="http://localhost:4000/open-foundation-ai-models-metas-llama-2-7b-chat">&lt;p&gt;This post shares practical learnings
+&lt;/ul&gt;</content><author><name>Daniel Deychakiwsky</name></author><category term="machine-learning" /><category term="artificial-intelligence" /><summary type="html">This post details an AI-based matchmaking simulation leveraging vector based semantic search for user compatibility recommendations and retrieval-augmented generation for co-personalized first-date ideation using OpenAI’s GPT-4, OpenAI’s DALL·E-2, and Chroma, an AI-native open-source vector database.</summary></entry><entry><title type="html">Open Foundation AI Models - Meta’s Llama2-7B-Chat</title><link href="http://localhost:4000/open-foundation-ai-models-metas-llama-2-7b-chat" rel="alternate" type="text/html" title="Open Foundation AI Models - Meta’s Llama2-7B-Chat" /><published>2023-08-13T00:00:00-05:00</published><updated>2023-08-13T00:00:00-05:00</updated><id>http://localhost:4000/open-foundation-ai-models-metas-llama-2-7b-chat</id><content type="html" xml:base="http://localhost:4000/open-foundation-ai-models-metas-llama-2-7b-chat">&lt;p&gt;This post shares practical learnings
 from experimenting with Meta’s
 Llama-2-7B-Chat LLM via HuggingFace APIs
 quantized to FP16 on a 16 CPU CORE, 60GB CPU MEM, and 

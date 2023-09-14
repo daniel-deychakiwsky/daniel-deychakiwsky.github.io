@@ -11,8 +11,8 @@ permalink: /:title
 This post details an AI-based matchmaking simulation
 leveraging vector based semantic search for user 
 compatibility recommendations and retrieval-augmented 
-generation for co-personalized first-date itinerary 
-planning using OpenAI's GPT-4, OpenAI's DALL·E-2, and Chroma, 
+generation for co-personalized first-date ideation 
+using OpenAI's GPT-4, OpenAI's DALL·E-2, and Chroma, 
 an AI-native open-source vector database.
 
 * TOC
@@ -81,7 +81,8 @@ For the generation of the dating profile, we utilized OpenAI's function calling 
 produced a structured JSON response based on our dating profile [schema] where 
 we hardcoded the dating location to Los Angeles, California for all users. Note that
 although our schema is basic, it can be updated to include other pieces of static or dynamic
-information.
+information along with the concept of "dealbreakers" which effectively translates
+to a hard filter on specified partner preference attributes.
 
 > Developers can now describe functions to gpt-4-0613 and gpt-3.5-turbo-0613, 
 > and have the model intelligently choose to output a JSON object containing 
@@ -326,14 +327,15 @@ document embeddings that can be used for a wide variety of tasks.
 This embedding function runs locally, downloading and caching the model files.
 We loaded every user's **profile summary**, as a document, 
 into a _collection_ and tagged each entry with the user's gender
-and sexuality as _metadata_.
+and sexuality as _metadata_ for which we manually enforce as
+"dealbreakers" or hard filters.
 
 ##### Retrieval
 
 Recall that we created two summaries for each user profile where we
 summarized, _mutually exclusively_, each user's profile and their partner preferences.
 To compute an initial set of candidates for a given user, we query the Chroma _collection_
-with a given user's **partner preference summary** and specify a filter based 
+with a given user's **partner preference summary** and specify the hard filter based 
 on the user's partner preference gender and sexuality _metadata_. Under the hood, Chroma
 executes a similarity / distance lookup on the embedded query text and returns the
 closest `n_results` or neighbors sorted by ascending distance. Choosing a distance metric and an
@@ -363,14 +365,20 @@ $\\{C, B, P\\}$ in diagram that follows.
 ### Visualizing Matches
 
 To visualize matches, we hacked together a user interface with directions
-outlined in the repo's [readme]. A screenshot of Theodore Heath's matches,
+on how to run it outlined in the repo's [readme]. A screenshot of Theodore Heath's matches,
 ranked from left-to-right, follows. The presence of an asterisk by the name of a 
-match indicates bidirectional connection or compatibility which are always
-ranked higher.
+match indicates bidirectional connection or compatibility.
 
 ![screenshot]
 
 The most compatible match recommended for Theodore Heath is Olivia Windsor.
+Theodore and Olivia being marked as a compatible match means that
+Theodore's **partner preference summary** is semantically similar to Olivia's
+**profile summary** and that Olivia's **partner preference summary** is semantically
+similar to Theodore's **profile summary** within the embedding geometry.
+In other words, Theodore is looking for someone like Olivia and
+Olivia is looking for someone like Theodore based on the information
+available to us.
 We can inspect Theodore and Olivia's profile and partner preference 
 summaries to qualitatively evaluate the match.
 
@@ -432,7 +440,11 @@ His interests should include hiking, photography, and travelling. The user prefe
 has at least an undergraduate level of education.
 ```
 
-### Planning Dates
+## Date Ideas
+
+// TODO
+
+# Cost
 
 // TODO
 

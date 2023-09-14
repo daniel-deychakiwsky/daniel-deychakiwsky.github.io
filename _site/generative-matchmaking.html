@@ -9,8 +9,8 @@
 <meta property="og:title" content="Generative Matchmaking" />
 <meta name="author" content="Daniel Deychakiwsky" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="This post details an AI-based matchmaking simulation leveraging vector based semantic search for user compatibility recommendations and retrieval-augmented generation for co-personalized first-date itinerary planning using OpenAI’s GPT-4, OpenAI’s DALL·E-2, and Chroma, an AI-native open-source vector database." />
-<meta property="og:description" content="This post details an AI-based matchmaking simulation leveraging vector based semantic search for user compatibility recommendations and retrieval-augmented generation for co-personalized first-date itinerary planning using OpenAI’s GPT-4, OpenAI’s DALL·E-2, and Chroma, an AI-native open-source vector database." />
+<meta name="description" content="This post details an AI-based matchmaking simulation leveraging vector based semantic search for user compatibility recommendations and retrieval-augmented generation for co-personalized first-date ideation using OpenAI’s GPT-4, OpenAI’s DALL·E-2, and Chroma, an AI-native open-source vector database." />
+<meta property="og:description" content="This post details an AI-based matchmaking simulation leveraging vector based semantic search for user compatibility recommendations and retrieval-augmented generation for co-personalized first-date ideation using OpenAI’s GPT-4, OpenAI’s DALL·E-2, and Chroma, an AI-native open-source vector database." />
 <link rel="canonical" href="http://localhost:4000/generative-matchmaking" />
 <meta property="og:url" content="http://localhost:4000/generative-matchmaking" />
 <meta property="og:site_name" content="Deylemma" />
@@ -19,7 +19,7 @@
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="Generative Matchmaking" />
 <script type="application/ld+json">
-{"url":"http://localhost:4000/generative-matchmaking","headline":"Generative Matchmaking","dateModified":"2023-09-09T00:00:00-05:00","datePublished":"2023-09-09T00:00:00-05:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/generative-matchmaking"},"author":{"@type":"Person","name":"Daniel Deychakiwsky"},"description":"This post details an AI-based matchmaking simulation leveraging vector based semantic search for user compatibility recommendations and retrieval-augmented generation for co-personalized first-date itinerary planning using OpenAI’s GPT-4, OpenAI’s DALL·E-2, and Chroma, an AI-native open-source vector database.","@type":"BlogPosting","@context":"https://schema.org"}</script>
+{"url":"http://localhost:4000/generative-matchmaking","headline":"Generative Matchmaking","dateModified":"2023-09-09T00:00:00-05:00","datePublished":"2023-09-09T00:00:00-05:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/generative-matchmaking"},"author":{"@type":"Person","name":"Daniel Deychakiwsky"},"description":"This post details an AI-based matchmaking simulation leveraging vector based semantic search for user compatibility recommendations and retrieval-augmented generation for co-personalized first-date ideation using OpenAI’s GPT-4, OpenAI’s DALL·E-2, and Chroma, an AI-native open-source vector database.","@type":"BlogPosting","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Deylemma" />
 </head>
@@ -44,8 +44,8 @@
     <p>This post details an AI-based matchmaking simulation
 leveraging vector based semantic search for user 
 compatibility recommendations and retrieval-augmented 
-generation for co-personalized first-date itinerary 
-planning using OpenAI’s GPT-4, OpenAI’s DALL·E-2, and Chroma, 
+generation for co-personalized first-date ideation 
+using OpenAI’s GPT-4, OpenAI’s DALL·E-2, and Chroma, 
 an AI-native open-source vector database.</p>
 
 <ul id="markdown-toc">
@@ -66,11 +66,12 @@ an AI-native open-source vector database.</p>
             </ul>
           </li>
           <li><a href="#visualizing-matches" id="markdown-toc-visualizing-matches">Visualizing Matches</a></li>
-          <li><a href="#planning-dates" id="markdown-toc-planning-dates">Planning Dates</a></li>
         </ul>
       </li>
+      <li><a href="#date-ideas" id="markdown-toc-date-ideas">Date Ideas</a></li>
     </ul>
   </li>
+  <li><a href="#cost" id="markdown-toc-cost">Cost</a></li>
   <li><a href="#literature-review" id="markdown-toc-literature-review">Literature Review</a></li>
 </ul>
 
@@ -139,7 +140,8 @@ across all users.</p>
 produced a structured JSON response based on our dating profile <a href="https://github.com/daniel-deychakiwsky/generative-matchmaking/blob/master/src/generative_matchmaking/llm/oai_function_schemas.py">schema</a> where 
 we hardcoded the dating location to Los Angeles, California for all users. Note that
 although our schema is basic, it can be updated to include other pieces of static or dynamic
-information.</p>
+information along with the concept of “dealbreakers” which effectively translates
+to a hard filter on specified partner preference attributes.</p>
 
 <blockquote>
   <p>Developers can now describe functions to gpt-4-0613 and gpt-3.5-turbo-0613, 
@@ -382,14 +384,15 @@ document embeddings that can be used for a wide variety of tasks.
 This embedding function runs locally, downloading and caching the model files.
 We loaded every user’s <strong>profile summary</strong>, as a document, 
 into a <em>collection</em> and tagged each entry with the user’s gender
-and sexuality as <em>metadata</em>.</p>
+and sexuality as <em>metadata</em> for which we manually enforce as
+“dealbreakers” or hard filters.</p>
 
 <h5 id="retrieval">Retrieval</h5>
 
 <p>Recall that we created two summaries for each user profile where we
 summarized, <em>mutually exclusively</em>, each user’s profile and their partner preferences.
 To compute an initial set of candidates for a given user, we query the Chroma <em>collection</em>
-with a given user’s <strong>partner preference summary</strong> and specify a filter based 
+with a given user’s <strong>partner preference summary</strong> and specify the hard filter based 
 on the user’s partner preference gender and sexuality <em>metadata</em>. Under the hood, Chroma
 executes a similarity / distance lookup on the embedded query text and returns the
 closest <code class="language-plaintext highlighter-rouge">n_results</code> or neighbors sorted by ascending distance. Choosing a distance metric and an
@@ -419,14 +422,20 @@ $\{C, B, P\}$ in diagram that follows.</p>
 <h3 id="visualizing-matches">Visualizing Matches</h3>
 
 <p>To visualize matches, we hacked together a user interface with directions
-outlined in the repo’s <a href="https://github.com/daniel-deychakiwsky/generative-matchmaking/blob/master/README.md">readme</a>. A screenshot of Theodore Heath’s matches,
+on how to run it outlined in the repo’s <a href="https://github.com/daniel-deychakiwsky/generative-matchmaking/blob/master/README.md">readme</a>. A screenshot of Theodore Heath’s matches,
 ranked from left-to-right, follows. The presence of an asterisk by the name of a 
-match indicates bidirectional connection or compatibility which are always
-ranked higher.</p>
+match indicates bidirectional connection or compatibility.</p>
 
 <p><img src="/assets/images/generative_matchmaking/ui.png" alt="screenshot" /></p>
 
 <p>The most compatible match recommended for Theodore Heath is Olivia Windsor.
+Theodore and Olivia being marked as a compatible match means that
+Theodore’s <strong>partner preference summary</strong> is semantically similar to Olivia’s
+<strong>profile summary</strong> and that Olivia’s <strong>partner preference summary</strong> is semantically
+similar to Theodore’s <strong>profile summary</strong> within the embedding geometry.
+In other words, Theodore is looking for someone like Olivia and
+Olivia is looking for someone like Theodore based on the information
+available to us.
 We can inspect Theodore and Olivia’s profile and partner preference 
 summaries to qualitatively evaluate the match.</p>
 
@@ -460,7 +469,7 @@ an undergraduate degree or higher. He is looking for a long-term relationship th
 
 <p><strong>Olivia’s Profile Summary</strong></p>
 
-<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>This user is a 28 year-old woman standing at 5'6\". She is a UX Designer working in the tech 
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>This user is a 28 year-old woman standing at 5'6". She is a UX Designer working in the tech 
 industry and is a graduate of Stanford University. She identifies as straight and is interested 
 in a monogamous, long-term relationship. Originally from New York, New York, she is currently 
 dating in Los Angeles, California. She fluently speaks English and Spanish, and identifies her 
@@ -484,7 +493,11 @@ His interests should include hiking, photography, and travelling. The user prefe
 has at least an undergraduate level of education.
 </code></pre></div></div>
 
-<h3 id="planning-dates">Planning Dates</h3>
+<h2 id="date-ideas">Date Ideas</h2>
+
+<p>// TODO</p>
+
+<h1 id="cost">Cost</h1>
 
 <p>// TODO</p>
 
