@@ -407,7 +407,7 @@ an undergraduate degree or higher. He is looking for a long-term relationship th
 **Olivia's Profile Summary**
 
 ```text
-This user is a 28 year-old woman standing at 5'6\". She is a UX Designer working in the tech 
+This user is a 28 year-old woman standing at 5'6". She is a UX Designer working in the tech 
 industry and is a graduate of Stanford University. She identifies as straight and is interested 
 in a monogamous, long-term relationship. Originally from New York, New York, she is currently 
 dating in Los Angeles, California. She fluently speaks English and Spanish, and identifies her 
