@@ -8,12 +8,11 @@ mathjax: true
 permalink: /:title
 ---
 
-This post details an experimental simulation of an AI-driven 
-matchmaking system that combines retrieval-augmented 
-generation with semantic search. It aims to 
-generate user-to-user compatibility recommendations 
-for a dating service by leveraging the capabilities 
-of OpenAI's GPT-4, OpenAI's DALL·E-2, and Chroma, 
+This post details an AI-based matchmaking simulation
+leveraging vector based semantic search for user 
+compatibility recommendations and retrieval-augmented 
+generation for co-personalized first-date itinerary 
+planning using OpenAI's GPT-4, OpenAI's DALL·E-2, and Chroma, 
 an AI-native open-source vector database.
 
 * TOC
@@ -23,8 +22,8 @@ an AI-native open-source vector database.
 
 Popular dating services have converged to an experience
 where users must swipe, match, chat, and plan to meet. 
-For many users, this results in too much time spent swiping 
-followed by repetitive small talk.
+For many users, this results in too much time spent
+repeatedly swiping, small talking, and planning.  
 
 > I'm looking for a connection where I can simply ask, 
 > "Would you like to meet up for drinks later?" 
@@ -35,21 +34,27 @@ followed by repetitive small talk.
 > -- <cite>I'm a 27-year-old female.</cite>
 
 Inspired by the emergence of human-like behavior of modern AI, 
-we present an innovative experience where each user is paired 
-with a personalized AI matchmaking assistant where 
-the user may occasionally reinforce their assistant with 
-feedback for alignment to any changes in preference. These 
-assistants are designed to engage with one another, with the goal of 
-creating harmonious matches and carefully curated date plans. 
-We posit that this approach will eliminate tedious small talk 
-and minimize swipe time.
+our vision is to present an experience where each user is paired 
+with a personalized AI matchmaking assistant that 
+can be reinforced with human feedback to align to changes in user preference
+while working behind the scenes on behalf of the user 
+by engaging with other user assistants to 
+create harmonious matches so that users can spend less time searching
+and more time meeting their people. We posit that this approach would 
+minimize swipe time, eliminate small talk, and assist in planning.
+The remainder of this post details a simulated subset of functionality
+that plugs into the overall effort.
 
 🧑 → 🤖💬 → ❤️ ← 💬🤖 ← 🧑
 
 # Simulation
 
-The implementation is available in a public
+The simulated implementation is made available in a public 
 Github [repository](https://github.com/daniel-deychakiwsky/generative-matchmaking).
+As a proof-of-concept we generated
+synthetic dating user profiles, pictures, 
+and produced matches for each of them, all of which
+are stored in the [profiles] directory.
 
 ## Generating Synthetic Users
 
@@ -61,20 +66,22 @@ completion endpoint with the following configuration settings: `model="gpt-4-061
 profiles in a single inference pass, allowing the model to consider previously generated 
 profiles for uniqueness and diversity, was hindered by output token limit constraints. 
 To address this, we adopted an alternative approach: we chatted with the model
-to generate a collection of names and subsequently instructed model sample from this pool.
+to generate a collection of names and subsequently instructed the model to sample from this pool
+as a seed for profile generation.
 
 Our starting point was the default system prompt: `"You are a helpful assistant."`. 
 Within this conversation, we provided the instruction: `"Generate 10 unique first and 
 last names, ensuring a balanced diversity."` Following this, we issued a follow-up directive: 
 `"Select a name randomly and create a dating profile for the chosen name."`. It's worth noting 
-that the sampling process may not have been uniform over the names due to the positional 
-biases inherent in language models. Nevertheless, this strategy proved effective.
+that the sampling process suffers from positional biases inherent in language models. 
+Nevertheless, this strategy, at he very least, improved generation of a diverse set of names
+across all users.
 
 For the generation of the dating profile, we utilized OpenAI's function calling API, which 
 produced a structured JSON response based on our dating profile [schema] where 
 we hardcoded the dating location to Los Angeles, California for all users. Note that
-although our schema is basic, it can be updated to include other pieces of information
-about a user or the user's preferences.
+although our schema is basic, it can be updated to include other pieces of static or dynamic
+information.
 
 > Developers can now describe functions to gpt-4-0613 and gpt-3.5-turbo-0613, 
 > and have the model intelligently choose to output a JSON object containing 
@@ -88,12 +95,12 @@ about a user or the user's preferences.
 Once the dating profile was generated we instructed to
 `"Summarize the user's dating profile. 
 Include all fields other than partner_preferences. Output a concise paragraph."`
-and finally instructed to 
+and finally to 
 `"Summarize the user's dating partner_preferences. 
 Include partner_preferences fields only and nothing else. Output a concise paragraph."`
-We did not include the user's name in the summarization instructions to maintain generality
+We did not include the user's name in the summarization instruction context to maintain generality
 across users.
-An example synthetic dating profile follows (output [profiles] directory).
+An example synthetic dating profile follows.
 
 ```json
 {
@@ -227,15 +234,15 @@ Islander, South Asian, Southeast Asian to White Caucasian. She prefers partners 
 as Liberal or are not political. The ideal match for her would work in the Technology, Finance, 
 or Consulting industries. The primary language should be English. In terms of values, she looks 
 for Responsibility, Family, Ambition, and shares interests in cooking, hiking and traveling. 
-Potential partners should have at least an undergraduate level of education
+Potential partners should have at least an undergraduate level of education.
 ```
 
 ### Images
 
 We generated a user profile picture for every user by invoking OpenAI's DALL·E-2 
 text-to-image model. We constructed the prompt by interpolating the following
-template with several fields from the user dating profile. Originally, we also used
-first and last name as two of the fields but OpenAI, rightly-so, flagged it as unsafe,
+template with several fields from the user dating profile schema. Originally, we included
+the first and last name but OpenAI, rightly-so, flagged it as unsafe,
 so we removed it. Note that the prompt for this model must stay under a shorter
 character limit.
 
@@ -252,7 +259,6 @@ prompt: str = (
 )
 ```
 
-All the generated profile pictures can be inspected in the output [profiles] directory.
 Here are 28 examples, the overall quality varies.
 
 ![img_0]
@@ -290,70 +296,143 @@ Here are 28 examples, the overall quality varies.
 
 Mainstream dating apps train hybrid recommender systems that model content-based
 and collaborative filtering effects based on a robust set of features
-and explicit / implicit user interactions, e.g., swiping, time-on-page, etc.
-Researchers have shown that LLMs generalize as zero-shot shot recommenders but,
-through ablation studies, that they're primarily content-based.
-Since our study lacked human feedback, we framed matchmaking as a LLM zero-shot
-content-based recommender powered by vector search and a bit of graph theory.
+including explicit / implicit user interactions, e.g., swiping, time-on-page, etc.
+Modern recommender systems are implemented as a conglomerate of
+individual components that often treat retrieval and ranking as separate tasks.
+
+Researchers have shown that LLMs generalize as zero-shot recommenders but,
+through ablation studies, found that they're primarily content-based
+and that they struggle with non-trivial ranking tasks, 
+likely connected to their inherent positional bias.
+
+Since our study lacked human feedback to being with, we experimented with
+a prompt based zero-shot retrieval mechanism but realized this approach
+would not scale effectively due to context-window limits. Instead,
+we implemented retrieval as semantic vector search. To rank the retrieved 
+output, we experimented with prompt engineering the ranking task but 
+the results clearly suffered from artifacts of positional bias. 
+Although bootstrapping the ranking task alleviated some concern 
+by reducing variance and thereby stabilizing rankings, 
+the results did not suffice, so we chose to implement 
+a graph inspired ranking heuristic.
 
 #### Chroma Vector Database
 
-[Chroma] is an AI-native open-source vector database.
-We spun up a local and persistent version. By default, 
+We spun up a local and persistent version of [Chroma], 
+an AI-native open-source vector database. By default, 
 Chroma uses the Sentence Transformers `all-MiniLM-L6-v2` 
 model to create embeddings. This embedding model can create sentence and 
 document embeddings that can be used for a wide variety of tasks. 
 This embedding function runs locally, downloading and caching the model files.
 We loaded every user's **profile summary**, as a document, 
-into a Chroma _collection_ and tagged each entry with two pieces
-of metadata, the user's gender and sexuality.
+into a _collection_ and tagged each entry with the user's gender
+and sexuality as _metadata_.
 
 ##### Retrieval
 
-Recall that we created two summaries for each user profile.
-We summarized, _mutually exclusively_, each user's profile and their partner preferences.
-To compute a set of candidates for a given user, we query the Chroma collection
-with the user's **partner preference summary** and specify a filter based 
-on the user's partner preference gender and sexuality. Under the hood, Chroma
+Recall that we created two summaries for each user profile where we
+summarized, _mutually exclusively_, each user's profile and their partner preferences.
+To compute an initial set of candidates for a given user, we query the Chroma _collection_
+with a given user's **partner preference summary** and specify a filter based 
+on the user's partner preference gender and sexuality _metadata_. Under the hood, Chroma
 executes a similarity / distance lookup on the embedded query text and returns the
-closest `n_results` sorted by ascending distance. Choosing an appropriate value 
-is a hyperparameter which can be tuned to the use case. We set it to 25.
+closest `n_results` or neighbors sorted by ascending distance. Choosing a distance metric and an
+appropriate value for the number of neighbors are hyperparameters which can be tuned 
+to the use case. We configured Chroma to use _cosine_ distance and return the 25 closest 
+neighbors.
 
 ##### Ranking
 
-Researchers found that LLMs struggle with non-trivial 
-ranking tasks which may be connected to their inherent positional 
-bias. While bootstrapping the ranking task is reported to aid in 
-reducing variance and stabilizing rankings, we chose to implement 
-a graph inspired heuristic leveraging vector search as observing
-subpar results when prompting to rank. 
-
-The retrieved set of user profiles from a given query user's partner preferences can 
-naively be surfaced as candidate matches for human feedback but some of those
-candidates may be better matches than others. Borrowing from graph theory, we define 
-users as nodes and directed weighted edges as affinity 
-between them. We build the graph by adding retrieval-distance weighted edges  
-for every user-candidate pair of nodes.
+The retrieved set of candidate user profiles for a given user can 
+naively be surfaced as matches for human feedback but some of those
+candidates may be better matches than others. Borrowing from graph theory, we defined
+users as nodes and directed weighted edges as match-affinity 
+between them. We built the graph by adding retrieval-distance 
+weighted edges for every user-candidate pair of nodes connecting
+a query user to that user's retrieved candidate set.
 
 We defined compatibility as a bidirectional connection where a retrieved 
 candidate user's retrieved set of candidates includes the query user. 
 These candidates, that point back to query user, are ranked higher than those that don't. 
 This can be thought of as one level of breadth-first search.
-To illustrate, user M is compatible with the ordered set of users C, B, and P 
-in diagram that follows.
+To illustrate, user $M$ is compatible with the ordered set of users 
+$\\{C, B, P\\}$ in diagram that follows.
 
 ![graph]
 
 ### Visualizing Matches
 
-Computed matches for all users can be inspected in the output [profiles] directory
-but to make them easier to visualize, we hacked together a user interface with directions
-outlined in the repo's [readme]. A screenshot follows. The asterisks by the names 
-of the matches indicate compatibility.
+To visualize matches, we hacked together a user interface with directions
+outlined in the repo's [readme]. A screenshot of Theodore Heath's matches,
+ranked from left-to-right, follows. The presence of an asterisk by the name of a 
+match indicates bidirectional connection or compatibility which are always
+ranked higher.
 
 ![screenshot]
 
-### Date Itineraries
+The most compatible match recommended for Theodore Heath is Olivia Windsor.
+We can inspect Theodore and Olivia's profile and partner preference 
+summaries to qualitatively evaluate the match.
+
+**Theodore Profile Summary**
+
+```text
+This user is a 29-year-old Software Engineer in the Technology industry based in Los Angeles, 
+California, but originally from San Francisco. He stands 6 feet tall and is a graduate from 
+the California State University. He identifies as a straight white Caucasian man who uses 
+the pronouns He/Him/His, with agnostic religious beliefs, and a moderate political stance. 
+He values honesty, humor, and intelligence and enjoys outdoor activities, video games, and 
+reading in his spare time. This user is a Pisces and his MBTI personality type is INTJ. 
+Despite being occasionally up for a drink, he does not smoke or use drugs, including marijuana. 
+He leads an active lifestyle and owns a dog. His desires for the future include having children, 
+as he currently doesn't have any. He's also open to a long-term, monogamous relationship. 
+His primary languages are English and Spanish.
+```
+
+**Theodore Preferences Summary**
+
+```text
+The user is seeking a female partner aged 24 to 31 years who falls between the heights of 5'5" 
+and 6'0". She doesn't have children but must be open to having them in the future. An ideal 
+match would be a straight woman who occasionally drinks but doesn't smoke or use marijuana or 
+other drugs. Light to moderate exercise habits are preferred. Ethnicity-wise, he is open to 
+dating women of both White Caucasian and Hispanic/Latino backgrounds. In terms of political 
+inclination, he prefers a woman with moderate views. Professionally, he prefers women working 
+in the Education, Technology, or Healthcare industry. Fluency in English is a must, and he 
+values Honesty, Kindness, and Intelligence. Shared interests might include outdoor activities, 
+music, or reading. Education is important too, with a preference for woman who have at least 
+an undergraduate degree or higher. He is looking for a long-term relationship that is monogamous.
+```
+
+**Olivia's Profile Summary**
+
+```text
+This user is a 28 year-old woman standing at 5'6\". She is a UX Designer working in the tech 
+industry and is a graduate of Stanford University. She identifies as straight and is interested 
+in a monogamous, long-term relationship. Originally from New York, New York, she is currently 
+dating in Los Angeles, California. She fluently speaks English and Spanish, and identifies her 
+ethnicity as white caucasian. Her core values are creativity, independence, and adventure. 
+Interests include photography, cooking, and travel. She identifies as agnostic and liberal. 
+Although she doesn't have any children yet, she wants them in the future. She is an active 
+drinker but doesn't smoke, use marijuana, or drugs. When it comes to exercise, she's quite active. 
+She owns a cat and is a Gemini with an ENFP personality type.
+```
+
+**Olivia's Preferences Summary**
+
+```text
+The user is looking for a man who is between the ages of 28 and 35 and stands between 5'8" 
+and 6'2". He shouldn't have children currently but should want to have them in the future. 
+Ideally, he would be straight, an active individual, and a non-smoker. He's preferred to be 
+someone who has no problems with drinking but doesn't use marijuana or any other drugs. In 
+terms of ethnicity, he can be of any listed ethnicity. Politically, a liberal or moderate man 
+would be suitable. The ideal man would work in either Tech, Finance, or Health sectors, and 
+English should be among his languages. He should value kindness, honesty, and be committed. 
+His interests should include hiking, photography, and travelling. The user prefers someone who 
+has at least an undergraduate level of education.
+```
+
+### Planning Dates
 
 // TODO
 
