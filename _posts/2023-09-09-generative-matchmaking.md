@@ -93,9 +93,15 @@ as a seed for profile generation.
 
 ```text
 [System Message]: You are a helpful assistant.
-[User Message]: Generate 10 unique first and last names, ensuring a balanced diversity.
+
+[User Message]: Generate 10 unique first and last names, 
+ensuring a balanced diversity.
+
 [Assistant Message]: ...
-[User Message]: Select a name randomly and create a dating profile for the chosen name.
+
+[User Message]: Select a name randomly and create 
+a dating profile for the chosen name.
+
 [Assistant Message]: ...
 ```
 
@@ -125,9 +131,16 @@ their partner preferences.
 
 ```text
 ...
-[User Message]: Summarize the user's dating profile. Include all fields other than partner_preferences. Output a concise paragraph.
+[User Message]: Summarize the user's dating profile. 
+Include all fields other than partner_preferences. 
+Output a concise paragraph.
+
 [Assistant Message]: ...
-[User Message]: Summarize the user's dating partner_preferences. Include partner_preferences fields only and nothing else. Output a concise paragraph.
+
+[User Message]: Summarize the user's dating partner_preferences. 
+Include partner_preferences fields only and nothing else. 
+Output a concise paragraph.
+
 [Assistant Message]: ...
 ```
 
@@ -241,32 +254,53 @@ to maintain generality across users. An example synthetic dating profile follows
 **Profile Summary**
 
 ```text
-The user is a 29-year-old woman who identifies as straight. She uses she/her pronouns and is of 
-East Asian ethnicity. She graduated from the University of California, Berkeley and now works 
-as a Software Engineer in the technology industry. Originally from San Francisco, California, 
-she is now looking to date in Los Angeles, California. She is an atheistic liberal who values 
-responsibility, family, and ambition. She enjoys cooking, hiking, and traveling. Despite her 
-busy schedule, she maintains an active lifestyle. She speaks both English and Mandarin fluently. 
-She owns a cat and wishes to have children although she doesn't have any yet. She is a 
-Sagittarius with an INTJ Myers-Briggs Type Indicator. An occasional drinker, she 
-doesn't smoke or use marijuana or other drugs. Her intention is to be in a monogamous 
-relationship, open to both long term commitments and causal dating.
+The user is a 29-year-old woman who identifies as straight. 
+She uses she/her pronouns and is of 
+East Asian ethnicity. She graduated from the University 
+of California, Berkeley and now works 
+as a Software Engineer in the technology industry. 
+Originally from San Francisco, California, 
+she is now looking to date in Los Angeles, California. 
+She is an atheistic liberal who values 
+responsibility, family, and ambition. 
+She enjoys cooking, hiking, and traveling. Despite her 
+busy schedule, she maintains an active lifestyle. 
+She speaks both English and Mandarin fluently. 
+She owns a cat and wishes to have children although 
+she doesn't have any yet. She is a 
+Sagittarius with an INTJ Myers-Briggs Type Indicator. 
+An occasional drinker, she 
+doesn't smoke or use marijuana or other drugs. 
+Her intention is to be in a monogamous 
+relationship, open to both long term commitments 
+and causal dating.
 ```
 
 **Partner Preferences Summary**
 
 ```text
-The user is a woman who is interested in dating a man who is between the ages of 28 and 35, 
-and between 5'6" and 6'2" in height. Her preferred partner would be someone who does not 
-have children but is open to having some in the future. The partner should be straight, 
-drinks occasionally, doesn't smoke or involve in marijuana or drugs. She prefers a man who 
-is active and practices monogamy. Ethnicity- wise, her interests include a range of ethnic 
-groups, from Black African Descent, East Asian, Middle Eastern, Native American, Pacific 
-Islander, South Asian, Southeast Asian to White Caucasian. She prefers partners who identify 
-as Liberal or are not political. The ideal match for her would work in the Technology, Finance, 
-or Consulting industries. The primary language should be English. In terms of values, she looks 
-for Responsibility, Family, Ambition, and shares interests in cooking, hiking and traveling. 
-Potential partners should have at least an undergraduate level of education.
+The user is a woman who is interested in dating a 
+man who is between the ages of 28 and 35, 
+and between 5'6" and 6'2" in height. Her preferred 
+partner would be someone who does not 
+have children but is open to having some in the future. 
+The partner should be straight, 
+drinks occasionally, doesn't smoke or involve in marijuana 
+or drugs. She prefers a man who 
+is active and practices monogamy. Ethnicity- wise, her 
+interests include a range of ethnic 
+groups, from Black African Descent, East Asian, 
+Middle Eastern, Native American, Pacific 
+Islander, South Asian, Southeast Asian to White Caucasian. 
+She prefers partners who identify 
+as Liberal or are not political. The ideal match for her 
+would work in the Technology, Finance, 
+or Consulting industries. The primary language should be 
+English. In terms of values, she looks 
+for Responsibility, Family, Ambition, and shares interests 
+in cooking, hiking and traveling. 
+Potential partners should have at least an undergraduate 
+level of education.
 ```
 
 ### Images
@@ -417,58 +451,94 @@ with a hard filter on preferred sexuality and gender.
 **Theodore's Profile Summary**
 
 ```text
-This user is a 29-year-old Software Engineer in the Technology industry based in Los Angeles, 
-California, but originally from San Francisco. He stands 6 feet tall and is a graduate from 
-the California State University. He identifies as a straight white Caucasian man who uses 
-the pronouns He/Him/His, with agnostic religious beliefs, and a moderate political stance. 
-He values honesty, humor, and intelligence and enjoys outdoor activities, video games, and 
-reading in his spare time. This user is a Pisces and his MBTI personality type is INTJ. 
-Despite being occasionally up for a drink, he does not smoke or use drugs, including marijuana. 
-He leads an active lifestyle and owns a dog. His desires for the future include having children, 
-as he currently doesn't have any. He's also open to a long-term, monogamous relationship. 
+This user is a 29-year-old Software Engineer in the 
+Technology industry based in Los Angeles, 
+California, but originally from San Francisco. 
+He stands 6 feet tall and is a graduate from 
+the California State University. He identifies as 
+a straight white Caucasian man who uses 
+the pronouns He/Him/His, with agnostic religious 
+beliefs, and a moderate political stance. 
+He values honesty, humor, and intelligence and 
+enjoys outdoor activities, video games, and 
+reading in his spare time. This user is a Pisces 
+and his MBTI personality type is INTJ. 
+Despite being occasionally up for a drink, he does 
+not smoke or use drugs, including marijuana. 
+He leads an active lifestyle and owns a dog. 
+His desires for the future include having children, 
+as he currently doesn't have any. He's also open to 
+a long-term, monogamous relationship. 
 His primary languages are English and Spanish.
 ```
 
 **Theodore's Partner Preferences Summary**
 
 ```text
-The user is seeking a female partner aged 24 to 31 years who falls between the heights of 5'5" 
-and 6'0". She doesn't have children but must be open to having them in the future. An ideal 
-match would be a straight woman who occasionally drinks but doesn't smoke or use marijuana or 
-other drugs. Light to moderate exercise habits are preferred. Ethnicity-wise, he is open to 
-dating women of both White Caucasian and Hispanic/Latino backgrounds. In terms of political 
-inclination, he prefers a woman with moderate views. Professionally, he prefers women working 
-in the Education, Technology, or Healthcare industry. Fluency in English is a must, and he 
-values Honesty, Kindness, and Intelligence. Shared interests might include outdoor activities, 
-music, or reading. Education is important too, with a preference for woman who have at least 
-an undergraduate degree or higher. He is looking for a long-term relationship that is monogamous.
+The user is seeking a female partner aged 24 to 31 
+years who falls between the heights of 5'5" 
+and 6'0". She doesn't have children but must be 
+open to having them in the future. An ideal 
+match would be a straight woman who occasionally 
+drinks but doesn't smoke or use marijuana or 
+other drugs. Light to moderate exercise habits are 
+preferred. Ethnicity-wise, he is open to 
+dating women of both White Caucasian and Hispanic/Latino 
+backgrounds. In terms of political 
+inclination, he prefers a woman with moderate views. 
+Professionally, he prefers women working 
+in the Education, Technology, or Healthcare industry. 
+Fluency in English is a must, and he 
+values Honesty, Kindness, and Intelligence. 
+Shared interests might include outdoor activities, 
+music, or reading. Education is important too, 
+with a preference for woman who have at least 
+an undergraduate degree or higher. He is looking 
+for a long-term relationship that is monogamous.
 ```
 
 **Olivia's Profile Summary**
 
 ```text
-This user is a 28 year-old woman standing at 5'6". She is a UX Designer working in the tech 
-industry and is a graduate of Stanford University. She identifies as straight and is interested 
-in a monogamous, long-term relationship. Originally from New York, New York, she is currently 
-dating in Los Angeles, California. She fluently speaks English and Spanish, and identifies her 
-ethnicity as white caucasian. Her core values are creativity, independence, and adventure. 
-Interests include photography, cooking, and travel. She identifies as agnostic and liberal. 
-Although she doesn't have any children yet, she wants them in the future. She is an active 
-drinker but doesn't smoke, use marijuana, or drugs. When it comes to exercise, she's quite active. 
-She owns a cat and is a Gemini with an ENFP personality type.
+This user is a 28 year-old woman standing at 5'6". 
+She is a UX Designer working in the tech 
+industry and is a graduate of Stanford University. 
+She identifies as straight and is interested 
+in a monogamous, long-term relationship. 
+Originally from New York, New York, she is currently 
+dating in Los Angeles, California. She fluently 
+speaks English and Spanish, and identifies her 
+ethnicity as white caucasian. Her core values 
+are creativity, independence, and adventure. 
+Interests include photography, cooking, and travel. 
+She identifies as agnostic and liberal. 
+Although she doesn't have any children yet, she 
+wants them in the future. She is an active 
+drinker but doesn't smoke, use marijuana, or drugs. 
+When it comes to exercise, she's quite active. 
+She owns a cat and is a Gemini with an 
+ENFP personality type.
 ```
 
 **Olivia's Partner Preferences Summary**
 
 ```text
-The user is looking for a man who is between the ages of 28 and 35 and stands between 5'8" 
-and 6'2". He shouldn't have children currently but should want to have them in the future. 
-Ideally, he would be straight, an active individual, and a non-smoker. He's preferred to be 
-someone who has no problems with drinking but doesn't use marijuana or any other drugs. In 
-terms of ethnicity, he can be of any listed ethnicity. Politically, a liberal or moderate man 
-would be suitable. The ideal man would work in either Tech, Finance, or Health sectors, and 
-English should be among his languages. He should value kindness, honesty, and be committed. 
-His interests should include hiking, photography, and traveling. The user prefers someone who 
+The user is looking for a man who is between the ages 
+of 28 and 35 and stands between 5'8" 
+and 6'2". He shouldn't have children currently but 
+should want to have them in the future. 
+Ideally, he would be straight, an active individual, 
+and a non-smoker. He's preferred to be 
+someone who has no problems with drinking but doesn't 
+use marijuana or any other drugs. In 
+terms of ethnicity, he can be of any listed ethnicity. 
+Politically, a liberal or moderate man 
+would be suitable. The ideal man would work in either 
+Tech, Finance, or Health sectors, and 
+English should be among his languages. He should value 
+kindness, honesty, and be committed. 
+His interests should include hiking, photography, and 
+traveling. The user prefers someone who 
 has at least an undergraduate level of education.
 ```
 
@@ -534,50 +604,76 @@ Olivia Windsor: {Olivia's profile summary}
 ```text
 Dear Theodore and Olivia,
 
-We are thrilled to assist you in planning some unique and personalized dates that will 
-cater to both of your interests and values. Here are our suggestions:
+We are thrilled to assist you in planning some 
+unique and personalized dates that will 
+cater to both of your interests and values. 
+Here are our suggestions:
 
 Morning Ideas:
-1. Hiking in the Santa Monica Mountains: Given both of your active lifestyles and Theodore's 
-love for outdoor activities, this would be a great way to start the day. You can enjoy the 
-beautiful views and engage in deep conversations, which INTJs like Theodore appreciate.
-2. Visit to the Griffith Observatory: This could be a fun and educational experience for 
-both of you. As a Pisces, Theodore might enjoy the celestial aspect, while Olivia's adventurous 
+1. Hiking in the Santa Monica Mountains: 
+Given both of your active lifestyles and Theodore's 
+love for outdoor activities, this would be a great way 
+to start the day. You can enjoy the 
+beautiful views and engage in deep conversations, 
+which INTJs like Theodore appreciate.
+2. Visit to the Griffith Observatory: 
+This could be a fun and educational experience for 
+both of you. As a Pisces, Theodore might enjoy the 
+celestial aspect, while Olivia's adventurous 
 spirit would be satisfied.
-3. Cooking Class: Since Olivia enjoys cooking, a morning cooking class could be a fun and 
-interactive experience. You could choose a Spanish cuisine class to utilize both of your 
-language skills.
-4. Dog Park Visit: Theodore could bring his dog and you both could enjoy a casual morning at 
-the park. This would also give Olivia a chance to share her love for animals.
-5. Photography Walk in Downtown LA: Olivia could showcase her photography skills and you 
+3. Cooking Class: 
+Since Olivia enjoys cooking, a morning cooking 
+class could be a fun and interactive experience. 
+You could choose a Spanish cuisine class to utilize 
+both of your language skills.
+4. Dog Park Visit: 
+Theodore could bring his dog and you 
+both could enjoy a casual morning at 
+the park. This would also give Olivia 
+a chance to share her love for animals.
+5. Photography Walk in Downtown LA: 
+Olivia could showcase her photography skills and you 
 both could explore the city's architecture and street art.
 
 Afternoon Ideas:
-1. Tech Museum Visit: Given your shared industry, a visit to a tech museum could 
+1. Tech Museum Visit: 
+Given your shared industry, a visit to a tech museum could 
 spark interesting conversations and mutual learning.
-2. Beach Picnic: Pack a lunch and head to the beach. This would combine Theodore's 
-love for the outdoors and Olivia's love for travel and adventure.
-3. Bookstore Visit: As Theodore enjoys reading, visiting a bookstore could be a fun 
+2. Beach Picnic: 
+Pack a lunch and head to the beach. 
+This would combine Theodore's love for the outdoors 
+and Olivia's love for travel and adventure.
+3. Bookstore Visit: 
+As Theodore enjoys reading, visiting a bookstore could be a fun 
 experience. You could each pick a book for the other to read.
-4. Video Game Arcade: Theodore could share his love for video games with 
+4. Video Game Arcade: 
+Theodore could share his love for video games with 
 Olivia in a fun, casual setting.
-5. Spanish Language Film: Watching a Spanish language film at a local indie 
+5. Spanish Language Film: 
+Watching a Spanish language film at a local indie 
 cinema could be a unique way to use your shared language skills.
 
 Evening Ideas:
-1. Star Gazing: Given Theodore's Pisces sign and Olivia's adventurous spirit, 
+1. Star Gazing: 
+Given Theodore's Pisces sign and Olivia's adventurous spirit, 
 an evening spent star gazing could be both romantic and enjoyable.
-2. Comedy Show: A comedy show could be a great way to incorporate humor, 
+2. Comedy Show: 
+A comedy show could be a great way to incorporate humor, 
 which Theodore values.
-3. Home Cooked Dinner: Olivia could cook dinner at home, providing a more 
-intimate setting. You could play video games or discuss the books you picked earlier.
-4. Wine Tasting: As both of you enjoy a drink occasionally, a local wine 
+3. Home Cooked Dinner: 
+Olivia could cook dinner at home, providing a more 
+intimate setting. You could play video games 
+or discuss the books you picked earlier.
+4. Wine Tasting: 
+As both of you enjoy a drink occasionally, a local wine 
 tasting could be a fun and sophisticated experience.
-5. Outdoor Movie Night: Set up a projector in your backyard and enjoy a movie 
-under the stars. This combines Theodore's love for the outdoors and Olivia's 
-love for creativity.
+5. Outdoor Movie Night: 
+Set up a projector in your backyard and enjoy a movie 
+under the stars. This combines Theodore's 
+love for the outdoors and Olivia's love for creativity.
 
-We hope these ideas inspire you to have fun, engaging, and meaningful dates. 
+We hope these ideas inspire you to have fun, 
+engaging, and meaningful dates. 
 Enjoy your time together!
 
 Your loving AI assistants.
