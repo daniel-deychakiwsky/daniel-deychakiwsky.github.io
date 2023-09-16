@@ -20,6 +20,8 @@ an AI-native open-source vector database.
 
 # Elevator Pitch
 
+## Dating
+
 Popular dating services have converged to an experience
 where users must swipe, match, chat, and plan to meet. 
 For many users, this results in too much time spent
@@ -46,6 +48,14 @@ The remainder of this post details a simulated subset of functionality
 that plugs into the overall effort.
 
 🧑 → 🤖💬 → ❤️ ← 💬🤖 ← 🧑
+
+## Framework
+
+We focused on dating because it was an obvious application
+of matchmaking. However, our framework is not limited to this
+use case. We argue that it generalizes to a broad spectrum
+of business use cases, e.g., jobs, philanthropy, customer churn,
+e-commerce, and overall business intelligence.
 
 # Simulation
 
@@ -367,7 +377,8 @@ $\\{C, B, P\\}$ in diagram that follows.
 To visualize matches, we hacked together a user interface with directions
 on how to run it outlined in the repo's [readme]. A screenshot of Theodore Heath's matches,
 ranked from left-to-right, follows. The presence of an asterisk by the name of a 
-match indicates bidirectional connection or compatibility.
+match indicates bidirectional connection or compatibility while the others
+are unidirectional matches with one directed edge pointing from Theodore to the candidate.
 
 ![screenshot]
 
@@ -378,11 +389,12 @@ Theodore's **partner preference summary** is semantically similar to Olivia's
 similar to Theodore's **profile summary** within the embedding geometry.
 In other words, Theodore is looking for someone like Olivia and
 Olivia is looking for someone like Theodore based on the information
-available to us.
-We can inspect Theodore and Olivia's profile and partner preference 
-summaries to qualitatively evaluate the match.
+available to us. We can inspect Theodore and Olivia's profile and 
+partner preference summaries to qualitatively evaluate the match. Recall
+that our matching algorithm can be thought of as a soft fuzzy matcher
+with a hard filter on preferred sexuality and gender.
 
-**Theodore Profile Summary**
+**Theodore's Profile Summary**
 
 ```text
 This user is a 29-year-old Software Engineer in the Technology industry based in Los Angeles, 
@@ -397,7 +409,7 @@ as he currently doesn't have any. He's also open to a long-term, monogamous rela
 His primary languages are English and Spanish.
 ```
 
-**Theodore Preferences Summary**
+**Theodore's Partner Preferences Summary**
 
 ```text
 The user is seeking a female partner aged 24 to 31 years who falls between the heights of 5'5" 
@@ -426,7 +438,7 @@ drinker but doesn't smoke, use marijuana, or drugs. When it comes to exercise, s
 She owns a cat and is a Gemini with an ENFP personality type.
 ```
 
-**Olivia's Preferences Summary**
+**Olivia's Partner Preferences Summary**
 
 ```text
 The user is looking for a man who is between the ages of 28 and 35 and stands between 5'8" 
@@ -436,17 +448,196 @@ someone who has no problems with drinking but doesn't use marijuana or any other
 terms of ethnicity, he can be of any listed ethnicity. Politically, a liberal or moderate man 
 would be suitable. The ideal man would work in either Tech, Finance, or Health sectors, and 
 English should be among his languages. He should value kindness, honesty, and be committed. 
-His interests should include hiking, photography, and travelling. The user prefers someone who 
+His interests should include hiking, photography, and traveling. The user prefers someone who 
 has at least an undergraduate level of education.
 ```
 
-## Date Ideas
+## Date Planning
 
-// TODO
+Once a match is made, we generate personalized first-date
+activities and talking points by applying 
+a technique known as retrieval augmented generation (RAG)
+where we instruct a LLM to assume a role of an expert creative date planner or
+conversationalist conditioning the generative task on user information.
+This is a form of in-context learning where the LLM
+is fed information retrieved from an external storage system
+to aid in performing a task. Analogous to how the human brain stores information
+in long-term and short-term memory, the external system is the AI's long-term memory
+whereas the LLM's context-window is its short-term memory.
+We explored these RAG use cases to generate date activities
+and talking points for Theodore and Olivia from the previous section.
+The AI system plans based on their information, e.g., 
+who they are, what they like, what they want, what city they're meeting in.
+We used a basic Chain of Thought (CoT) prompting strategy that incites the model
+to break down its reasoning process. There are more advanced prompting 
+strategies that we've left to future spikes, e.g., Tree of Thought (ToT).
+
+### Activities
+
+**System Message**
+
+```text
+You are an expert date planner.
+```
+
+**User Message**
+
+```text
+Brainstorm co-personalized first-date ideas for 
+two users that matched on our dating service 
+based on their descriptions below. 
+Output the result in the form of a letter to them 
+with 5 ideas for the morning, 5 ideas for the afternoon, 
+and 5 ideas for the evening signed as 
+"Your loving AI assistants".
+Think step-by-step to explain why every idea 
+is good for them.
+
+--
+
+Theodore Heath: {Theodore's profile summary}
+
+Olivia Windsor: {Olivia's profile summary}
+```
+
+**Assistant Message**
+
+```text
+Dear Theodore and Olivia,
+
+We are thrilled to assist you in planning some unique and personalized dates that will 
+cater to both of your interests and values. Here are our suggestions:
+
+Morning Ideas:
+1. Hiking in the Santa Monica Mountains: Given both of your active lifestyles and Theodore's 
+love for outdoor activities, this would be a great way to start the day. You can enjoy the 
+beautiful views and engage in deep conversations, which INTJs like Theodore appreciate.
+2. Visit to the Griffith Observatory: This could be a fun and educational experience for 
+both of you. As a Pisces, Theodore might enjoy the celestial aspect, while Olivia's adventurous 
+spirit would be satisfied.
+3. Cooking Class: Since Olivia enjoys cooking, a morning cooking class could be a fun and 
+interactive experience. You could choose a Spanish cuisine class to utilize both of your 
+language skills.
+4. Dog Park Visit: Theodore could bring his dog and you both could enjoy a casual morning at 
+the park. This would also give Olivia a chance to share her love for animals.
+5. Photography Walk in Downtown LA: Olivia could showcase her photography skills and you 
+both could explore the city's architecture and street art.
+
+Afternoon Ideas:
+1. Tech Museum Visit: Given your shared industry, a visit to a tech museum could 
+spark interesting conversations and mutual learning.
+2. Beach Picnic: Pack a lunch and head to the beach. This would combine Theodore's 
+love for the outdoors and Olivia's love for travel and adventure.
+3. Bookstore Visit: As Theodore enjoys reading, visiting a bookstore could be a fun 
+experience. You could each pick a book for the other to read.
+4. Video Game Arcade: Theodore could share his love for video games with 
+Olivia in a fun, casual setting.
+5. Spanish Language Film: Watching a Spanish language film at a local indie 
+cinema could be a unique way to use your shared language skills.
+
+Evening Ideas:
+1. Star Gazing: Given Theodore's Pisces sign and Olivia's adventurous spirit, 
+an evening spent star gazing could be both romantic and enjoyable.
+2. Comedy Show: A comedy show could be a great way to incorporate humor, 
+which Theodore values.
+3. Home Cooked Dinner: Olivia could cook dinner at home, providing a more 
+intimate setting. You could play video games or discuss the books you picked earlier.
+4. Wine Tasting: As both of you enjoy a drink occasionally, a local wine 
+tasting could be a fun and sophisticated experience.
+5. Outdoor Movie Night: Set up a projector in your backyard and enjoy a movie 
+under the stars. This combines Theodore's love for the outdoors and Olivia's 
+love for creativity.
+
+We hope these ideas inspire you to have fun, engaging, and meaningful dates. 
+Enjoy your time together!
+
+Your loving AI assistants.
+```
+
+### Talking Points
+
+**System Message**
+
+```text
+You are an expert conversationalist.
+```
+
+**User Message**
+
+```text
+Brainstorm ten date talking points for two 
+users that matched on our dating service 
+based on their descriptions below. Output 
+the result in the form of a letter to 
+them "Your loving AI assistants". 
+Think step-by-step.
+
+--
+
+Theodore Heath: {Theodore's profile summary} {Theodore's partner preferences summary}
+
+Olivia Windsor: {Olivia's profile summary} {Olivia's partner preferences summary}
+```
+
+**Assistant Message**
+
+```text
+Dear Theodore and Olivia,
+
+We are thrilled to introduce you to each other as we 
+believe you both share common interests, values, and 
+future goals. To help you get to know each other better, 
+we have brainstormed some talking points for your first date. 
+
+1. **Backgrounds**: You both have moved from different cities 
+to Los Angeles. Discuss what brought you to LA and how your 
+experiences have been so far. 
+
+2. **Professions**: You both work in the tech industry. 
+Discuss your roles, your journey into tech, and how you 
+see the industry evolving.
+
+3. **Education**: You both are graduates from prestigious 
+universities. Share your college experiences, favorite subjects, 
+and how your education has shaped your career.
+
+4. **Outdoor Activities**: You both enjoy outdoor activities. 
+Discuss your favorite hiking trails, outdoor games, and any 
+memorable adventures you've had.
+
+5. **Pets**: Theodore, you own a dog and Olivia, you own a cat. 
+Share your pet stories, their quirks, and how they've enriched 
+your lives.
+
+6. **Future Plans**: You both desire to have children in the future. 
+Discuss your thoughts on family, parenting, and how you 
+envision your future family life.
+
+7. **Books and Games**: Theodore, you enjoy reading and video games. 
+Olivia, you might find it interesting to know what books he's 
+currently reading or his favorite video games. 
+
+8. **Travel and Photography**: Olivia, you love traveling and photography. 
+Theodore, you might be interested in hearing about her favorite 
+travel destinations and her photography experiences.
+
+9. **Cooking**: Olivia, you enjoy cooking. Discuss your favorite dishes 
+to cook, and perhaps plan a cooking date in the future.
+
+10. **Values**: You both value honesty and intelligence. Discuss what 
+these values mean to you and how they influence your life decisions.
+
+Remember, the goal is to get to know each other better and find 
+common ground. Enjoy your date and we wish you both a wonderful time!
+
+Best regards,
+
+Your loving AI assistants.
+```
 
 # Cost
 
-// TODO
+The final bill paid to OpenAI for this project was under $80 USD.
 
 # Literature Review
 
