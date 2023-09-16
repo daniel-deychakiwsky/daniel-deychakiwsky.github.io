@@ -253,7 +253,7 @@ doesn't smoke or use marijuana or other drugs. Her intention is to be in a monog
 relationship, open to both long term commitments and causal dating.
 ```
 
-**Preferences Summary**
+**Partner Preferences Summary**
 
 ```text
 The user is a woman who is interested in dating a man who is between the ages of 28 and 35, 
