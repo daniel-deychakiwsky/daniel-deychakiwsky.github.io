@@ -60,14 +60,13 @@ e-commerce, and overall business intelligence.
 
 # Simulation
 
-The simulated implementation is made available in a public 
-Github [repository](https://github.com/daniel-deychakiwsky/generative-matchmaking).
-As a proof-of-concept we generated
-synthetic dating user profiles, pictures, 
-and produced matches for each of them, all of which
-are stored in the [profiles] directory. Finally,
-we delve into assisted date planning techniques
-for an example pair of matched users.
+The simulated implementation is available in a public GitHub 
+[repository](https://github.com/daniel-deychakiwsky/generative-matchmaking). 
+As a proof-of-concept, we generated synthetic dating user profiles 
+with pictures and produced matches for each of them, 
+all of which are stored in the [profiles] directory. 
+We also generated assisted date plans for an example 
+pair of matched users.
 
 ## Generating Synthetic Users
 
