@@ -19,7 +19,7 @@
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="Generative Matchmaking" />
 <script type="application/ld+json">
-{"url":"http://localhost:4000/generative-matchmaking","headline":"Generative Matchmaking","dateModified":"2023-09-09T00:00:00-05:00","datePublished":"2023-09-09T00:00:00-05:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/generative-matchmaking"},"author":{"@type":"Person","name":"Daniel Deychakiwsky"},"description":"This post details an AI-based matchmaking simulation leveraging vector based semantic search for user compatibility recommendations and retrieval-augmented generation for co-personalized first-date ideation using OpenAI’s GPT-4, OpenAI’s DALL·E-2, and Chroma, an AI-native open-source vector database.","@type":"BlogPosting","@context":"https://schema.org"}</script>
+{"datePublished":"2023-09-09T00:00:00-05:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/generative-matchmaking"},"url":"http://localhost:4000/generative-matchmaking","author":{"@type":"Person","name":"Daniel Deychakiwsky"},"description":"This post details an AI-based matchmaking simulation leveraging vector based semantic search for user compatibility recommendations and retrieval-augmented generation for co-personalized first-date ideation using OpenAI’s GPT-4, OpenAI’s DALL·E-2, and Chroma, an AI-native open-source vector database.","headline":"Generative Matchmaking","dateModified":"2023-09-09T00:00:00-05:00","@type":"BlogPosting","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Deylemma" />
 </head>
@@ -118,10 +118,10 @@ that plugs into the overall effort.</p>
 
 <h2 id="framework">Framework</h2>
 
-<p>We focused on dating because it was an obvious application
-of matchmaking. However, our framework is not limited to this
-use case. We argue that it generalizes to a broad spectrum
-of business use cases, e.g., jobs, philanthropy, customer churn,
+<p>We focused on dating as an obvious application
+of matchmaking. However, we argue that our 
+framework generalizes to a broad spectrum
+of use cases, e.g., jobs, philanthropy, customer churn,
 e-commerce, and overall business intelligence.</p>
 
 <h1 id="simulation">Simulation</h1>
@@ -525,10 +525,10 @@ is fed information retrieved from an external storage system
 to aid in performing a task. Analogous to how the human brain stores information
 in long-term and short-term memory, the external system is the AI’s long-term memory
 whereas the LLM’s context-window is its short-term memory.
-We explored these RAG use cases to generate date activities
-and talking points for Theodore and Olivia from the previous section.
+In the sections that follow, we report results 
+for Theodore and Olivia, our example match from the previous section.
 The AI system plans based on their information, e.g., 
-who they are, what they like, what they want, what city they’re meeting in.
+who they are, what they like, what they want, what city they’re meeting in, etc.
 We used a basic Chain of Thought (CoT) prompting strategy that incites the model
 to break down its reasoning process. There are more advanced prompting 
 strategies that we’ve left to future spikes, e.g., Tree of Thought (ToT).</p>

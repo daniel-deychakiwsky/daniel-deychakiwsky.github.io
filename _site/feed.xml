@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2023-09-15T20:06:37-05:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Deylemma</title><subtitle>An Engineering Blog
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2023-09-15T20:15:56-05:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Deylemma</title><subtitle>An Engineering Blog
 </subtitle><author><name>Daniel Deychakiwsky</name><email>d.deychak@gmail.com</email></author><entry><title type="html">Generative Matchmaking</title><link href="http://localhost:4000/generative-matchmaking" rel="alternate" type="text/html" title="Generative Matchmaking" /><published>2023-09-09T00:00:00-05:00</published><updated>2023-09-09T00:00:00-05:00</updated><id>http://localhost:4000/generative-matchmaking</id><content type="html" xml:base="http://localhost:4000/generative-matchmaking">&lt;p&gt;This post details an AI-based matchmaking simulation
 leveraging vector based semantic search for user 
 compatibility recommendations and retrieval-augmented 
@@ -76,10 +76,10 @@ that plugs into the overall effort.&lt;/p&gt;
 
 &lt;h2 id=&quot;framework&quot;&gt;Framework&lt;/h2&gt;
 
-&lt;p&gt;We focused on dating because it was an obvious application
-of matchmaking. However, our framework is not limited to this
-use case. We argue that it generalizes to a broad spectrum
-of business use cases, e.g., jobs, philanthropy, customer churn,
+&lt;p&gt;We focused on dating as an obvious application
+of matchmaking. However, we argue that our 
+framework generalizes to a broad spectrum
+of use cases, e.g., jobs, philanthropy, customer churn,
 e-commerce, and overall business intelligence.&lt;/p&gt;
 
 &lt;h1 id=&quot;simulation&quot;&gt;Simulation&lt;/h1&gt;
@@ -483,10 +483,10 @@ is fed information retrieved from an external storage system
 to aid in performing a task. Analogous to how the human brain stores information
 in long-term and short-term memory, the external system is the AI’s long-term memory
 whereas the LLM’s context-window is its short-term memory.
-We explored these RAG use cases to generate date activities
-and talking points for Theodore and Olivia from the previous section.
+In the sections that follow, we report results 
+for Theodore and Olivia, our example match from the previous section.
 The AI system plans based on their information, e.g., 
-who they are, what they like, what they want, what city they’re meeting in.
+who they are, what they like, what they want, what city they’re meeting in, etc.
 We used a basic Chain of Thought (CoT) prompting strategy that incites the model
 to break down its reasoning process. There are more advanced prompting 
 strategies that we’ve left to future spikes, e.g., Tree of Thought (ToT).&lt;/p&gt;
