@@ -541,7 +541,7 @@ traveling. The user prefers someone who
 has at least an undergraduate level of education.
 ```
 
-## Date Planning
+## Planning
 
 Once the matches were made, we generated personalized first-date
 activities and talking points by applying 
