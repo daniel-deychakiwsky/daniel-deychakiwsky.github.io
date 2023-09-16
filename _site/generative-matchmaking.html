@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta property="og:image" content="/assets/images/geometry.jpg"/><!-- Begin Jekyll SEO tag v2.7.1 -->
+<title>Generative Matchmaking | Deylemma</title>
+<meta name="generator" content="Jekyll v4.2.1" />
+<meta property="og:title" content="Generative Matchmaking" />
+<meta name="author" content="Daniel Deychakiwsky" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="This post details an AI-based matchmaking simulation leveraging vector based semantic search for user compatibility recommendations and retrieval-augmented generation for co-personalized first-date ideation using OpenAI’s GPT-4, OpenAI’s DALL·E-2, and Chroma, an AI-native open-source vector database." />
+<meta property="og:description" content="This post details an AI-based matchmaking simulation leveraging vector based semantic search for user compatibility recommendations and retrieval-augmented generation for co-personalized first-date ideation using OpenAI’s GPT-4, OpenAI’s DALL·E-2, and Chroma, an AI-native open-source vector database." />
+<link rel="canonical" href="http://localhost:4000/generative-matchmaking" />
+<meta property="og:url" content="http://localhost:4000/generative-matchmaking" />
+<meta property="og:site_name" content="Deylemma" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-09-09T00:00:00-05:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Generative Matchmaking" />
+<script type="application/ld+json">
+{"datePublished":"2023-09-09T00:00:00-05:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/generative-matchmaking"},"url":"http://localhost:4000/generative-matchmaking","author":{"@type":"Person","name":"Daniel Deychakiwsky"},"description":"This post details an AI-based matchmaking simulation leveraging vector based semantic search for user compatibility recommendations and retrieval-augmented generation for co-personalized first-date ideation using OpenAI’s GPT-4, OpenAI’s DALL·E-2, and Chroma, an AI-native open-source vector database.","headline":"Generative Matchmaking","dateModified":"2023-09-09T00:00:00-05:00","@type":"BlogPosting","@context":"https://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Deylemma" />
+</head>
+<body><header class="site-header">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Deylemma</a></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Generative Matchmaking</h1>
+    <p class="post-meta"><time class="dt-published" datetime="2023-09-09T00:00:00-05:00" itemprop="datePublished">
+        Sep 9, 2023
+      </time>• 
+          <span itemprop="author" itemscope itemtype="http://schema.org/Person">
+            <span class="p-author h-card" itemprop="name">Daniel Deychakiwsky</span></span></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p>This post details an AI-based matchmaking simulation
+leveraging vector based semantic search for user 
+compatibility recommendations and retrieval-augmented 
+generation for co-personalized first-date ideation 
+using OpenAI’s GPT-4, OpenAI’s DALL·E-2, and Chroma, 
+an AI-native open-source vector database.</p>
+
+<ul id="markdown-toc">
+  <li><a href="#elevator-pitch" id="markdown-toc-elevator-pitch">Elevator Pitch</a>    <ul>
+      <li><a href="#dating" id="markdown-toc-dating">Dating</a></li>
+      <li><a href="#framework" id="markdown-toc-framework">Framework</a></li>
+    </ul>
+  </li>
+  <li><a href="#simulation" id="markdown-toc-simulation">Simulation</a>    <ul>
+      <li><a href="#generating-synthetic-users" id="markdown-toc-generating-synthetic-users">Generating Synthetic Users</a>        <ul>
+          <li><a href="#profiles" id="markdown-toc-profiles">Profiles</a></li>
+          <li><a href="#images" id="markdown-toc-images">Images</a></li>
+        </ul>
+      </li>
+      <li><a href="#matchmaking" id="markdown-toc-matchmaking">Matchmaking</a>        <ul>
+          <li><a href="#recommender-system" id="markdown-toc-recommender-system">Recommender System</a>            <ul>
+              <li><a href="#chroma-vector-database" id="markdown-toc-chroma-vector-database">Chroma Vector Database</a>                <ul>
+                  <li><a href="#retrieval" id="markdown-toc-retrieval">Retrieval</a></li>
+                  <li><a href="#ranking" id="markdown-toc-ranking">Ranking</a></li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li><a href="#visualizing-matches" id="markdown-toc-visualizing-matches">Visualizing Matches</a></li>
+        </ul>
+      </li>
+      <li><a href="#date-planning" id="markdown-toc-date-planning">Date Planning</a>        <ul>
+          <li><a href="#activities" id="markdown-toc-activities">Activities</a></li>
+          <li><a href="#talking-points" id="markdown-toc-talking-points">Talking Points</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><a href="#cost" id="markdown-toc-cost">Cost</a></li>
+  <li><a href="#literature-review" id="markdown-toc-literature-review">Literature Review</a></li>
+</ul>
+
+<h1 id="elevator-pitch">Elevator Pitch</h1>
+
+<h2 id="dating">Dating</h2>
+
+<p>Popular dating services have converged to an experience
+where users must swipe, match, chat, and plan to meet. 
+For many users, this results in too much time spent
+repeatedly swiping, small talking, and planning.</p>
+
+<blockquote>
+  <p>I’m looking for a connection where I can simply ask, 
+“Would you like to meet up for drinks later?” 
+I wish online dating could solely serve the purpose 
+of arranging dates, eliminating the need for aimless small talk. 
+Repeating the same text-based conversations that lead nowhere gets tiresome. 
+Meeting in person right away would allow us to gauge our compatibility and save time. 
+– <cite>I’m a 27-year-old female.</cite></p>
+</blockquote>
+
+<p>Inspired by the emergence of human-like behavior of modern AI, 
+our vision is to present an experience where each user is paired 
+with a personalized AI matchmaking assistant that 
+can be reinforced with human feedback to align to changes in user preference
+while working behind the scenes on behalf of the user 
+by engaging with other user assistants to 
+create harmonious matches so that users can spend less time searching
+and more time meeting their people. We posit that this approach would 
+minimize swipe time, eliminate small talk, and assist in planning.
+The remainder of this post details a simulated subset of functionality
+that plugs into the overall effort.</p>
+
+<p>🧑 → 🤖💬 → ❤️ ← 💬🤖 ← 🧑</p>
+
+<h2 id="framework">Framework</h2>
+
+<p>We focused on dating as an obvious application
+of matchmaking. However, we argue that our 
+framework generalizes to a broad spectrum
+of use cases, e.g., jobs, philanthropy, customer churn,
+e-commerce, and overall business intelligence.</p>
+
+<h1 id="simulation">Simulation</h1>
+
+<p>The simulated implementation is made available in a public 
+Github <a href="https://github.com/daniel-deychakiwsky/generative-matchmaking">repository</a>.
+As a proof-of-concept we generated
+synthetic dating user profiles, pictures, 
+and produced matches for each of them, all of which
+are stored in the <a href="https://github.com/daniel-deychakiwsky/generative-matchmaking/tree/master/profiles">profiles</a> directory.</p>
+
+<h2 id="generating-synthetic-users">Generating Synthetic Users</h2>
+
+<h3 id="profiles">Profiles</h3>
+
+<p>We sequentially generated 250 synthetic dating user profiles using OpenAI’s chat 
+completion endpoint with the following configuration settings: <code class="language-plaintext highlighter-rouge">model="gpt-4-0613"</code>, 
+<code class="language-plaintext highlighter-rouge">max_tokens=5000</code>, and <code class="language-plaintext highlighter-rouge">temperature=1.05</code>. Initially, our attempt to generate numerous dating 
+profiles in a single inference pass, allowing the model to consider previously generated 
+profiles for uniqueness and diversity, was hindered by output token limit constraints. 
+To address this, we adopted an alternative approach: we chatted with the model
+to generate a collection of names and subsequently instructed the model to sample from this pool
+as a seed for profile generation.</p>
+
+<p>Our starting point was the default system prompt: <code class="language-plaintext highlighter-rouge">"You are a helpful assistant."</code>. 
+Within this conversation, we provided the instruction: <code class="language-plaintext highlighter-rouge">"Generate 10 unique first and 
+last names, ensuring a balanced diversity."</code> Following this, we issued a follow-up directive: 
+<code class="language-plaintext highlighter-rouge">"Select a name randomly and create a dating profile for the chosen name."</code>. It’s worth noting 
+that the sampling process suffers from positional biases inherent in language models. 
+Nevertheless, this strategy, at he very least, improved generation of a diverse set of names
+across all users.</p>
+
+<p>For the generation of the dating profile, we utilized OpenAI’s function calling API, which 
+produced a structured JSON response based on our dating profile <a href="https://github.com/daniel-deychakiwsky/generative-matchmaking/blob/master/src/generative_matchmaking/llm/oai_function_schemas.py">schema</a> where 
+we hardcoded the dating location to Los Angeles, California for all users. Note that
+although our schema is basic, it can be updated to include other pieces of static or dynamic
+information along with the concept of “dealbreakers” which effectively translates
+to a hard filter on specified partner preference attributes.</p>
+
+<blockquote>
+  <p>Developers can now describe functions to gpt-4-0613 and gpt-3.5-turbo-0613, 
+and have the model intelligently choose to output a JSON object containing 
+arguments to call those functions. 
+This is a new way to more reliably connect GPT’s capabilities with external tools and APIs.
+These models have been fine-tuned to both detect when a function needs to be 
+called (depending on the user’s input) and to respond with JSON that 
+adheres to the function signature. Function calling allows developers 
+to more reliably get structured data back from the model. – <cite>OpenAI docs.</cite></p>
+</blockquote>
+
+<p>Once the dating profile was generated we instructed to
+<code class="language-plaintext highlighter-rouge">"Summarize the user's dating profile. 
+Include all fields other than partner_preferences. Output a concise paragraph."</code>
+and finally to 
+<code class="language-plaintext highlighter-rouge">"Summarize the user's dating partner_preferences. 
+Include partner_preferences fields only and nothing else. Output a concise paragraph."</code>
+We did not include the user’s name in the summarization instruction context to maintain generality
+across users.
+An example synthetic dating profile follows.</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+    </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Mia Wong"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"age"</span><span class="p">:</span><span class="w"> </span><span class="mi">29</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"height"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5'6</span><span class="se">\"</span><span class="s2">"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"school"</span><span class="p">:</span><span class="w"> </span><span class="s2">"University of California, Berkeley"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"job_industry"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Technology"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"job_title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Software Engineer"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"hometown_location"</span><span class="p">:</span><span class="w"> </span><span class="s2">"San Francisco, California"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"dating_location"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Los Angeles, California"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"languages_spoken"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"English"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"Mandarin"</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+    </span><span class="nl">"values"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"Responsibility"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"Family"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"Ambition"</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+    </span><span class="nl">"interests"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"Cooking"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"Hiking"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"Traveling"</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+    </span><span class="nl">"education_level"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Graduate"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"religious_beliefs"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Atheist"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"politics"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Liberal"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"dating_intentions"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Long term, open to short"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"relationship_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Monogamy"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"gender"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Woman"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"pronouns"</span><span class="p">:</span><span class="w"> </span><span class="s2">"She/Her/Hers"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"sexuality"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Straight"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"ethnicity"</span><span class="p">:</span><span class="w"> </span><span class="s2">"East Asian"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"has_children"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"want_children"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"pets"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"Cat"</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+    </span><span class="nl">"zodiac_sign"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Sagittarius"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"mbti_personality_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"INTJ"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"drinking"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Sometimes"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"smoking"</span><span class="p">:</span><span class="w"> </span><span class="s2">"No"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"marijuana"</span><span class="p">:</span><span class="w"> </span><span class="s2">"No"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"drugs"</span><span class="p">:</span><span class="w"> </span><span class="s2">"No"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"exercise"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Active"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"partner_preferences"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nl">"minimum_age"</span><span class="p">:</span><span class="w"> </span><span class="mi">28</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"maximum_age"</span><span class="p">:</span><span class="w"> </span><span class="mi">35</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"minimum_height"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5'6</span><span class="se">\"</span><span class="s2">"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"maximum_height"</span><span class="p">:</span><span class="w"> </span><span class="s2">"6'2</span><span class="se">\"</span><span class="s2">"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"has_children"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"want_children"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"sexuality"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Straight"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"drinking"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Sometimes"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"smoking"</span><span class="p">:</span><span class="w"> </span><span class="s2">"No"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"marijuana"</span><span class="p">:</span><span class="w"> </span><span class="s2">"No"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"drugs"</span><span class="p">:</span><span class="w"> </span><span class="s2">"No"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"exercise"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Active"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"gender"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Man"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"dating_intentions"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Long term, open to short"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"relationship_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Monogamy"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"ethnicities"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="s2">"Black African Descent"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"East Asian"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"Middle Eastern"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"Native American"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"Pacific Islander"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"South Asian"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"Southeast Asian"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"White Caucasian"</span><span class="w">
+        </span><span class="p">],</span><span class="w">
+        </span><span class="nl">"politics"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="s2">"Liberal"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"Not political"</span><span class="w">
+        </span><span class="p">],</span><span class="w">
+        </span><span class="nl">"job_industry"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="s2">"Technology"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"Finance"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"Consulting"</span><span class="w">
+        </span><span class="p">],</span><span class="w">
+        </span><span class="nl">"languages_spoken"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="s2">"English"</span><span class="w">
+        </span><span class="p">],</span><span class="w">
+        </span><span class="nl">"values"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="s2">"Responsibility"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"Family"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"Ambition"</span><span class="w">
+        </span><span class="p">],</span><span class="w">
+        </span><span class="nl">"interests"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="s2">"Cooking"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"Hiking"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"Traveling"</span><span class="w">
+        </span><span class="p">],</span><span class="w">
+        </span><span class="nl">"education_level"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="s2">"Undergraduate"</span><span class="p">,</span><span class="w">
+            </span><span class="s2">"Graduate"</span><span class="w">
+        </span><span class="p">]</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nl">"profile_summary"</span><span class="p">:</span><span class="w"> </span><span class="s2">"see below"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"preferences_summary"</span><span class="p">:</span><span class="w"> </span><span class="s2">"see below"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"user_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"fce07a22-133b-46b9-b187-ca1ae5c0b70e"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Profile Summary</p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>The user is a 29-year-old woman who identifies as straight. She uses she/her pronouns and is of 
+East Asian ethnicity. She graduated from the University of California, Berkeley and now works 
+as a Software Engineer in the technology industry. Originally from San Francisco, California, 
+she is now looking to date in Los Angeles, California. She is an atheistic liberal who values 
+responsibility, family, and ambition. She enjoys cooking, hiking, and traveling. Despite her 
+busy schedule, she maintains an active lifestyle. She speaks both English and Mandarin fluently. 
+She owns a cat and wishes to have children although she doesn't have any yet. She is a 
+Sagittarius with an INTJ Myers-Briggs Type Indicator. An occasional drinker, she 
+doesn't smoke or use marijuana or other drugs. Her intention is to be in a monogamous 
+relationship, open to both long term commitments and causal dating.
+</code></pre></div></div>
+
+<p>Preferences Summary</p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>The user is a woman who is interested in dating a man who is between the ages of 28 and 35, 
+and between 5'6" and 6'2" in height. Her preferred partner would be someone who does not 
+have children but is open to having some in the future. The partner should be straight, 
+drinks occasionally, doesn't smoke or involve in marijuana or drugs. She prefers a man who 
+is active and practices monogamy. Ethnicity- wise, her interests include a range of ethnic 
+groups, from Black African Descent, East Asian, Middle Eastern, Native American, Pacific 
+Islander, South Asian, Southeast Asian to White Caucasian. She prefers partners who identify 
+as Liberal or are not political. The ideal match for her would work in the Technology, Finance, 
+or Consulting industries. The primary language should be English. In terms of values, she looks 
+for Responsibility, Family, Ambition, and shares interests in cooking, hiking and traveling. 
+Potential partners should have at least an undergraduate level of education.
+</code></pre></div></div>
+
+<h3 id="images">Images</h3>
+
+<p>We generated a user profile picture for every user by invoking OpenAI’s DALL·E-2 
+text-to-image model. We constructed the prompt by interpolating the following
+template with several fields from the user dating profile schema. Originally, we included
+the first and last name but OpenAI, rightly-so, flagged it as unsafe,
+so we removed it. Note that the prompt for this model must stay under a shorter
+character limit.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">prompt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="sa">f</span><span class="s">"Dating profile picture of a "</span>
+    <span class="sa">f</span><span class="s">"</span><span class="si">{</span><span class="n">user_profile</span><span class="p">.</span><span class="n">height</span><span class="si">}</span><span class="s"> </span><span class="si">{</span><span class="n">user_profile</span><span class="p">.</span><span class="n">ethnicity</span><span class="si">}</span><span class="s"> </span><span class="si">{</span><span class="n">user_profile</span><span class="p">.</span><span class="n">age</span><span class="si">}</span><span class="s"> "</span>
+    <span class="sa">f</span><span class="s">"year old </span><span class="si">{</span><span class="n">user_profile</span><span class="p">.</span><span class="n">gender</span><span class="si">}</span><span class="s"> (</span><span class="si">{</span><span class="n">user_profile</span><span class="p">.</span><span class="n">pronouns</span><span class="si">}</span><span class="s">) "</span>
+    <span class="sa">f</span><span class="s">"with an </span><span class="si">{</span><span class="n">user_profile</span><span class="p">.</span><span class="n">exercise</span><span class="si">}</span><span class="s"> physique who works as a "</span>
+    <span class="sa">f</span><span class="s">"</span><span class="si">{</span><span class="n">user_profile</span><span class="p">.</span><span class="n">job_industry</span><span class="si">}</span><span class="s"> professional "</span>
+    <span class="sa">f</span><span class="s">"that values </span><span class="si">{</span><span class="s">' and '</span><span class="p">.</span><span class="n">join</span><span class="p">(</span><span class="n">user_profile</span><span class="p">.</span><span class="n">values</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span><span class="si">}</span><span class="s"> "</span>
+    <span class="sa">f</span><span class="s">"who enjoys </span><span class="si">{</span><span class="s">' and '</span><span class="p">.</span><span class="n">join</span><span class="p">(</span><span class="n">user_profile</span><span class="p">.</span><span class="n">interests</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span><span class="si">}</span><span class="s"> who "</span>
+    <span class="sa">f</span><span class="s">"identifies as </span><span class="si">{</span><span class="n">user_profile</span><span class="p">.</span><span class="n">religious_beliefs</span><span class="si">}</span><span class="s">."</span>
+<span class="p">)</span>
+</code></pre></div></div>
+
+<p>Here are 28 examples, the overall quality varies.</p>
+
+<p><img src="/assets/images/generative_matchmaking/profile_0.png" alt="img_0" />
+<img src="/assets/images/generative_matchmaking/profile_1.png" alt="img_1" />
+<img src="/assets/images/generative_matchmaking/profile_2.png" alt="img_2" />
+<img src="/assets/images/generative_matchmaking/profile_3.png" alt="img_3" />
+<img src="/assets/images/generative_matchmaking/profile_4.png" alt="img_4" />
+<img src="/assets/images/generative_matchmaking/profile_5.png" alt="img_5" />
+<img src="/assets/images/generative_matchmaking/profile_6.png" alt="img_6" />
+<img src="/assets/images/generative_matchmaking/profile_7.png" alt="img_7" />
+<img src="/assets/images/generative_matchmaking/profile_8.png" alt="img_8" />
+<img src="/assets/images/generative_matchmaking/profile_9.png" alt="img_9" />
+<img src="/assets/images/generative_matchmaking/profile_10.png" alt="img_10" />
+<img src="/assets/images/generative_matchmaking/profile_11.png" alt="img_11" />
+<img src="/assets/images/generative_matchmaking/profile_12.png" alt="img_12" />
+<img src="/assets/images/generative_matchmaking/profile_13.png" alt="img_13" />
+<img src="/assets/images/generative_matchmaking/profile_14.png" alt="img_14" />
+<img src="/assets/images/generative_matchmaking/profile_15.png" alt="img_15" />
+<img src="/assets/images/generative_matchmaking/profile_16.png" alt="img_16" />
+<img src="/assets/images/generative_matchmaking/profile_17.png" alt="img_17" />
+<img src="/assets/images/generative_matchmaking/profile_18.png" alt="img_18" />
+<img src="/assets/images/generative_matchmaking/profile_19.png" alt="img_19" />
+<img src="/assets/images/generative_matchmaking/profile_20.png" alt="img_20" />
+<img src="/assets/images/generative_matchmaking/profile_21.png" alt="img_21" />
+<img src="/assets/images/generative_matchmaking/profile_22.png" alt="img_22" />
+<img src="/assets/images/generative_matchmaking/profile_23.png" alt="img_23" />
+<img src="/assets/images/generative_matchmaking/profile_24.png" alt="img_24" />
+<img src="/assets/images/generative_matchmaking/profile_25.png" alt="img_25" />
+<img src="/assets/images/generative_matchmaking/profile_26.png" alt="img_26" />
+<img src="/assets/images/generative_matchmaking/profile_27.png" alt="img_27" /></p>
+
+<h2 id="matchmaking">Matchmaking</h2>
+
+<h3 id="recommender-system">Recommender System</h3>
+
+<p>Mainstream dating apps train hybrid recommender systems that model content-based
+and collaborative filtering effects based on a robust set of features
+including explicit / implicit user interactions, e.g., swiping, time-on-page, etc.
+Modern recommender systems are implemented as a conglomerate of
+individual components that often treat retrieval and ranking as separate tasks.</p>
+
+<p>Researchers have shown that LLMs generalize as zero-shot recommenders but,
+through ablation studies, found that they’re primarily content-based
+and that they struggle with non-trivial ranking tasks, 
+likely connected to their inherent positional bias.</p>
+
+<p>Since our study lacked human feedback to being with, we experimented with
+a prompt based zero-shot retrieval mechanism but realized this approach
+would not scale effectively due to context-window limits. Instead,
+we implemented retrieval as semantic vector search. To rank the retrieved 
+output, we experimented with prompt engineering the ranking task but 
+the results clearly suffered from artifacts of positional bias. 
+Although bootstrapping the ranking task alleviated some concern 
+by reducing variance and thereby stabilizing rankings, 
+the results did not suffice, so we chose to implement 
+a graph inspired ranking heuristic.</p>
+
+<h4 id="chroma-vector-database">Chroma Vector Database</h4>
+
+<p>We spun up a local and persistent version of <a href="https://www.trychroma.com/">Chroma</a>, 
+an AI-native open-source vector database. By default, 
+Chroma uses the Sentence Transformers <code class="language-plaintext highlighter-rouge">all-MiniLM-L6-v2</code> 
+model to create embeddings. This embedding model can create sentence and 
+document embeddings that can be used for a wide variety of tasks. 
+This embedding function runs locally, downloading and caching the model files.
+We loaded every user’s <strong>profile summary</strong>, as a document, 
+into a <em>collection</em> and tagged each entry with the user’s gender
+and sexuality as <em>metadata</em> for which we manually enforce as
+“dealbreakers” or hard filters.</p>
+
+<h5 id="retrieval">Retrieval</h5>
+
+<p>Recall that we created two summaries for each user profile where we
+summarized, <em>mutually exclusively</em>, each user’s profile and their partner preferences.
+To compute an initial set of candidates for a given user, we query the Chroma <em>collection</em>
+with a given user’s <strong>partner preference summary</strong> and specify the hard filter based 
+on the user’s partner preference gender and sexuality <em>metadata</em>. Under the hood, Chroma
+executes a similarity / distance lookup on the embedded query text and returns the
+closest <code class="language-plaintext highlighter-rouge">n_results</code> or neighbors sorted by ascending distance. Choosing a distance metric and an
+appropriate value for the number of neighbors are hyperparameters which can be tuned 
+to the use case. We configured Chroma to use <em>cosine</em> distance and return the 25 closest 
+neighbors.</p>
+
+<h5 id="ranking">Ranking</h5>
+
+<p>The retrieved set of candidate user profiles for a given user can 
+naively be surfaced as matches for human feedback but some of those
+candidates may be better matches than others. Borrowing from graph theory, we defined
+users as nodes and directed weighted edges as match-affinity 
+between them. We built the graph by adding retrieval-distance 
+weighted edges for every user-candidate pair of nodes connecting
+a query user to that user’s retrieved candidate set.</p>
+
+<p>We defined compatibility as a bidirectional connection where a retrieved 
+candidate user’s retrieved set of candidates includes the query user. 
+These candidates, that point back to query user, are ranked higher than those that don’t. 
+This can be thought of as one level of breadth-first search.
+To illustrate, user $M$ is compatible with the ordered set of users 
+$\{C, B, P\}$ in diagram that follows.</p>
+
+<p><img src="/assets/images/generative_matchmaking/graph.png" alt="graph" /></p>
+
+<h3 id="visualizing-matches">Visualizing Matches</h3>
+
+<p>To visualize matches, we hacked together a user interface with directions
+on how to run it outlined in the repo’s <a href="https://github.com/daniel-deychakiwsky/generative-matchmaking/blob/master/README.md">readme</a>. A screenshot of Theodore Heath’s matches,
+ranked from left-to-right, follows. The presence of an asterisk by the name of a 
+match indicates bidirectional connection or compatibility while the others
+are unidirectional matches with one directed edge pointing from Theodore to the candidate.</p>
+
+<p><img src="/assets/images/generative_matchmaking/ui.png" alt="screenshot" /></p>
+
+<p>The most compatible match recommended for Theodore Heath is Olivia Windsor.
+Theodore and Olivia being marked as a compatible match means that
+Theodore’s <strong>partner preference summary</strong> is semantically similar to Olivia’s
+<strong>profile summary</strong> and that Olivia’s <strong>partner preference summary</strong> is semantically
+similar to Theodore’s <strong>profile summary</strong> within the embedding geometry.
+In other words, Theodore is looking for someone like Olivia and
+Olivia is looking for someone like Theodore based on the information
+available to us. We can inspect Theodore and Olivia’s profile and 
+partner preference summaries to qualitatively evaluate the match. Recall
+that our matching algorithm can be thought of as a soft fuzzy matcher
+with a hard filter on preferred sexuality and gender.</p>
+
+<p><strong>Theodore’s Profile Summary</strong></p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>This user is a 29-year-old Software Engineer in the Technology industry based in Los Angeles, 
+California, but originally from San Francisco. He stands 6 feet tall and is a graduate from 
+the California State University. He identifies as a straight white Caucasian man who uses 
+the pronouns He/Him/His, with agnostic religious beliefs, and a moderate political stance. 
+He values honesty, humor, and intelligence and enjoys outdoor activities, video games, and 
+reading in his spare time. This user is a Pisces and his MBTI personality type is INTJ. 
+Despite being occasionally up for a drink, he does not smoke or use drugs, including marijuana. 
+He leads an active lifestyle and owns a dog. His desires for the future include having children, 
+as he currently doesn't have any. He's also open to a long-term, monogamous relationship. 
+His primary languages are English and Spanish.
+</code></pre></div></div>
+
+<p><strong>Theodore’s Partner Preferences Summary</strong></p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>The user is seeking a female partner aged 24 to 31 years who falls between the heights of 5'5" 
+and 6'0". She doesn't have children but must be open to having them in the future. An ideal 
+match would be a straight woman who occasionally drinks but doesn't smoke or use marijuana or 
+other drugs. Light to moderate exercise habits are preferred. Ethnicity-wise, he is open to 
+dating women of both White Caucasian and Hispanic/Latino backgrounds. In terms of political 
+inclination, he prefers a woman with moderate views. Professionally, he prefers women working 
+in the Education, Technology, or Healthcare industry. Fluency in English is a must, and he 
+values Honesty, Kindness, and Intelligence. Shared interests might include outdoor activities, 
+music, or reading. Education is important too, with a preference for woman who have at least 
+an undergraduate degree or higher. He is looking for a long-term relationship that is monogamous.
+</code></pre></div></div>
+
+<p><strong>Olivia’s Profile Summary</strong></p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>This user is a 28 year-old woman standing at 5'6". She is a UX Designer working in the tech 
+industry and is a graduate of Stanford University. She identifies as straight and is interested 
+in a monogamous, long-term relationship. Originally from New York, New York, she is currently 
+dating in Los Angeles, California. She fluently speaks English and Spanish, and identifies her 
+ethnicity as white caucasian. Her core values are creativity, independence, and adventure. 
+Interests include photography, cooking, and travel. She identifies as agnostic and liberal. 
+Although she doesn't have any children yet, she wants them in the future. She is an active 
+drinker but doesn't smoke, use marijuana, or drugs. When it comes to exercise, she's quite active. 
+She owns a cat and is a Gemini with an ENFP personality type.
+</code></pre></div></div>
+
+<p><strong>Olivia’s Partner Preferences Summary</strong></p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>The user is looking for a man who is between the ages of 28 and 35 and stands between 5'8" 
+and 6'2". He shouldn't have children currently but should want to have them in the future. 
+Ideally, he would be straight, an active individual, and a non-smoker. He's preferred to be 
+someone who has no problems with drinking but doesn't use marijuana or any other drugs. In 
+terms of ethnicity, he can be of any listed ethnicity. Politically, a liberal or moderate man 
+would be suitable. The ideal man would work in either Tech, Finance, or Health sectors, and 
+English should be among his languages. He should value kindness, honesty, and be committed. 
+His interests should include hiking, photography, and traveling. The user prefers someone who 
+has at least an undergraduate level of education.
+</code></pre></div></div>
+
+<h2 id="date-planning">Date Planning</h2>
+
+<p>Once a match is made, we generate personalized first-date
+activities and talking points by applying 
+a technique known as retrieval augmented generation (RAG)
+where we instruct a LLM to assume a role of an expert creative date planner or
+conversationalist conditioning the generative task on user information.
+This is a form of in-context learning where the LLM
+is fed information retrieved from an external storage system
+to aid in performing a task. Analogous to how the human brain stores information
+in long-term and short-term memory, the external system is the AI’s long-term memory
+whereas the LLM’s context-window is its short-term memory.
+In the sections that follow, we report results 
+for Theodore and Olivia, our example match from the previous section.
+The AI system plans based on their information, e.g., 
+who they are, what they like, what they want, what city they’re meeting in, etc.
+We used a basic Chain of Thought (CoT) prompting strategy that incites the model
+to break down its reasoning process. There are more advanced prompting 
+strategies that we’ve left to future spikes, e.g., Tree of Thought (ToT).</p>
+
+<h3 id="activities">Activities</h3>
+
+<p><strong>System Message</strong></p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>You are an expert date planner.
+</code></pre></div></div>
+
+<p><strong>User Message</strong></p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Brainstorm co-personalized first-date ideas for 
+two users that matched on our dating service 
+based on their descriptions below. 
+Output the result in the form of a letter to them 
+with 5 ideas for the morning, 5 ideas for the afternoon, 
+and 5 ideas for the evening signed as 
+"Your loving AI assistants".
+Think step-by-step to explain why every idea 
+is good for them.
+
+--
+
+Theodore Heath: {Theodore's profile summary}
+
+Olivia Windsor: {Olivia's profile summary}
+</code></pre></div></div>
+
+<p><strong>Assistant Message</strong></p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Dear Theodore and Olivia,
+
+We are thrilled to assist you in planning some unique and personalized dates that will 
+cater to both of your interests and values. Here are our suggestions:
+
+Morning Ideas:
+1. Hiking in the Santa Monica Mountains: Given both of your active lifestyles and Theodore's 
+love for outdoor activities, this would be a great way to start the day. You can enjoy the 
+beautiful views and engage in deep conversations, which INTJs like Theodore appreciate.
+2. Visit to the Griffith Observatory: This could be a fun and educational experience for 
+both of you. As a Pisces, Theodore might enjoy the celestial aspect, while Olivia's adventurous 
+spirit would be satisfied.
+3. Cooking Class: Since Olivia enjoys cooking, a morning cooking class could be a fun and 
+interactive experience. You could choose a Spanish cuisine class to utilize both of your 
+language skills.
+4. Dog Park Visit: Theodore could bring his dog and you both could enjoy a casual morning at 
+the park. This would also give Olivia a chance to share her love for animals.
+5. Photography Walk in Downtown LA: Olivia could showcase her photography skills and you 
+both could explore the city's architecture and street art.
+
+Afternoon Ideas:
+1. Tech Museum Visit: Given your shared industry, a visit to a tech museum could 
+spark interesting conversations and mutual learning.
+2. Beach Picnic: Pack a lunch and head to the beach. This would combine Theodore's 
+love for the outdoors and Olivia's love for travel and adventure.
+3. Bookstore Visit: As Theodore enjoys reading, visiting a bookstore could be a fun 
+experience. You could each pick a book for the other to read.
+4. Video Game Arcade: Theodore could share his love for video games with 
+Olivia in a fun, casual setting.
+5. Spanish Language Film: Watching a Spanish language film at a local indie 
+cinema could be a unique way to use your shared language skills.
+
+Evening Ideas:
+1. Star Gazing: Given Theodore's Pisces sign and Olivia's adventurous spirit, 
+an evening spent star gazing could be both romantic and enjoyable.
+2. Comedy Show: A comedy show could be a great way to incorporate humor, 
+which Theodore values.
+3. Home Cooked Dinner: Olivia could cook dinner at home, providing a more 
+intimate setting. You could play video games or discuss the books you picked earlier.
+4. Wine Tasting: As both of you enjoy a drink occasionally, a local wine 
+tasting could be a fun and sophisticated experience.
+5. Outdoor Movie Night: Set up a projector in your backyard and enjoy a movie 
+under the stars. This combines Theodore's love for the outdoors and Olivia's 
+love for creativity.
+
+We hope these ideas inspire you to have fun, engaging, and meaningful dates. 
+Enjoy your time together!
+
+Your loving AI assistants.
+</code></pre></div></div>
+
+<h3 id="talking-points">Talking Points</h3>
+
+<p><strong>System Message</strong></p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>You are an expert conversationalist.
+</code></pre></div></div>
+
+<p><strong>User Message</strong></p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Brainstorm ten date talking points for two 
+users that matched on our dating service 
+based on their descriptions below. Output 
+the result in the form of a letter to 
+them "Your loving AI assistants". 
+Think step-by-step.
+
+--
+
+Theodore Heath: {Theodore's profile summary} {Theodore's partner preferences summary}
+
+Olivia Windsor: {Olivia's profile summary} {Olivia's partner preferences summary}
+</code></pre></div></div>
+
+<p><strong>Assistant Message</strong></p>
+
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Dear Theodore and Olivia,
+
+We are thrilled to introduce you to each other as we 
+believe you both share common interests, values, and 
+future goals. To help you get to know each other better, 
+we have brainstormed some talking points for your first date. 
+
+1. **Backgrounds**: You both have moved from different cities 
+to Los Angeles. Discuss what brought you to LA and how your 
+experiences have been so far. 
+
+2. **Professions**: You both work in the tech industry. 
+Discuss your roles, your journey into tech, and how you 
+see the industry evolving.
+
+3. **Education**: You both are graduates from prestigious 
+universities. Share your college experiences, favorite subjects, 
+and how your education has shaped your career.
+
+4. **Outdoor Activities**: You both enjoy outdoor activities. 
+Discuss your favorite hiking trails, outdoor games, and any 
+memorable adventures you've had.
+
+5. **Pets**: Theodore, you own a dog and Olivia, you own a cat. 
+Share your pet stories, their quirks, and how they've enriched 
+your lives.
+
+6. **Future Plans**: You both desire to have children in the future. 
+Discuss your thoughts on family, parenting, and how you 
+envision your future family life.
+
+7. **Books and Games**: Theodore, you enjoy reading and video games. 
+Olivia, you might find it interesting to know what books he's 
+currently reading or his favorite video games. 
+
+8. **Travel and Photography**: Olivia, you love traveling and photography. 
+Theodore, you might be interested in hearing about her favorite 
+travel destinations and her photography experiences.
+
+9. **Cooking**: Olivia, you enjoy cooking. Discuss your favorite dishes 
+to cook, and perhaps plan a cooking date in the future.
+
+10. **Values**: You both value honesty and intelligence. Discuss what 
+these values mean to you and how they influence your life decisions.
+
+Remember, the goal is to get to know each other better and find 
+common ground. Enjoy your date and we wish you both a wonderful time!
+
+Best regards,
+
+Your loving AI assistants.
+</code></pre></div></div>
+
+<h1 id="cost">Cost</h1>
+
+<p>The final bill paid to OpenAI for this project was under $80 USD.</p>
+
+<h1 id="literature-review">Literature Review</h1>
+
+<ul>
+  <li><a href="https://arxiv.org/pdf/2203.02155.pdf">https://arxiv.org/pdf/2203.02155.pdf</a> (OpenAI)</li>
+  <li><a href="https://arxiv.org/pdf/2304.03442.pdf">https://arxiv.org/pdf/2304.03442.pdf</a> (Stanford)</li>
+  <li><a href="https://arxiv.org/pdf/2306.02707.pdf">https://arxiv.org/pdf/2306.02707.pdf</a> (Microsoft)</li>
+  <li><a href="https://arxiv.org/pdf/2305.10601.pdf">https://arxiv.org/pdf/2305.10601.pdf</a> (Google)</li>
+  <li><a href="https://arxiv.org/pdf/2201.11903.pdf">https://arxiv.org/pdf/2201.11903.pdf</a> (Google)</li>
+  <li><a href="https://arxiv.org/pdf/2308.10053.pdf">https://arxiv.org/pdf/2308.10053.pdf</a> (Netflix)</li>
+  <li><a href="https://arxiv.org/pdf/2305.08845.pdf">https://arxiv.org/pdf/2305.08845.pdf</a> (Netflix)</li>
+  <li><a href="https://arxiv.org/pdf/2305.07622.pdf">https://arxiv.org/pdf/2305.07622.pdf</a> (Amazon)</li>
+  <li><a href="https://arxiv.org/pdf/2005.11401v4.pdf">https://arxiv.org/pdf/2005.11401v4.pdf</a> (Meta)</li>
+  <li><a href="https://arxiv.org/pdf/2303.11366.pdf">https://arxiv.org/pdf/2303.11366.pdf</a> (MIT)</li>
+</ul>
+
+
+  </div><a class="u-url" href="/generative-matchmaking" hidden></a>
+</article><script>
+  (function () {
+    let script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML";
+
+    const config =  'MathJax.Hub.Config({' +
+                    'tex2jax: {' +
+                      'inlineMath: [ [\'$\',\'$\'] ],' +
+                      'processEscapes: true' +
+                    '}' +
+                  '});'
+
+    if (window.opera) {
+      script.innerHTML = config
+    } else {
+      script.text = config
+    }
+
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col">
+<!--        <p class="feed-subscribe">-->
+<!--          <a href="/feed.xml">-->
+<!--            <svg class="svg-icon orange">-->
+<!--              <use xlink:href="/assets/minima-social-icons.svg#rss"></use>-->
+<!--            </svg><span>Subscribe</span>-->
+<!--          </a>-->
+<!--        </p>-->
+        <ul class="contact-list">
+          <li class="p-name">Daniel Deychakiwsky</li>
+          <li><a class="u-email" href="mailto:d.deychak@gmail.com">d.deychak@gmail.com</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <p>An Engineering Blog
+</p>
+      </div>
+    </div>
+
+    <div class="social-links"><ul class="social-media-list"><li><a rel="me" href="https://github.com/daniel-deychakiwsky" title="daniel-deychakiwsky"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg></a></li><li><a rel="me" href="https://www.instagram.com/ddeygram" title="ddeygram"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#instagram"></use></svg></a></li><li><a rel="me" href="https://www.linkedin.com/in/daniel-deychakiwsky" title="daniel-deychakiwsky"><svg class="svg-icon grey"><use xlink:href="/assets/minima-social-icons.svg#linkedin"></use></svg></a></li></ul>
+</div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
