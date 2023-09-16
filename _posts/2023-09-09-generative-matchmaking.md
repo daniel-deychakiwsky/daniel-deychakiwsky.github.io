@@ -8,12 +8,13 @@ mathjax: true
 permalink: /:title
 ---
 
-This post details an AI-based matchmaking simulation
-leveraging vector based semantic search for user 
-compatibility recommendations and retrieval-augmented 
-generation for co-personalized first-date ideation 
-using OpenAI's GPT-4, OpenAI's DALL·E-2, and Chroma, 
-an AI-native open-source vector database.
+This post details an AI-based matchmaking 
+simulation for dating, leveraging vector-based 
+semantic search for user compatibility recommendations 
+and retrieval-augmented generation (RAG) for co-personalized 
+first-date ideation using OpenAI's GPT-4, OpenAI's 
+DALL·E-2, and Chroma, an AI-native open-source 
+vector database.
 
 * TOC
 {:toc}
@@ -35,23 +36,23 @@ repeatedly swiping, small talking, and planning.
 > Meeting in person right away would allow us to gauge our compatibility and save time. 
 > -- <cite>I'm a 27-year-old female.</cite>
 
-Inspired by the emergence of human-like behavior of modern AI, 
-our vision is to present an experience where each user is paired 
-with a personalized AI matchmaking assistant that 
-can be reinforced with human feedback to align to changes in user preference
-while working behind the scenes on behalf of the user 
-by engaging with other user assistants to 
-create harmonious matches so that users can spend less time searching
-and more time meeting their people. We posit that this approach would 
-minimize swipe time, eliminate small talk, and assist in planning.
-The remainder of this post details a simulated subset of functionality
-that plugs into the overall effort.
+Inspired by the emergence of human-like behavior in modern AI, 
+our vision is to create an experience where each user is paired 
+with a personalized AI matchmaking assistant. This assistant 
+can adapt to changes in user preferences with the help of human 
+feedback and works behind the scenes to connect with other user 
+assistants, creating harmonious matches. The goal is to reduce 
+the time users spend searching and increase the time they spend 
+meeting people. We believe that this approach can minimize swipe 
+time, eliminate small talk, and assist in planning. The remainder
+of this post provides details on a simulated subset of functionality 
+that integrates into the overall effort.
 
 🧑 → 🤖💬 → ❤️ ← 💬🤖 ← 🧑
 
 ## Framework
 
-We focused on dating as an obvious application
+We focused on dating as an application
 of matchmaking. However, we argue that our 
 framework generalizes to a broad spectrum
 of use cases, e.g., jobs, philanthropy, customer churn,
@@ -64,33 +65,48 @@ Github [repository](https://github.com/daniel-deychakiwsky/generative-matchmakin
 As a proof-of-concept we generated
 synthetic dating user profiles, pictures, 
 and produced matches for each of them, all of which
-are stored in the [profiles] directory.
+are stored in the [profiles] directory. Finally,
+we delve into assisted date planning techniques
+for an example pair of matched users.
 
 ## Generating Synthetic Users
 
 ### Profiles
 
 We sequentially generated 250 synthetic dating user profiles using OpenAI's chat 
-completion endpoint with the following configuration settings: `model="gpt-4-0613"`, 
-`max_tokens=5000`, and `temperature=1.05`. Initially, our attempt to generate numerous dating 
+completion endpoint with the following configuration settings.
+
+```python
+{
+  "model": "gpt-4-0613",
+  "max_tokens": 5000,
+  "temperature": 1.05
+}
+```
+
+Initially, our attempt to generate numerous dating 
 profiles in a single inference pass, allowing the model to consider previously generated 
 profiles for uniqueness and diversity, was hindered by output token limit constraints. 
 To address this, we adopted an alternative approach: we chatted with the model
 to generate a collection of names and subsequently instructed the model to sample from this pool
 as a seed for profile generation.
 
-Our starting point was the default system prompt: `"You are a helpful assistant."`. 
-Within this conversation, we provided the instruction: `"Generate 10 unique first and 
-last names, ensuring a balanced diversity."` Following this, we issued a follow-up directive: 
-`"Select a name randomly and create a dating profile for the chosen name."`. It's worth noting 
-that the sampling process suffers from positional biases inherent in language models. 
-Nevertheless, this strategy, at he very least, improved generation of a diverse set of names
-across all users.
+```text
+[System Message]: You are a helpful assistant.
+[User Message]: Generate 10 unique first and last names, ensuring a balanced diversity.
+[Assistant Message]: ...
+[User Message]: Select a name randomly and create a dating profile for the chosen name.
+[Assistant Message]: ...
+```
+
+It's worth noting that the sampling process suffers from positional biases inherent 
+in language models. Nevertheless, we observed that this strategy, at the very least, 
+improved generation of a diverse set of names across all users.
 
 For the generation of the dating profile, we utilized OpenAI's function calling API, which 
 produced a structured JSON response based on our dating profile [schema] where 
 we hardcoded the dating location to Los Angeles, California for all users. Note that
-although our schema is basic, it can be updated to include other pieces of static or dynamic
+although our schema is basic, it can be extended to include other pieces of static or dynamic
 information along with the concept of "dealbreakers" which effectively translates
 to a hard filter on specified partner preference attributes.
 
@@ -103,15 +119,20 @@ to a hard filter on specified partner preference attributes.
 > adheres to the function signature. Function calling allows developers 
 > to more reliably get structured data back from the model. -- <cite>OpenAI docs.</cite>
 
-Once the dating profile was generated we instructed to
-`"Summarize the user's dating profile. 
-Include all fields other than partner_preferences. Output a concise paragraph."`
-and finally to 
-`"Summarize the user's dating partner_preferences. 
-Include partner_preferences fields only and nothing else. Output a concise paragraph."`
-We did not include the user's name in the summarization instruction context to maintain generality
-across users.
-An example synthetic dating profile follows.
+After generating the dating profile, we instructed the model 
+to exclusively summarize both the user's dating profile and 
+their partner preferences.
+
+```text
+...
+[User Message]: Summarize the user's dating profile. Include all fields other than partner_preferences. Output a concise paragraph.
+[Assistant Message]: ...
+[User Message]: Summarize the user's dating partner_preferences. Include partner_preferences fields only and nothing else. Output a concise paragraph.
+[Assistant Message]: ...
+```
+
+We did not include the user's name in the summarization instruction context 
+to maintain generality across users. An example synthetic dating profile follows.
 
 ```json
 {
@@ -217,7 +238,7 @@ An example synthetic dating profile follows.
 }
 ```
 
-Profile Summary
+**Profile Summary**
 
 ```text
 The user is a 29-year-old woman who identifies as straight. She uses she/her pronouns and is of 
@@ -232,7 +253,7 @@ doesn't smoke or use marijuana or other drugs. Her intention is to be in a monog
 relationship, open to both long term commitments and causal dating.
 ```
 
-Preferences Summary
+**Preferences Summary**
 
 ```text
 The user is a woman who is interested in dating a man who is between the ages of 28 and 35, 
@@ -309,15 +330,15 @@ Mainstream dating apps train hybrid recommender systems that model content-based
 and collaborative filtering effects based on a robust set of features
 including explicit / implicit user interactions, e.g., swiping, time-on-page, etc.
 Modern recommender systems are implemented as a conglomerate of
-individual components that often treat retrieval and ranking as separate tasks.
+individual components that often implement retrieval and ranking as separate tasks.
 
 Researchers have shown that LLMs generalize as zero-shot recommenders but,
 through ablation studies, found that they're primarily content-based
 and that they struggle with non-trivial ranking tasks, 
 likely connected to their inherent positional bias.
 
-Since our study lacked human feedback to being with, we experimented with
-a prompt based zero-shot retrieval mechanism but realized this approach
+Since our study lacked human feedback, we experimented with
+a prompt-based zero-shot retrieval mechanism but realized this approach
 would not scale effectively due to context-window limits. Instead,
 we implemented retrieval as semantic vector search. To rank the retrieved 
 output, we experimented with prompt engineering the ranking task but 
@@ -342,28 +363,26 @@ and sexuality as _metadata_ for which we manually enforce as
 
 ##### Retrieval
 
-Recall that we created two summaries for each user profile where we
-summarized, _mutually exclusively_, each user's profile and their partner preferences.
-To compute an initial set of candidates for a given user, we query the Chroma _collection_
-with a given user's **partner preference summary** and specify the hard filter based 
-on the user's partner preference gender and sexuality _metadata_. Under the hood, Chroma
+Recall that we created two summaries for each user that were _mutually exclusive_.
+To compute an initial set of candidates for a given user, we queried the Chroma _collection_
+with a given user's **partner preferences summary** and specified a hard filter based 
+on the user's partner preferences gender and sexuality _metadata_. Under the hood, Chroma
 executes a similarity / distance lookup on the embedded query text and returns the
 closest `n_results` or neighbors sorted by ascending distance. Choosing a distance metric and an
 appropriate value for the number of neighbors are hyperparameters which can be tuned 
-to the use case. We configured Chroma to use _cosine_ distance and return the 25 closest 
+to the use case. We configured Chroma to use _cosine_ distance and to return the 25 closest 
 neighbors.
 
 ##### Ranking
 
 The retrieved set of candidate user profiles for a given user can 
 naively be surfaced as matches for human feedback but some of those
-candidates may be better matches than others. Borrowing from graph theory, we defined
-users as nodes and directed weighted edges as match-affinity 
-between them. We built the graph by adding retrieval-distance 
+candidates may be better matches than others. Borrowing from graph theory, 
+we built a graph by treating users as nodes and adding retrieval-distance 
 weighted edges for every user-candidate pair of nodes connecting
 a query user to that user's retrieved candidate set.
 
-We defined compatibility as a bidirectional connection where a retrieved 
+We defined compatibility as a bidirectional connection between two users where a retrieved 
 candidate user's retrieved set of candidates includes the query user. 
 These candidates, that point back to query user, are ranked higher than those that don't. 
 This can be thought of as one level of breadth-first search.
@@ -377,21 +396,22 @@ $\\{C, B, P\\}$ in diagram that follows.
 To visualize matches, we hacked together a user interface with directions
 on how to run it outlined in the repo's [readme]. A screenshot of Theodore Heath's matches,
 ranked from left-to-right, follows. The presence of an asterisk by the name of a 
-match indicates bidirectional connection or compatibility while the others
-are unidirectional matches with one directed edge pointing from Theodore to the candidate.
+match indicates a bidirectional connection (compatibility) while the others
+are unidirectional matches with one directed edge pointing from Theodore to the 
+candidate match.
 
 ![screenshot]
 
 The most compatible match recommended for Theodore Heath is Olivia Windsor.
 Theodore and Olivia being marked as a compatible match means that
-Theodore's **partner preference summary** is semantically similar to Olivia's
-**profile summary** and that Olivia's **partner preference summary** is semantically
+Theodore's **partner preferences summary** is semantically similar to Olivia's
+**profile summary** and that Olivia's **partner preferences summary** is semantically
 similar to Theodore's **profile summary** within the embedding geometry.
 In other words, Theodore is looking for someone like Olivia and
 Olivia is looking for someone like Theodore based on the information
 available to us. We can inspect Theodore and Olivia's profile and 
-partner preference summaries to qualitatively evaluate the match. Recall
-that our matching algorithm can be thought of as a soft fuzzy matcher
+partner preferences summaries to qualitatively evaluate the match. 
+Our matching algorithm can be thought of as a soft matcher
 with a hard filter on preferred sexuality and gender.
 
 **Theodore's Profile Summary**
@@ -454,10 +474,10 @@ has at least an undergraduate level of education.
 
 ## Date Planning
 
-Once a match is made, we generate personalized first-date
+Once the matches were made, we generated personalized first-date
 activities and talking points by applying 
-a technique known as retrieval augmented generation (RAG)
-where we instruct a LLM to assume a role of an expert creative date planner or
+a technique known as retrieval-augmented generation (RAG)
+where we instructed a LLM to assume a role of an expert creative date planner or
 conversationalist conditioning the generative task on user information.
 This is a form of in-context learning where the LLM
 is fed information retrieved from an external storage system
@@ -471,6 +491,15 @@ who they are, what they like, what they want, what city they're meeting in, etc.
 We used a basic Chain of Thought (CoT) prompting strategy that incites the model
 to break down its reasoning process. There are more advanced prompting 
 strategies that we've left to future spikes, e.g., Tree of Thought (ToT).
+We used the following configuration for both tasks.
+
+```python
+{
+  "model": "gpt-4-0613",
+  "max_tokens": 5000,
+  "temperature": 0.0
+}
+```
 
 ### Activities
 
