@@ -398,8 +398,8 @@ and sexuality as _metadata_ for which we manually enforce as
 
 Recall that we created two summaries for each user that were _mutually exclusive_.
 To compute an initial set of candidates for a given query user, we searched the Chroma _collection_
-with their **partner preferences summary** and specified a hard _metadata_ filter based 
-on their partner preferences gender and sexuality. Under the hood, Chroma
+with their **partner preferences summary** and specified a hard _metadata_ filter based on 
+their partner preference gender and sexuality. Under the hood, Chroma
 executes a similarity / distance lookup on the embedded query text and returns the
 closest `n_results` or neighbors sorted by ascending distance. Choosing a distance metric and an
 appropriate value for the number of neighbors are hyperparameters which can be tuned 
