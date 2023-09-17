@@ -413,7 +413,7 @@ naively be surfaced as matches for human feedback but some of those
 candidates may be better matches than others. Borrowing from graph theory, 
 we built a graph by treating users as nodes and adding retrieval-distance 
 weighted edges for every user-candidate pair of nodes connecting
-a query user to that user's retrieved candidate set.
+a query user to their retrieved candidate set.
 
 We defined compatibility as a bidirectional connection between two users where a retrieved 
 candidate user's retrieved set of candidates includes the query user. 
