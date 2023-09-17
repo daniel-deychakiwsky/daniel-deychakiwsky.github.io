@@ -416,7 +416,7 @@ weighted edges for every user-candidate pair of nodes connecting
 a query user to their retrieved candidate set.
 
 We defined compatibility as a bidirectional connection between two users where a retrieved 
-candidate user's retrieved set of candidates includes the query user. 
+candidate's retrieved set of candidates includes the query user. 
 These candidates, that point back to query user, are ranked higher than those that don't. 
 This can be thought of as one level of breadth-first search.
 To illustrate, user $M$ is compatible with the ordered set of users 
