@@ -397,8 +397,8 @@ and sexuality as _metadata_ for which we manually enforce as
 ##### Retrieval
 
 Recall that we created two summaries for each user that were _mutually exclusive_.
-To compute an initial set of candidates for a given user, we queried the Chroma _collection_
-with a given user's **partner preferences summary** and specified a hard filter based 
+To compute an initial set of candidates for a given query user, we searched the Chroma _collection_
+with their **partner preferences summary** and specified a hard filter based 
 on the user's partner preferences gender and sexuality _metadata_. Under the hood, Chroma
 executes a similarity / distance lookup on the embedded query text and returns the
 closest `n_results` or neighbors sorted by ascending distance. Choosing a distance metric and an
