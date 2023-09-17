@@ -420,7 +420,7 @@ candidate's retrieved set of candidates includes the query user.
 These candidates, that point back to query user, are ranked higher than those that don't. 
 This can be thought of as one level of breadth-first search.
 To illustrate, user $M$ is compatible with the ordered set of users 
-$\\{C, B, P\\}$ in diagram that follows.
+$\\{C, B, P\\}$ in the diagram that follows.
 
 ![graph]
 
