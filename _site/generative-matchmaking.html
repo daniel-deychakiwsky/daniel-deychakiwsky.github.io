@@ -73,7 +73,7 @@ vector database.</p>
           <li><a href="#visualizing-matches" id="markdown-toc-visualizing-matches">Visualizing Matches</a></li>
         </ul>
       </li>
-      <li><a href="#date-planning" id="markdown-toc-date-planning">Date Planning</a>        <ul>
+      <li><a href="#planning" id="markdown-toc-planning">Planning</a>        <ul>
           <li><a href="#activities" id="markdown-toc-activities">Activities</a></li>
           <li><a href="#talking-points" id="markdown-toc-talking-points">Talking Points</a></li>
         </ul>
@@ -127,14 +127,13 @@ e-commerce, and overall business intelligence.</p>
 
 <h1 id="simulation">Simulation</h1>
 
-<p>The simulated implementation is made available in a public 
-Github <a href="https://github.com/daniel-deychakiwsky/generative-matchmaking">repository</a>.
-As a proof-of-concept we generated
-synthetic dating user profiles, pictures, 
-and produced matches for each of them, all of which
-are stored in the <a href="https://github.com/daniel-deychakiwsky/generative-matchmaking/tree/master/profiles">profiles</a> directory. Finally,
-we delve into assisted date planning techniques
-for an example pair of matched users.</p>
+<p>The simulated implementation is available in a public GitHub 
+<a href="https://github.com/daniel-deychakiwsky/generative-matchmaking">repository</a>. 
+As a proof-of-concept, we generated synthetic dating user profiles 
+with pictures and produced matches for each of them, 
+all of which are stored in the <a href="https://github.com/daniel-deychakiwsky/generative-matchmaking/tree/master/profiles">profiles</a> directory. 
+We also generated assisted date plans for an example 
+pair of matched users.</p>
 
 <h2 id="generating-synthetic-users">Generating Synthetic Users</h2>
 
@@ -457,12 +456,27 @@ into a <em>collection</em> and tagged each entry with the user’s gender
 and sexuality as <em>metadata</em> for which we manually enforce as
 “dealbreakers” or hard filters.</p>
 
+<p>Chroma’s default embedding model maps documents 
+to $\mathbb{R}^{384}$ (384 dimensional space). We
+visualized all 250 user dating profile summaries
+by projecting them down to $\mathbb{R}^{3}$ with the
+T-SNE algorithm using Tensorflow’s Embedding <a href="https://projector.tensorflow.org">Projector</a>.
+The result follows.</p>
+
+<p><img src="/assets/images/generative_matchmaking/embeddings.gif" alt="embeddings" /></p>
+
+<p>We assume that the two global clusters represent gender.
+An interesting application of these natural language
+embeddings as a product feature is that users could issue 
+queries to find partners by simply typing, e.g., 
+“I’m looking for a … that plays ultimate frisbee and … “.</p>
+
 <h5 id="retrieval">Retrieval</h5>
 
 <p>Recall that we created two summaries for each user that were <em>mutually exclusive</em>.
-To compute an initial set of candidates for a given user, we queried the Chroma <em>collection</em>
-with a given user’s <strong>partner preferences summary</strong> and specified a hard filter based 
-on the user’s partner preferences gender and sexuality <em>metadata</em>. Under the hood, Chroma
+To compute an initial set of candidates for a given query user, we searched the Chroma <em>collection</em>
+with their <strong>partner preferences summary</strong> and specified a hard <em>metadata</em> filter based on 
+their partner preference gender and sexuality. Under the hood, Chroma
 executes a similarity / distance lookup on the embedded query text and returns the
 closest <code class="language-plaintext highlighter-rouge">n_results</code> or neighbors sorted by ascending distance. Choosing a distance metric and an
 appropriate value for the number of neighbors are hyperparameters which can be tuned 
@@ -476,14 +490,14 @@ naively be surfaced as matches for human feedback but some of those
 candidates may be better matches than others. Borrowing from graph theory, 
 we built a graph by treating users as nodes and adding retrieval-distance 
 weighted edges for every user-candidate pair of nodes connecting
-a query user to that user’s retrieved candidate set.</p>
+a query user to their retrieved candidate set.</p>
 
 <p>We defined compatibility as a bidirectional connection between two users where a retrieved 
-candidate user’s retrieved set of candidates includes the query user. 
+candidate’s retrieved set of candidates includes the query user. 
 These candidates, that point back to query user, are ranked higher than those that don’t. 
 This can be thought of as one level of breadth-first search.
 To illustrate, user $M$ is compatible with the ordered set of users 
-$\{C, B, P\}$ in diagram that follows.</p>
+$\{C, B, P\}$ in the diagram that follows.</p>
 
 <p><img src="/assets/images/generative_matchmaking/graph.png" alt="graph" /></p>
 
@@ -600,7 +614,7 @@ traveling. The user prefers someone who
 has at least an undergraduate level of education.
 </code></pre></div></div>
 
-<h2 id="date-planning">Date Planning</h2>
+<h2 id="planning">Planning</h2>
 
 <p>Once the matches were made, we generated personalized first-date
 activities and talking points by applying 
