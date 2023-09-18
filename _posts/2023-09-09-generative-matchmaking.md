@@ -14,7 +14,8 @@ semantic search for user compatibility recommendations
 and retrieval-augmented generation (RAG) for co-personalized 
 first-date ideation using OpenAI's GPT-4, OpenAI's 
 DALL·E-2, and Chroma, an AI-native open-source 
-vector database.
+vector database. My brother, Dimitri Deychakiwsky,
+and I put this together over several weekends.
 
 * TOC
 {:toc}
