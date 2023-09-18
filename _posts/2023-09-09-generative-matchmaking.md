@@ -394,6 +394,21 @@ into a _collection_ and tagged each entry with the user's gender
 and sexuality as _metadata_ for which we manually enforce as
 "dealbreakers" or hard filters.
 
+Chroma's default embedding model maps documents 
+to $\mathbb{R}^{384}$ (384 dimensional space). We
+visualized all 250 user dating profile summaries
+by projecting them down to $\mathbb{R}^{3}$ with the
+T-SNE algorithm using Tensorflow's Embedding [Projector].
+The result follows.
+
+![embeddings]
+
+We assume that the two global clusters represent gender.
+An interesting application of these natural language
+embeddings as a product feature is that users could issue 
+queries to find partners by simply typing, e.g., 
+"I'm looking for a ... that plays ultimate frisbee and ... ".
+
 ##### Retrieval
 
 Recall that we created two summaries for each user that were _mutually exclusive_.
@@ -780,6 +795,7 @@ The final bill paid to OpenAI for this project was under $80 USD.
 [profiles]: https://github.com/daniel-deychakiwsky/generative-matchmaking/tree/master/profiles
 [chroma]: https://www.trychroma.com/
 [readme]: https://github.com/daniel-deychakiwsky/generative-matchmaking/blob/master/README.md
+[Projector]: https://projector.tensorflow.org
 
 [img_0]: /assets/images/generative_matchmaking/profile_0.png
 [img_1]: /assets/images/generative_matchmaking/profile_1.png
@@ -811,3 +827,4 @@ The final bill paid to OpenAI for this project was under $80 USD.
 [img_27]: /assets/images/generative_matchmaking/profile_27.png
 [graph]: /assets/images/generative_matchmaking/graph.png
 [screenshot]: /assets/images/generative_matchmaking/ui.png
+[embeddings]: /assets/images/generative_matchmaking/embeddings.gif
