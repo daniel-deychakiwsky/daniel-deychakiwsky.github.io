@@ -709,7 +709,7 @@ Brainstorm ten date talking points for two
 users that matched on our dating service 
 based on their descriptions below. Output 
 the result in the form of a letter to 
-them "Your loving AI assistants". 
+them signed as "Your loving AI assistants". 
 Think step-by-step.
 
 --
