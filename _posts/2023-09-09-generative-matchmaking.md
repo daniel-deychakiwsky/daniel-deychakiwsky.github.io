@@ -279,7 +279,7 @@ and causal dating.
 **Partner Preferences Summary**
 
 ```text
-The user is a woman who is interested in dating a 
+The user is interested in dating a 
 man who is between the ages of 28 and 35, 
 and between 5'6" and 6'2" in height. Her preferred 
 partner would be someone who does not 
