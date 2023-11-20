@@ -151,7 +151,7 @@ to maintain generality across users. An example synthetic dating profile follows
 {
     "name": "Mia Wong",
     "age": 29,
-    "height": "5'6\"",
+    "height": "5'6",
     "school": "University of California, Berkeley",
     "job_industry": "Technology",
     "job_title": "Software Engineer",
@@ -195,8 +195,8 @@ to maintain generality across users. An example synthetic dating profile follows
     "partner_preferences": {
         "minimum_age": 28,
         "maximum_age": 35,
-        "minimum_height": "5'6\"",
-        "maximum_height": "6'2\"",
+        "minimum_height": "5'6",
+        "maximum_height": "6'2",
         "has_children": false,
         "want_children": true,
         "sexuality": "Straight",
