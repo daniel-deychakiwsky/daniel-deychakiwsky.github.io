@@ -9,8 +9,8 @@
 <meta property="og:title" content="Generative Matchmaking" />
 <meta name="author" content="Daniel Deychakiwsky" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="This post details an AI-based matchmaking simulation for dating, leveraging vector-based semantic search for user compatibility recommendations and retrieval-augmented generation (RAG) for co-personalized first-date ideation using OpenAI’s GPT-4, OpenAI’s DALL·E-2, and Chroma, an AI-native open-source vector database." />
-<meta property="og:description" content="This post details an AI-based matchmaking simulation for dating, leveraging vector-based semantic search for user compatibility recommendations and retrieval-augmented generation (RAG) for co-personalized first-date ideation using OpenAI’s GPT-4, OpenAI’s DALL·E-2, and Chroma, an AI-native open-source vector database." />
+<meta name="description" content="This post details an AI-based matchmaking simulation for dating, leveraging vector-based semantic search for user compatibility recommendations and retrieval-augmented generation (RAG) for co-personalized first-date ideation using OpenAI’s GPT-4, OpenAI’s DALL·E-2, and Chroma, an AI-native open-source vector database. My brother, Dimitri Deychakiwsky, and I put this together over several weekends." />
+<meta property="og:description" content="This post details an AI-based matchmaking simulation for dating, leveraging vector-based semantic search for user compatibility recommendations and retrieval-augmented generation (RAG) for co-personalized first-date ideation using OpenAI’s GPT-4, OpenAI’s DALL·E-2, and Chroma, an AI-native open-source vector database. My brother, Dimitri Deychakiwsky, and I put this together over several weekends." />
 <link rel="canonical" href="http://localhost:4000/generative-matchmaking" />
 <meta property="og:url" content="http://localhost:4000/generative-matchmaking" />
 <meta property="og:site_name" content="Deylemma" />
@@ -19,7 +19,7 @@
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="Generative Matchmaking" />
 <script type="application/ld+json">
-{"url":"http://localhost:4000/generative-matchmaking","headline":"Generative Matchmaking","dateModified":"2023-09-09T00:00:00-05:00","datePublished":"2023-09-09T00:00:00-05:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/generative-matchmaking"},"author":{"@type":"Person","name":"Daniel Deychakiwsky"},"description":"This post details an AI-based matchmaking simulation for dating, leveraging vector-based semantic search for user compatibility recommendations and retrieval-augmented generation (RAG) for co-personalized first-date ideation using OpenAI’s GPT-4, OpenAI’s DALL·E-2, and Chroma, an AI-native open-source vector database.","@type":"BlogPosting","@context":"https://schema.org"}</script>
+{"url":"http://localhost:4000/generative-matchmaking","headline":"Generative Matchmaking","dateModified":"2023-09-09T00:00:00-05:00","datePublished":"2023-09-09T00:00:00-05:00","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/generative-matchmaking"},"author":{"@type":"Person","name":"Daniel Deychakiwsky"},"description":"This post details an AI-based matchmaking simulation for dating, leveraging vector-based semantic search for user compatibility recommendations and retrieval-augmented generation (RAG) for co-personalized first-date ideation using OpenAI’s GPT-4, OpenAI’s DALL·E-2, and Chroma, an AI-native open-source vector database. My brother, Dimitri Deychakiwsky, and I put this together over several weekends.","@type":"BlogPosting","@context":"https://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 <link rel="stylesheet" href="/assets/css/style.css"><link type="application/atom+xml" rel="alternate" href="http://localhost:4000/feed.xml" title="Deylemma" />
 </head>
@@ -47,7 +47,8 @@ semantic search for user compatibility recommendations
 and retrieval-augmented generation (RAG) for co-personalized 
 first-date ideation using OpenAI’s GPT-4, OpenAI’s 
 DALL·E-2, and Chroma, an AI-native open-source 
-vector database.</p>
+vector database. My brother, Dimitri Deychakiwsky,
+and I put this together over several weekends.</p>
 
 <ul id="markdown-toc">
   <li><a href="#elevator-pitch" id="markdown-toc-elevator-pitch">Elevator Pitch</a>    <ul>
@@ -215,7 +216,7 @@ to maintain generality across users. An example synthetic dating profile follows
 <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
     </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Mia Wong"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"age"</span><span class="p">:</span><span class="w"> </span><span class="mi">29</span><span class="p">,</span><span class="w">
-    </span><span class="nl">"height"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5'6</span><span class="se">\"</span><span class="s2">"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"height"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5'6"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"school"</span><span class="p">:</span><span class="w"> </span><span class="s2">"University of California, Berkeley"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"job_industry"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Technology"</span><span class="p">,</span><span class="w">
     </span><span class="nl">"job_title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Software Engineer"</span><span class="p">,</span><span class="w">
@@ -259,8 +260,8 @@ to maintain generality across users. An example synthetic dating profile follows
     </span><span class="nl">"partner_preferences"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
         </span><span class="nl">"minimum_age"</span><span class="p">:</span><span class="w"> </span><span class="mi">28</span><span class="p">,</span><span class="w">
         </span><span class="nl">"maximum_age"</span><span class="p">:</span><span class="w"> </span><span class="mi">35</span><span class="p">,</span><span class="w">
-        </span><span class="nl">"minimum_height"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5'6</span><span class="se">\"</span><span class="s2">"</span><span class="p">,</span><span class="w">
-        </span><span class="nl">"maximum_height"</span><span class="p">:</span><span class="w"> </span><span class="s2">"6'2</span><span class="se">\"</span><span class="s2">"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"minimum_height"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5'6"</span><span class="p">,</span><span class="w">
+        </span><span class="nl">"maximum_height"</span><span class="p">:</span><span class="w"> </span><span class="s2">"6'2"</span><span class="p">,</span><span class="w">
         </span><span class="nl">"has_children"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
         </span><span class="nl">"want_children"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w">
         </span><span class="nl">"sexuality"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Straight"</span><span class="p">,</span><span class="w">
@@ -341,7 +342,7 @@ and causal dating.
 
 <p><strong>Partner Preferences Summary</strong></p>
 
-<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>The user is a woman who is interested in dating a 
+<div class="language-text highlighter-rouge"><div class="highlight"><pre class="highlight"><code>The user is interested in dating a 
 man who is between the ages of 28 and 35, 
 and between 5'6" and 6'2" in height. Her preferred 
 partner would be someone who does not 
@@ -760,7 +761,7 @@ Your loving AI assistants.
 users that matched on our dating service 
 based on their descriptions below. Output 
 the result in the form of a letter to 
-them "Your loving AI assistants". 
+them signed as "Your loving AI assistants". 
 Think step-by-step.
 
 --
