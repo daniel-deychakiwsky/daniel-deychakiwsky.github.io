@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2024-04-06T16:31:02-05:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Deylemma</title><subtitle>An Engineering Blog
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="4.2.1">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2024-09-30T11:24:50-05:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Deylemma</title><subtitle>An Engineering Blog
 </subtitle><author><name>Daniel Deychakiwsky</name><email>d.deychak@gmail.com</email></author><entry><title type="html">Generative Matchmaking</title><link href="http://localhost:4000/generative-matchmaking" rel="alternate" type="text/html" title="Generative Matchmaking" /><published>2023-09-09T00:00:00-05:00</published><updated>2023-09-09T00:00:00-05:00</updated><id>http://localhost:4000/generative-matchmaking</id><content type="html" xml:base="http://localhost:4000/generative-matchmaking">&lt;p&gt;This post details an AI-based matchmaking 
 simulation for dating, leveraging vector-based 
 semantic search for user compatibility recommendations 
@@ -2648,8 +2648,6 @@ offers support for three-dimensional rendering.&lt;/p&gt;
 &lt;/ul&gt;
 
 &lt;h2 id=&quot;who-am-i&quot;&gt;Who am I?&lt;/h2&gt;
-
-&lt;p&gt;&lt;img src=&quot;/assets/images/headshot.png&quot; alt=&quot;headshot&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Professionally by day, I’m a senior machine learning engineer.
 I have about 10 years of software engineering experience,
